@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\OauthUser;
+use App\Models\OAuthUser;
 
 class OAuthUserController extends Controller
 {
-    private const TITLE = 'OauthUser';
+    private const TITLE = 'OAuthUser';
 
     public function index()
     {

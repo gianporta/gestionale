@@ -26,6 +26,6 @@ class OAuthRepo extends Model
 
     public function user()
     {
-        return $this->belongsTo(OauthUser::class, 'id_user');
+        return $this->belongsTo(OAuthUser::class, 'id_user');
     }
 }

@@ -34,8 +34,8 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.home');
     Route::get('/repo', [RepoController::class, 'index'])->name('repo.index');
-    Route::get('/oauth-repo', [OauthRepoController::class, 'index'])->name('oauth_repo.index');
-    Route::get('/oauth-user', [OauthUserController::class, 'index'])->name('oauth_user.index');
+    Route::get('/oauth-repo', [OAuthRepoController::class, 'index'])->name('oauth_repo.index');
+    Route::get('/oauth-user', [OAuthUserController::class, 'index'])->name('oauth_user.index');
     Route::post('/update-row', [RowTableUpdateController::class, 'updateRow'])->name('update.row');
     Route::post('/delete-row', [RowTableDeleteController::class, 'deleteRow'])->name('delete.row');
     Route::post('/create-row', [RowTableCreateController::class, 'createRow'])->name('create.row');
