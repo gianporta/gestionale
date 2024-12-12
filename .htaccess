@@ -1,9 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # Se la richiesta non è già per la cartella public
     RewriteCond %{REQUEST_URI} !^/public/
-
-    # Redireziona tutte le richieste verso la cartella public
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
