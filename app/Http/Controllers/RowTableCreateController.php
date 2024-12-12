@@ -5,16 +5,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class RowTableDeleteController extends Controller
+class RowTableCreateController extends Controller
 {
-    public function deleteRow(Request $request)
+    public function createRow(Request $request)
     {
         $validated = $request->validate([
             'table' => 'required|string',
-            'id' => 'required|integer'
+            'data' => 'required|array',
         ]);
+
         $table = $validated['table'];
-        $recordId = $validated['id'];
+        $insertData = $validated['data'];
 
         $modelMap = config('model_map');
 
@@ -22,12 +23,12 @@ class RowTableDeleteController extends Controller
             return response()->json(['success' => false, 'message' => 'Tabella non riconosciuta'], 400);
 
         $modelClass = $modelMap[$table];
-        $model = $modelClass::find($recordId);
-        if (!$model)
-            return response()->json(['success' => false, 'message' => 'Record non trovato'], 404);
+        if (!$modelClass)
+            return response()->json(['success' => false, 'message' => 'Tabella non riconosciuta'], 400);
+        $model = new $modelClass();
+        $model->fill($insertData);
+        $model->save();
 
-        $model->delete();
-
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'record' => $model]);
     }
 }

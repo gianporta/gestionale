@@ -4,7 +4,15 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="text-center">{{ $title }}</h1>
-        <input id="search-input" type="text" placeholder="Search" class="form-control" style="width: 300px;">
+
+    </div>
+    <div class="row align-items-center mt-5 mb-3">
+        <div class="col">
+            <button class="btn btn-primary btn-add-new">Aggiungi Nuovo</button>
+        </div>
+        <div class="col-auto">
+            <input id="search-input" type="text" placeholder="Search" class="form-control">
+        </div>
     </div>
     <div class="table-responsive mt-3">
         <table class="table table-bordered table-hover">
@@ -163,6 +171,78 @@
                         row.remove();
                     else
                         alert('Errore durante l\'eliminazione!');
+                },
+                error: function () {
+                    alert('Errore nella richiesta!');
+                }
+            });
+        });
+
+
+        $('.btn-add-new').on('click', function () {
+            var newRow = '<tr class="new-row">';
+        @foreach ($columns as $key)
+        @if ($key === 'id')
+                newRow += '<td><input type="hidden" class="new-input form-control" data-key="{{ $key }}" value=""></td>';
+        @elseif ($key === 'psw')
+            newRow += '<td><input type="text" class="new-input form-control" data-key="{{ $key }}" placeholder="Password"></td>';
+        @else
+            newRow += '<td><input type="text" class="new-input form-control" data-key="{{ $key }}" placeholder="{{ $key }}"></td>';
+        @endif
+        @endforeach
+            newRow += '<td class="text-center">';
+            newRow += '<button class="btn btn-success btn-sm btn-create me-2" title="Crea"><i class="fas fa-check"></i></button>';
+            newRow += '<button class="btn btn-danger btn-sm btn-cancel-create" title="Annulla"><i class="fas fa-times"></i></button>';
+            newRow += '</td></tr>';
+
+            $('#tableBody').prepend(newRow);
+            $(this).prop('disabled', true);
+        });
+        $(document).on('click', '.btn-cancel-create', function () {
+            $(this).closest('tr').remove();
+            $('.btn-add-new').prop('disabled', false);
+        });
+
+        $(document).on('click', '.btn-create', function () {
+            var row = $(this).closest('tr');
+            var rowData = {};
+            row.find('.new-input').each(function () {
+                var input = $(this);
+                var columnName = input.data('key');
+                var value = input.val();
+                rowData[columnName] = value;
+            });
+
+            var tableName = '{{ $tableName }}';
+
+            $.ajax({
+                url: '/create-row',
+                method: 'POST',
+                data: {
+                    table: tableName,
+                    data: rowData,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var createdRow = '<tr data-id="' + response.record.id + '" data-table="' + tableName + '">';
+                    @foreach ($columns as $key)
+                        createdRow += '<td data-key="{{ $key }}" class="editable"><span class="editable-content">' + (response.record['{{ $key }}'] ?? '-') + '</span><input type="text" class="editable-input form-control" style="display:none;"></td>';
+                    @endforeach
+                        createdRow += '<td class="text-center">'
+                            + '<button class="btn btn-success btn-sm me-2 btn-save" title="Salva">'
+                            + '<i class="fas fa-check"></i>'
+                            + '</button> '
+                            + '<button class="btn btn-danger btn-sm btn-delete" title="Cancella">'
+                            + '<i class="fas fa-times"></i>'
+                            + '</button>'
+                            + '</td></tr>';
+
+                        row.replaceWith(createdRow);
+                        $('.btn-add-new').prop('disabled', false);
+                    } else {
+                        alert('Errore durante la creazione della riga: ' + (response.message || 'Sconosciuto'));
+                    }
                 },
                 error: function () {
                     alert('Errore nella richiesta!');

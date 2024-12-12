@@ -11,6 +11,7 @@ use App\Http\Controllers\OAuthUserController;
 use App\Http\Controllers\RepoController;
 use App\Http\Controllers\RowTableDeleteController;
 use App\Http\Controllers\RowTableUpdateController;
+use App\Http\Controllers\RowTableCreateController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,4 +38,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/oauth-user', [OauthUserController::class, 'index'])->name('oauth_user.index');
     Route::post('/update-row', [RowTableUpdateController::class, 'updateRow'])->name('update.row');
     Route::post('/delete-row', [RowTableDeleteController::class, 'deleteRow'])->name('delete.row');
+    Route::post('/create-row', [RowTableCreateController::class, 'createRow'])->name('create.row');
 });
