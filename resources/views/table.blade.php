@@ -18,26 +18,34 @@
             </thead>
             <tbody id="tableBody">
             @foreach ($data as $item)
-            <tr>
+            <tr data-id="{{ $item->id }}" data-table="{{ $tableName ?? '' }}">
                 @foreach ($columns as $key)
-                <td data-search="{{ \App\Helpers\DataFormatter::formatColumnValue($key, $item->$key ?? '-') }}">
-                    @if ($key === 'psw')
-                    <div class="psw-container">
-                        <input type="password" class="form-control psw-input" value="{{ $item->$key }}" readonly>
-                        <button type="button" class="btn btn-sm toggle-password">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    @else
-                    {{ \App\Helpers\DataFormatter::formatColumnValue($key, $item->$key ?? '-') }}
-                    @endif
+                <td data-search="{{ \App\Helpers\DataFormatter::formatColumnValue($key, $item->$key ?? '-') }}"
+                    data-key="{{ $key }}"
+                    @if($key !==
+                'id' && $key !== 'psw') class="editable" @endif>
+
+                @if ($key === 'id')
+                {{-- L'id non è editabile e non mostriamo input --}}
+                {{ $item->$key }}
+                @elseif ($key === 'psw')
+                <div class="psw-container">
+                    <input type="password" class="form-control psw-input" value="{{ $item->$key }}" readonly>
+                    <button type="button" class="btn btn-sm toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                @else
+                <span class="editable-content">{{ \App\Helpers\DataFormatter::formatColumnValue($key, $item->$key ?? '-') }}</span>
+                <input type="text" class="editable-input form-control" value="{{ $item->$key ?? '' }}" style="display:none;">
+                @endif
                 </td>
                 @endforeach
                 <td class="text-center">
-                    <button class="btn btn-success btn-sm me-2" title="Salva">
+                    <button class="btn btn-success btn-sm me-2 btn-save" title="Salva">
                         <i class="fas fa-check"></i>
                     </button>
-                    <button class="btn btn-danger btn-sm" title="Cancella">
+                    <button class="btn btn-danger btn-sm btn-delete" title="Cancella">
                         <i class="fas fa-times"></i>
                     </button>
                 </td>
@@ -75,6 +83,91 @@
                 input.attr('type', 'password');
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
+        });
+
+        $('.editable').on('click', function () {
+            var cell = $(this);
+            var contentSpan = cell.find('.editable-content');
+            var inputField = cell.find('.editable-input');
+            if (inputField.length > 0) {
+                contentSpan.hide();
+                inputField.show().focus();
+            }
+        });
+
+        $('.btn-save').on('click', function () {
+            var row = $(this).closest('tr');
+            var rowData = {};
+            var rowId = row.data('id');
+            var tableName = row.data('table');
+            row.find('.editable').each(function () {
+                var cell = $(this);
+                var columnName = cell.data('key');
+                var inputField = cell.find('.editable-input');
+
+                if (inputField.length > 0) {
+                    var newValue = inputField.val();
+                    var originalValue = cell.find('.editable-content').text();
+                    if (newValue !== originalValue)
+                        rowData[columnName] = newValue;
+                }
+            });
+
+            if ($.isEmptyObject(rowData)) {
+                alert('Nessuna modifica da salvare');
+                return;
+            }
+
+            $.ajax({
+                url: '/update-row',
+                method: 'POST',
+                data: {
+                    table: tableName,
+                    id: rowId,
+                    data: rowData,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        for (var column in rowData) {
+                            var cell = row.find('[data-key="' + column + '"]');
+                            cell.find('.editable-content').text(rowData[column]).show();
+                            cell.find('.editable-input').hide();
+                        }
+                    } else
+                        alert("Errore! \n");
+                },
+                error: function (response) {
+                    alert("Errore! \n");
+                }
+            });
+        });
+
+
+        $('.btn-delete').on('click', function () {
+            var row = $(this).closest('tr');
+            var rowId = row.data('id');
+            var tableName = row.data('table');
+            if (!confirm('Sei sicuro di voler eliminare questa riga?'))
+                return;
+            $.ajax({
+                url: '/delete-row',
+                method: 'POST',
+                data: {
+                    table: tableName,
+                    id: rowId,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success)
+                        row.remove();
+                    else
+                        alert('Errore durante l\'eliminazione!');
+                },
+                error: function () {
+                    alert('Errore nella richiesta!');
+                }
+            });
         });
     });
 </script>

@@ -11,5 +11,12 @@ class Repo extends Model
     use HasFactory;
 
     protected $table = 'repo';
-    protected $fillable = ['packages', 'is_active'];
+    protected $fillable = [];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $columns = Schema::getColumnListing($this->getTable());
+        $this->fillable = $columns;
+    }
 }

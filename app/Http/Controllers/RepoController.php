@@ -16,6 +16,7 @@ class RepoController extends Controller
         $columns = \Schema::getColumnListing($model->getTable());
         $data = $model->all();
         $title = self::TITLE;
-        return view('table', compact('data', 'columns', 'title'));
+        $tableName = $model->getTable();
+        return view('table', compact('data', 'columns', 'title','tableName'));
     }
 }

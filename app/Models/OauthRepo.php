@@ -10,7 +10,14 @@ class OauthRepo extends Model
     use HasFactory;
 
     protected $table = 'oauth_repo';
-    protected $fillable = ['id_user', 'id_repo', 'is_active', 'expiration'];
+    protected $fillable = [];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $columns = Schema::getColumnListing($this->getTable());
+        $this->fillable = $columns;
+    }
 
     public function repo()
     {
