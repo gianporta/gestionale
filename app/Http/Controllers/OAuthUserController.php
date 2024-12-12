@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 namespace App\Http\Controllers;
-use App\Models\OauthRepo;
-class OauthRepoController extends Controller
+
+use App\Models\OauthUser;
+
+class OAuthUserController extends Controller
 {
-    private const TITLE = 'OauthRepo';
+    private const TITLE = 'OauthUser';
 
     public function index()
     {
-        $model = new OauthRepo();
+        $model = new OAuthUser();
         $columns = \Schema::getColumnListing($model->getTable());
         $data = $model->all();
         $title = self::TITLE;
