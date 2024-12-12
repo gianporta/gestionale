@@ -39,4 +39,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-row', [RowTableUpdateController::class, 'updateRow'])->name('update.row');
     Route::post('/delete-row', [RowTableDeleteController::class, 'deleteRow'])->name('delete.row');
     Route::post('/create-row', [RowTableCreateController::class, 'createRow'])->name('create.row');
+    Route::post('/duplicate-row', [RowTableCreateController::class, 'duplicateRow'])->name('duplicate.row');
 });

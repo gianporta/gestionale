@@ -53,6 +53,9 @@
                     <button class="btn btn-success btn-sm me-2 btn-save" title="Salva">
                         <i class="fas fa-check"></i>
                     </button>
+                    <button class="btn btn-secondary btn-sm me-2 btn-duplicate" title="Duplica">
+                        <i class="fas fa-copy"></i>
+                    </button>
                     <button class="btn btn-danger btn-sm btn-delete" title="Cancella">
                         <i class="fas fa-times"></i>
                     </button>
@@ -273,6 +276,56 @@
             }
         });
         $('#rows-per-page').trigger('change');
+
+        $(document).on('click', '.btn-duplicate', function () {
+            var row = $(this).closest('tr');
+            var rowId = row.data('id');
+            var tableName = row.data('table');
+
+            $.ajax({
+                url: '/duplicate-row',
+                method: 'POST',
+                data: {
+                    table: tableName,
+                    id: rowId,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var newRow = '<tr data-id="' + response.record.id + '" data-table="' + tableName + '">';
+                    @foreach ($columns as $key)
+                    @if($key === 'id')
+                            newRow += '<td>' + (response.record['{{ $key }}'] ?? '-') + '</td>';
+                    @elseif($key === 'psw')
+                        newRow += '<td>'
+                            + '<div class="psw-container">'
+                            + '<input type="password" class="form-control psw-input" value="' + (response.record['{{ $key }}'] ?? '') + '" readonly>'
+                            + '<button type="button" class="btn btn-sm toggle-password">'
+                            + '<i class="fas fa-eye"></i>'
+                            + '</button>'
+                            + '</div></td>';
+                    @else
+                        newRow += '<td data-key="{{ $key }}" class="editable" data-search="' + (response.record['{{ $key }}'] ?? '-') + '">'
+                            + '<span class="editable-content">' + (response.record['{{ $key }}'] ?? '-') + '</span>'
+                            + '<input type="text" class="editable-input form-control" value="' + (response.record['{{ $key }}'] ?? '') + '" style="display:none;">'
+                            + '</td>';
+                    @endif
+                    @endforeach
+                        newRow += '<td class="text-center">'
+                            + '<button class="btn btn-success btn-sm me-2 btn-save" title="Salva"><i class="fas fa-check"></i></button>'
+                            + '<button class="btn btn-danger btn-sm me-2 btn-delete" title="Cancella"><i class="fas fa-times"></i></button>'
+                            + '<button class="btn btn-secondary btn-sm btn-duplicate" title="Duplica"><i class="fas fa-copy"></i></button>'
+                            + '</td></tr>';
+
+                        $('#tableBody').prepend(newRow);
+                    } else
+                        alert('Errore durante la duplicazione: ' + (response.message || 'Sconosciuto'));
+                },
+                error: function () {
+                    alert('Errore nella richiesta!');
+                }
+            });
+        });
     });
 </script>
 @endpush
