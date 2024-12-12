@@ -60,6 +60,19 @@
             </tr>
             @endforeach
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="{{ count($columns) + 1 }}">
+                    Mostra
+                    <select id="rows-per-page" class="form-select d-inline-block" style="width:auto; display:inline-block;">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="all">Tutti</option>
+                    </select> righe
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </div>
@@ -249,6 +262,17 @@
                 }
             });
         });
+
+        var allRows = $('#tableBody tr');
+        $('#rows-per-page').on('change', function() {
+            var val = $(this).val();
+            allRows.show();
+            if (val !== 'all') {
+                var limit = parseInt(val, 10);
+                allRows.slice(limit).hide();
+            }
+        });
+        $('#rows-per-page').trigger('change');
     });
 </script>
 @endpush
