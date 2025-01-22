@@ -1,45 +1,23 @@
-# Laravel & Filament
-/vendor/
-/node_modules/
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
 /public/storage
 /storage/*.key
-/.idea/
-/.env
-/.env.*
-/.phpunit.result.cache
-/.vscode/
-
-# Filament-specific
-/public/build/
-/resources/views/vendor/filament
-
-# PHPStorm & IDE-specific
-.idea/
-*.iml
-*.sublime-workspace
-*.sublime-project
-
-# Laravel Debugbar
-/storage/debugbar
-
-# Composer
-composer.phar
-composer.lock
-
-# Laravel Homestead
-Homestead.yaml
+/storage/pail
+/vendor
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
 Homestead.json
-
-# Jetstream (if using)
-/public/hot
-/storage/framework/cache/data/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/public/storage
-
-# Additional files
-*.log
-*.bak
-*.swp
-*.swo
-.DS_Store
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/auth.json
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
