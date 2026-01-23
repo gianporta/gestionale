@@ -92,7 +92,17 @@ class OauthUserResource extends Resource
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
                     break;
-
+                case 'password':
+                    $formSchema[] = Forms\Components\TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->password()
+                        ->revealable()
+                        ->placeholder('Lascia vuoto per non modificarla')
+                        ->formatStateUsing(fn () => '')
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->dehydrateStateUsing(fn ($state) => md5($state))
+                        ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord);
+                    break;
                 case 'text':
                 default:
                     $formSchema[] = Forms\Components\TextInput::make($column)

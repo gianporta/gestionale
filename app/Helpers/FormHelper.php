@@ -22,6 +22,10 @@ class FormHelper
                 return [
                     'type' => 'datetime',
                 ];
+            case 'psw':
+                return [
+                    'type' => 'password',
+                ];
             case 'id_user':
                 return [
                     'type' => 'select',
