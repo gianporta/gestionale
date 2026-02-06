@@ -12,5 +12,5 @@ class OauthUser extends Model
 
     protected $table = 'oauth_user';
 
-    protected $fillable = ['id', 'user', 'psw', 'is_active', 'expiration'];
+    protected $fillable = ['id', 'user', 'email', 'psw', 'is_active', 'expiration'];
 }

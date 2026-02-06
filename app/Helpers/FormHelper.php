@@ -36,6 +36,10 @@ class FormHelper
                     'type' => 'select',
                     'options' => self::getRepoOptions(),
                 ];
+            case 'email':
+                return [
+                    'type' => 'email',
+                ];
             default:
                 return [
                     'type' => 'text',

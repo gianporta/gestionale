@@ -103,6 +103,13 @@ class OauthUserResource extends Resource
                         ->dehydrateStateUsing(fn ($state) => md5($state))
                         ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord);
                     break;
+                case 'email':
+                    $formSchema[] = Forms\Components\TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->email()
+                        ->autocomplete('email')
+                        ->required(false);
+                    break;
                 case 'text':
                 default:
                     $formSchema[] = Forms\Components\TextInput::make($column)

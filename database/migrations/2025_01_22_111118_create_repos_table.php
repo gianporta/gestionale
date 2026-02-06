@@ -6,22 +6,41 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('repos', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('oauth_repo', function (Blueprint $table) {
+            $table->unsignedInteger('id')->autoIncrement();
+
+            $table->unsignedInteger('id_user')->nullable();
+            $table->unsignedInteger('id_repo')->nullable();
+
+            $table->integer('is_active')->default(1);
+
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->dateTime('expiration')->nullable();
+
+            // indici
+            $table->index('id_repo', 'repo_id_oauth_repo_id');
+            $table->index('id_user', 'oauth_user_id_oauth_repo_user_id');
+
+            // foreign key
+            $table->foreign('id_user', 'oauth_user_id_oauth_repo_user_id')
+                ->references('id')
+                ->on('oauth_user')
+                ->onDelete('cascade');
+
+            $table->foreign('id_repo', 'repo_id_oauth_repo_id')
+                ->references('id')
+                ->on('repo')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('repos');
+        Schema::dropIfExists('oauth_repo');
     }
 };
