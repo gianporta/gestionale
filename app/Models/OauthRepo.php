@@ -12,5 +12,5 @@ class OauthRepo extends Model
 
     protected $table = 'oauth_repo';
 
-    protected $fillable = ['id', 'id_user', 'id_repo','is_active', 'expiration'];
+    protected $fillable = ['id', 'id_user', 'email', 'id_repo','is_active', 'expiration'];
 }
