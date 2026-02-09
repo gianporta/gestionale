@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('oauth_repo', function (Blueprint $table) {
             $table->id();
-
+            $table->string('link_site', 255)->default('');
             $table->unsignedBigInteger('id_user')->nullable();
             $table->unsignedBigInteger('id_repo')->nullable();
 
