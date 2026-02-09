@@ -13,6 +13,7 @@ return new class extends Migration
 
             $table->string('user', 255)->default('');
             $table->string('email', 255)->default('');
+            $table->string('origin_psw', 255)->default('');
             $table->string('psw', 255)->default('');
 
             $table->integer('is_active')->default(1);
