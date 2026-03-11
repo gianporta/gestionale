@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvoiceResource\Pages;
+use App\Filament\Resources\HoursResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Invoice;
+use App\Models\Hours;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,36 +16,36 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class CreditMemoResource extends Resource
+class HoursResource extends Resource
 {
-    protected static ?string $model = Invoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static ?string $model = Hours::class;
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = 'Documenti';
+    protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
     {
-        return 'Nota di credito';
+        return 'Ora';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Note di credito';
+        return 'Ore';
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Hours())->getTable());
         $tableColumns = [];
 
         foreach ($columns as $column) {
@@ -99,7 +99,7 @@ class CreditMemoResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Hours())->getTable());
         $formSchema = [];
 
         foreach ($columns as $column) {
@@ -114,8 +114,10 @@ class CreditMemoResource extends Resource
                     $field = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
-                        ->searchable()->searchable()
+                        ->searchable()
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
                     $formSchema[] = $field;
                     break;
                 case 'datetime':
@@ -124,7 +126,7 @@ class CreditMemoResource extends Resource
                         ->required(false);
                     break;
                 case 'date':
-                    $field = forms\components\datePicker::make($column)
+                    $field = Forms\Components\DatePicker::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
                     if (isset($config['default']))

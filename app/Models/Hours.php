@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Packages extends Authenticatable
+class Hours extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'pacchetto_id',
-        'task',
+        'data_lavorazione',
+        'task_id',
+        'ore_lavorate',
+        'descrizione',
+        'note',
+        'stato',
+        'user',
         'attivo',
     ];
 }

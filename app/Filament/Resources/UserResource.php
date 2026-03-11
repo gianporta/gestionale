@@ -101,10 +101,13 @@ class UserResource extends Resource
             $config = FormHelper::getFormFieldConfig($column);
             switch ($config['type']) {
                 case 'select':
-                    $formSchema[] = Forms\Components\Select::make($column)
+                    $field = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])->searchable()
+                        ->options($config['options'])
+                        ->searchable()
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
                     break;
                 case 'datetime':
                     $formSchema[] = Forms\Components\DateTimePicker::make($column)

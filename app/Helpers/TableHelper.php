@@ -3,7 +3,9 @@
 namespace App\Helpers;
 
 use App\Models\Cms;
+use App\Models\Customer;
 use App\Models\Categoria;
+use App\Models\Task;
 use Filament\Tables\Columns\TextColumn;
 
 class TableHelper
@@ -18,11 +20,25 @@ class TableHelper
                 return ($value == 0) ? 'Produzione' : 'Staging';
             case 'categoria':
                 return Categoria::find($value)?->nome;
+            case 'task_id':
+                return Task::find($value)?->task;
             case 'cms':
                 return Cms::find($value)?->nome;
+            case 'cliente_id':
+                return Customer::find($value)?->ragione_sociale;
+            case 'stato':
+                return self::getSstatusOptions()[$value] ?? $value;
             default:
                 return $value;
         }
+    }
+    public static function getSstatusOptions(): array
+    {
+        return [
+            '1' => 'In lavorazione',
+            '2' => 'Da Testare',
+            '3' => 'Finito',
+        ];
     }
 
     public static function decorateColumn(string $column, TextColumn $col): void
@@ -37,7 +53,15 @@ class TableHelper
                         default => 'gray',
                     });
                 break;
-
+            case 'stato':
+                $col->badge()
+                    ->color(fn ($state) => match ($state) {
+                        1 => 'warning',
+                        2 => 'info',
+                        3 => 'success',
+                        default => 'gray',
+                    });
+                break;
             case 'is_active':
             case 'attivo':
                 $col->badge()
@@ -121,6 +145,12 @@ class TableHelper
             'tunnel_ssh',
             'local_port',
             'link',
+            'ore_pacchetto',
+            'customer',
+            'cliente',
+            'costo_orario',
+            'created_at',
+            'updated_at',
         ];
     }
 }

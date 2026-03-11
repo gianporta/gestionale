@@ -3,8 +3,9 @@
 namespace App\Helpers;
 
 use App\Models\Customer;
-use App\Models\OauthUser;
-use App\Models\Repo;
+use App\Models\Packages;
+use App\Models\Task;
+use App\Models\User;
 
 class FormHelper
 {
@@ -45,6 +46,23 @@ class FormHelper
         ];
     }
 
+    public static function getSstatusOptions(): array
+    {
+        return [
+            '1' => 'In lavorazione',
+            '2' => 'Da Testare',
+            '3' => 'Finito',
+        ];
+    }
+
+    private static function getUserOptions(): array
+    {
+        return User::query()
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
     private static function getClienteOptions(): array
     {
         return Customer::query()
@@ -52,10 +70,30 @@ class FormHelper
             ->pluck('ragione_sociale', 'id')
             ->toArray();
     }
+
+    private static function getTaskOptions(): array
+    {
+        return Task::query()
+            ->where('attivo', 1)
+            ->pluck('task', 'id')
+            ->toArray();
+    }
+
+    private static function getPackagesActive(): array
+    {
+        return Packages::query()
+            ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+            ->where('packages.attivo', 1)
+            ->selectRaw("packages.id, CONCAT(customers.ragione_sociale, ' - ', packages.nome) as label")
+            ->pluck('label', 'packages.id')
+            ->toArray();
+    }
+
     private static function getOreOptions(): array
     {
         return [
             10 => '10',
+            20 => '20',
             30 => '30',
             50 => '50',
             100 => '100',
@@ -65,6 +103,11 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'data_lavorazione':
+                return [
+                    'type' => 'date',
+                    'default' => now()->toDateString(),
+                ];
             case 'attivo':
             case 'is_active':
                 return [
@@ -73,16 +116,32 @@ class FormHelper
                         0 => 'No',
                         1 => 'Sì',
                     ],
+                    'default' => 1,
+                ];
+            case 'pacchetto_id':
+                return [
+                    'type' => 'select',
+                    'options' => self::getPackagesActive(),
                 ];
             case 'ore':
                 return [
                     'type' => 'select',
                     'options' => self::getOreOptions(),
                 ];
+            case 'stato':
+                return [
+                    'type' => 'select',
+                    'options' => self::getSstatusOptions(),
+                ];
             case 'cliente_id':
                 return [
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
+                ];
+            case 'task_id':
+                return [
+                    'type' => 'select',
+                    'options' => self::getTaskOptions(),
                 ];
             case 'expiration':
                 return [
@@ -92,19 +151,15 @@ class FormHelper
                 return [
                     'type' => 'password',
                 ];
-            case 'id_user':
-                return [
-                    'type' => 'select',
-                    'options' => self::getOauthUserOptions(),
-                ];
-            case 'id_repo':
-                return [
-                    'type' => 'select',
-                    'options' => self::getRepoOptions(),
-                ];
             case 'email':
                 return [
                     'type' => 'email',
+                ];
+            case 'user':
+                return [
+                    'type' => 'select',
+                    'options' => self::getUserOptions(),
+                    'default' => auth()->id(),
                 ];
             default:
                 return [
@@ -116,19 +171,5 @@ class FormHelper
     public static function getExcludedColumns(): array
     {
         return ['id', 'created_at', 'updated_at', 'remember_token', 'email_verified_at', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at'];
-    }
-
-    private static function getOauthUserOptions(): array
-    {
-        return OauthUser::query()
-            ->pluck('user', 'id')
-            ->toArray();
-    }
-
-    private static function getRepoOptions(): array
-    {
-        return Repo::query()
-            ->pluck('packages', 'id')
-            ->toArray();
     }
 }

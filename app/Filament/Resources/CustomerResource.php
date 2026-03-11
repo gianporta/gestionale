@@ -103,18 +103,28 @@ class CustomerResource extends Resource
             switch ($config['type']) {
 
                 case 'select':
-                    $formSchema[] = Forms\Components\Select::make($column)
+                    $field = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])->searchable()
+                        ->options($config['options'])
+                        ->searchable()
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
-
                 case 'datetime':
                     $formSchema[] = Forms\Components\DateTimePicker::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
                     break;
-
+                case 'date':
+                    $field = forms\components\datePicker::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
+                    break;
                 case 'password':
                     $formSchema[] = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))

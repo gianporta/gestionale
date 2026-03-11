@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvoiceResource\Pages;
+use App\Filament\Resources\TaskResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Invoice;
+use App\Models\Task;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,36 +16,36 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class CreditMemoResource extends Resource
+class TaskResource extends Resource
 {
-    protected static ?string $model = Invoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = 'Documenti';
+    protected static ?string $model = Task::class;
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
     {
-        return 'Nota di credito';
+        return 'Task';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Note di credito';
+        return 'Task';
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Task())->getTable());
         $tableColumns = [];
 
         foreach ($columns as $column) {
@@ -99,7 +99,7 @@ class CreditMemoResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Task())->getTable());
         $formSchema = [];
 
         foreach ($columns as $column) {
@@ -114,8 +114,10 @@ class CreditMemoResource extends Resource
                     $field = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
-                        ->searchable()->searchable()
+                        ->searchable()
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
                     $formSchema[] = $field;
                     break;
                 case 'datetime':
