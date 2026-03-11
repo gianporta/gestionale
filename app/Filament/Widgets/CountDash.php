@@ -14,12 +14,12 @@ class CountDash extends StatsOverviewWidget
     protected function getCards(): array
     {
         return [
-            Card::make('Numero di Repository', Repo::count())
-                ->color('primary'),
-            Card::make('Numero di Utenti OAuth', OauthUser::count())
-                ->color('success'),
-            Card::make('Numero di OAuth Repository', OauthRepo::count())
-                ->color('warning'),
+//            Card::make('Numero di Repository', Repo::count())
+//                ->color('primary'),
+//            Card::make('Numero di Utenti OAuth', OauthUser::count())
+//                ->color('success'),
+//            Card::make('Numero di OAuth Repository', OauthRepo::count())
+//                ->color('warning'),
         ];
     }
 }

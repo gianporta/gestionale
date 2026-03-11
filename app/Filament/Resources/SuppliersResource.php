@@ -3,39 +3,45 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\SuppliersResource\Pages;
 use App\Helpers\DBHelper;
-use App\Helpers\TableHelper;
 use App\Helpers\FormHelper;
-use App\Models\User;
+use App\Helpers\TableHelper;
+use App\Models\Customer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class UserResource extends Resource
+class SuppliersResource extends Resource
 {
-    protected static ?string $model = User::class;
-
+    protected static ?string $model = Customer::class;
     protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationGroup = 'Anagrafiche';
     public static function getModelLabel(): string
     {
-        return 'Utente';
+        return 'Fornitore';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Utenti';
+        return 'Fornitori';
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('tipo_cliente', 1);
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new Customer())->getTable());
         $tableColumns = [];
 
         foreach ($columns as $column) {
@@ -45,6 +51,7 @@ class UserResource extends Resource
             $tableColumns[] = TextColumn::make($column)
                 ->label(ucfirst(str_replace('_', ' ', $column)))
                 ->sortable()
+                ->searchable()
                 ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
@@ -84,7 +91,7 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new Customer())->getTable());
         $formSchema = [];
 
         foreach ($columns as $column) {

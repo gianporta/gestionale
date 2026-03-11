@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\SiteResource\Pages;
 use App\Helpers\DBHelper;
-use App\Helpers\TableHelper;
 use App\Helpers\FormHelper;
-use App\Models\User;
+use App\Helpers\TableHelper;
+use App\Models\Site;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,39 +16,43 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class UserResource extends Resource
+class SiteResource extends Resource
 {
-    protected static ?string $model = User::class;
-
+    protected static ?string $model = Site::class;
     protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?int $navigationSort = 1;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationGroup = 'Utility';
     public static function getModelLabel(): string
     {
-        return 'Utente';
+        return 'Sito';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Utenti';
+        return 'Siti';
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new Site())->getTable());
         $tableColumns = [];
 
         foreach ($columns as $column) {
             if (in_array($column, TableHelper::getExcludedColumns()))
                 continue;
 
-            $tableColumns[] = TextColumn::make($column)
+            $col = TextColumn::make($column)
                 ->label(ucfirst(str_replace('_', ' ', $column)))
                 ->sortable()
+                ->searchable()
                 ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
+
+            TableHelper::decorateColumn($column, $col);
+
+            $tableColumns[] = $col;
         }
 
         return $table
@@ -84,7 +88,7 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new Site())->getTable());
         $formSchema = [];
 
         foreach ($columns as $column) {
