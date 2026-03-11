@@ -21,13 +21,12 @@ class ExternalInvoiceResource extends Resource
     protected static ?string $model = Invoice::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Documenti';
 
     public static function getModelLabel(): string
     {
         return 'Fattura Estera';
     }
-
-    protected static ?string $navigationGroup = 'Documenti';
 
     public static function getPluralModelLabel(): string
     {
@@ -114,7 +113,7 @@ class ExternalInvoiceResource extends Resource
                 case 'select':
                     $formSchema[] = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
+                        ->options($config['options'])->searchable()
                         ->required(false);
                     break;
 

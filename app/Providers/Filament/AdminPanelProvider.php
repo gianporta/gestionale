@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\CountDash;
+use Filament\View\PanelsRenderHook;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -56,6 +57,16 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->viteTheme('resources/css/filament/admin/theme.css');
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => '<link rel="stylesheet" href="' . asset('css/filament/custom/style.css') . '">'
+            )
+            ->navigationGroups([
+                'Anagrafiche',
+                'Documenti',
+                'Threecommerce',
+                'Utility',
+                'Sistema',
+            ]);
     }
 }

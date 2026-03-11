@@ -1,23 +1,18 @@
 <x-filament-panels::page>
-    <div
-        x-data="{ open: @entangle('showHtModal') }"
-        x-show="open"
-        x-transition
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
-    >
-        <div class="bg-gray-900 rounded-xl p-6 w-[600px] max-w-full">
-            <div class="bg-black rounded-lg p-4 text-sm font-mono break-all mb-4">
-                {{ $htResult }}
-            </div>
+    <x-filament::modal id="result-modal">
+        <div class="fi-input block w-full text-center">
+            {{ $htResult }}
+        </div>
 
-            <button
-                x-on:click="open=false"
-                class="inline-flex items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-400"
+        <x-slot name="footer">
+            <x-filament::button
+                x-on:click="$dispatch('close-modal', { id: 'result-modal' })"
             >
                 Chiudi
-            </button>
-        </div>
-    </div>
+            </x-filament::button>
+        </x-slot>
+
+    </x-filament::modal>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {{-- USER CREATION --}}
@@ -78,13 +73,13 @@
                     </x-filament::input.wrapper>
                 </div>
 
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="generateCmsUserCommand"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400"
                 >
                     Crea comando
-                </button>
+                </x-filament::button>
 
             </div>
         </x-filament::section>
@@ -123,13 +118,13 @@
                     </x-filament::input.wrapper>
                 </div>
 
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="convertPasswordHash"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400"
                 >
                     Convert
-                </button>
+                </x-filament::button>
 
             </div>
         </x-filament::section>
@@ -166,13 +161,13 @@
                         </select>
                     </x-filament::input.wrapper>
                 </div>
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="generatePassword"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400"
                 >
                     Crea
-                </button>
+                </x-filament::button>
             </div>
         </x-filament::section>
 
@@ -195,13 +190,13 @@
                     />
                 </x-filament::input.wrapper>
 
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="generateHtpasswd"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400"
                 >
                     Crea
-                </button>
+                </x-filament::button>
 
             </div>
         </x-filament::section>
@@ -242,13 +237,13 @@
                     </x-filament::input.wrapper>
                 </div>
 
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="switchPhp"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400 focus:outline-none"
                 >
                     Crea comando
-                </button>
+                </x-filament::button>
 
             </div>
         </x-filament::section>
@@ -265,13 +260,13 @@
                         placeholder="String"
                     />
                 </x-filament::input.wrapper>
-                <button
+                <x-filament::button
                     type="button"
                     wire:click="countChars"
                     class="inline-flex items-center justify-center gap-x-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-400 focus:outline-none"
                 >
                     Conta
-                </button>
+                </x-filament::button>
 
             </div>
 

@@ -105,7 +105,7 @@ class SuppliersResource extends Resource
                 case 'select':
                     $formSchema[] = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
+                        ->options($config['options'])->searchable()
                         ->required(false);
                     break;
 

@@ -21,7 +21,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Sistema';
     public static function getModelLabel(): string
     {
@@ -103,7 +103,7 @@ class UserResource extends Resource
                 case 'select':
                     $formSchema[] = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
+                        ->options($config['options'])->searchable()
                         ->required(false);
                     break;
                 case 'datetime':

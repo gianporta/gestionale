@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvoiceResource\Pages;
+use App\Filament\Resources\PackagesResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Invoice;
+use App\Models\Packages;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,36 +16,36 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class InvoiceResource extends Resource
+class PackagesResource extends Resource
 {
-    protected static ?string $model = Invoice::class;
+    protected static ?string $model = Packages::class;
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?int $navigationSort = 2;
-    protected static ?string $navigationGroup = 'Documenti';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
     {
-        return 'Fattura';
+        return 'Pacchetto';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Fatture';
+        return 'Pacchetti';
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->hasRole('admin');
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Packages())->getTable());
         $tableColumns = [];
 
         foreach ($columns as $column) {
@@ -99,7 +99,7 @@ class InvoiceResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Invoice())->getTable());
+        $columns = DBHelper::getTableColumns((new Packages())->getTable());
         $formSchema = [];
 
         foreach ($columns as $column) {

@@ -20,18 +20,17 @@ class CreditMemoResource extends Resource
 {
     protected static ?string $model = Invoice::class;
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Documenti';
 
     public static function getModelLabel(): string
     {
-        return 'Fattura';
+        return 'Nota di credito';
     }
-
-    protected static ?string $navigationGroup = 'Documenti';
 
     public static function getPluralModelLabel(): string
     {
-        return 'Fatture';
+        return 'Note di credito';
     }
 
     public static function canViewAny(): bool
@@ -114,7 +113,7 @@ class CreditMemoResource extends Resource
                 case 'select':
                     $formSchema[] = Forms\Components\Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
+                        ->options($config['options'])->searchable()->searchable()
                         ->required(false);
                     break;
 
