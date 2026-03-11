@@ -20,7 +20,7 @@ use Illuminate\Support\Collection;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Anagrafiche';
     public static function getModelLabel(): string

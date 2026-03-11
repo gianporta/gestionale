@@ -19,9 +19,10 @@ use Illuminate\Support\Collection;
 class QuoteResource extends Resource
 {
     protected static ?string $model = Quote::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Documenti';
+
     public static function getModelLabel(): string
     {
         return 'Preventivo';
@@ -30,6 +31,16 @@ class QuoteResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return 'Preventivi';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasRole('admin');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasRole('admin');
     }
 
     public static function table(Table $table): Table

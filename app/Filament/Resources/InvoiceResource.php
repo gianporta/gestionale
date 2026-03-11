@@ -19,17 +19,29 @@ use Illuminate\Support\Collection;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
     protected static ?int $navigationSort = 2;
 
     public static function getModelLabel(): string
     {
         return 'Fattura';
     }
+
     protected static ?string $navigationGroup = 'Documenti';
+
     public static function getPluralModelLabel(): string
     {
         return 'Fatture';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasRole('admin');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasRole('admin');
     }
 
     public static function table(Table $table): Table

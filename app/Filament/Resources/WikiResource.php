@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 class WikiResource extends Resource
 {
     protected static ?string $model = Wiki::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Utility';
     public static function getModelLabel(): string

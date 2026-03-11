@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Utility';
     public static function getModelLabel(): string
