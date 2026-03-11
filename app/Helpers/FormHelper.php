@@ -7,6 +7,40 @@ use App\Models\Repo;
 
 class FormHelper
 {
+    public static function getHashTypes(): array
+    {
+        return [
+            'md5' => 'MD5',
+            'bcrypt' => 'Bcrypt',
+        ];
+    }
+    public static function getYesNoOptions(): array
+    {
+        return [
+            0 => 'No',
+            1 => 'Sì',
+        ];
+    }
+
+    public static function getCmsOptions(): array
+    {
+        return [
+            'm2' => 'Magento 2',
+            'm1' => 'Magento 1',
+            'wp' => 'Wordpress',
+        ];
+    }
+    public static function getPhpVersions(): array
+    {
+        return [
+            'php@7.2' => 'PHP 7.2',
+            'php@7.4' => 'PHP 7.4',
+            'php@8.0' => 'PHP 8.0',
+            'php@8.1' => 'PHP 8.1',
+            'php@8.3' => 'PHP 8.3',
+            'php@8.4' => 'PHP 8.4',
+        ];
+    }
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {

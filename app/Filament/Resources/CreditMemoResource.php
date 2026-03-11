@@ -16,22 +16,22 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class ExternalInvoiceResource extends Resource
+class CreditMemoResource extends Resource
 {
     protected static ?string $model = Invoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static ?int $navigationSort = 2;
 
     public static function getModelLabel(): string
     {
-        return 'Fattura Estera';
+        return 'Fattura';
     }
 
     protected static ?string $navigationGroup = 'Documenti';
 
     public static function getPluralModelLabel(): string
     {
-        return 'Fatture Estere';
+        return 'Fatture';
     }
 
     public static function canViewAny(): bool
