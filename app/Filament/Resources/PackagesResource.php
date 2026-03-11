@@ -20,7 +20,7 @@ class PackagesResource extends Resource
 {
     protected static ?string $model = Packages::class;
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
@@ -142,9 +142,12 @@ class PackagesResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

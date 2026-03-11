@@ -108,6 +108,11 @@ class FormHelper
                     'type' => 'date',
                     'default' => now()->toDateString(),
                 ];
+            case 'guard_name':
+                return [
+                    'type' => 'text',
+                    'default' => 'web'
+                ];
             case 'attivo':
             case 'is_active':
                 return [

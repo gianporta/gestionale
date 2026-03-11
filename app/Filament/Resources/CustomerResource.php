@@ -134,9 +134,12 @@ class CustomerResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

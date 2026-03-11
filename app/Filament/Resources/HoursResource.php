@@ -20,7 +20,7 @@ class HoursResource extends Resource
 {
     protected static ?string $model = Hours::class;
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
@@ -142,9 +142,12 @@ class HoursResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

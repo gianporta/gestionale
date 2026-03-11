@@ -20,7 +20,7 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
     protected static ?string $navigationGroup = 'Documenti';
 
     public static function getModelLabel(): string
@@ -142,9 +142,12 @@ class InvoiceResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

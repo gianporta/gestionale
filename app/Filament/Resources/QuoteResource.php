@@ -20,7 +20,7 @@ class QuoteResource extends Resource
 {
     protected static ?string $model = Quote::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationGroup = 'Documenti';
 
     public static function getModelLabel(): string
@@ -140,9 +140,12 @@ class QuoteResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

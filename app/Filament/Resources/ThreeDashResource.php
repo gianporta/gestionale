@@ -3,28 +3,30 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UtilityResource\Pages;
+use App\Filament\Resources\ThreeDashResource\Pages;
+use App\Models\Three;
 use Filament\Resources\Resource;
 
-class UtilityResource extends Resource
+class ThreeDashResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $model = Utility::class;
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Utility';
     public static function getModelLabel(): string
     {
-        return 'Utility';
+        return 'Dash';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Utiliies';
+        return 'Dash';
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\Utilities::route('/'),
+            'index' => Pages\Dash::route('/'),
         ];
     }
 }

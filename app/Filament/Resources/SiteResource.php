@@ -20,7 +20,7 @@ class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Utility';
     public static function getModelLabel(): string
     {
@@ -131,9 +131,12 @@ class SiteResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }

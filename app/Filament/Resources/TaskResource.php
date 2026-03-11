@@ -20,7 +20,7 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
@@ -142,9 +142,12 @@ class TaskResource extends Resource
 
                 case 'text':
                 default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
+                    $field = Forms\Components\TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    $formSchema[] = $field;
                     break;
             }
         }
