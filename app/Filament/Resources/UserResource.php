@@ -8,14 +8,16 @@ use App\Helpers\DBHelper;
 use App\Helpers\TableHelper;
 use App\Helpers\FormHelper;
 use App\Models\User;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Models\Role;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -45,34 +47,19 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new User())->getTable());
-        $tableColumns = [];
-
-        foreach ($columns as $column) {
-            if (in_array($column, TableHelper::getExcludedColumns()))
-                continue;
-
-            $tableColumns[] = TextColumn::make($column)
-                ->label(ucfirst(str_replace('_', ' ', $column)))
-                ->sortable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
-                ->extraAttributes([
-                    'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
-                ]);
-        }
+        $tableColumns = TableHelper::getColumns($columns);
         $tableColumns[] = TextColumn::make('roles.name')
             ->label('Ruolo')
             ->badge();
-
         return $table
             ->columns($tableColumns)
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-
-                    Tables\Actions\BulkAction::make('duplicate')
+                BulkActionGroup::make([
+                    BulkAction::make('duplicate')
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
@@ -85,71 +72,17 @@ class UserResource extends Resource
 
                                 $new->save();
                             }
-
                         }),
-
-                    Tables\Actions\DeleteBulkAction::make(),
-
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
+
     public static function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new User())->getTable());
-        $formSchema = [];
-        foreach ($columns as $column) {
-            if (in_array($column, FormHelper::getExcludedColumns()))
-                continue;
-            $config = FormHelper::getFormFieldConfig($column);
-            switch ($config['type']) {
-                case 'select':
-                    $field = Forms\Components\Select::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
-                        ->searchable()
-                        ->required(false);
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-                    break;
-                case 'datetime':
-                    $formSchema[] = Forms\Components\DateTimePicker::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    break;
-                case 'password':
-                    $formSchema[] = Forms\Components\TextInput::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->password()
-                        ->revealable()
-                        ->placeholder('Lascia vuoto per non modificarla')
-                        ->formatStateUsing(fn () => '')
-                        ->dehydrated(fn ($state) => filled($state))
-                        ->dehydrateStateUsing(fn ($state) => md5($state))
-                        ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord);
-                    break;
-                case 'textarea':
-                    $field = Forms\Components\Textarea::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->rows(4)
-                        ->required(false);
-
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-
-                    $formSchema[] = $field;
-                    break;
-                case 'text':
-                default:
-                    $field = Forms\Components\TextInput::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-                    $formSchema[] = $field;
-                    break;
-            }
-        }
-        $formSchema[] = Forms\Components\Select::make('roles')
+        $formSchema = FormHelper::getFieldForm($columns);
+        $formSchema[] = Select::make('roles')
             ->label('Ruoli')
             ->multiple()
             ->relationship('roles', 'name')
