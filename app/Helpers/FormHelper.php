@@ -6,7 +6,12 @@ use App\Models\Customer;
 use App\Models\Packages;
 use App\Models\Task;
 use App\Models\User;
-
+use App\Models\Country;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 class FormHelper
 {
     public static function getHashTypes(): array
@@ -181,11 +186,96 @@ class FormHelper
                     'options' => self::getUserOptions(),
                     'default' => auth()->id(),
                 ];
+            case 'nazione':
+                return [
+                    'type' => 'relationship',
+                    'model' => Country::class,
+                    'label' => 'country_name',
+                ];
             default:
                 return [
                     'type' => 'text',
                 ];
         }
+    }
+
+    public static function getFieldForm($columns): array
+    {
+        $formSchema = [];
+        foreach ($columns as $column) {
+            if (in_array($column, FormHelper::getExcludedColumns()))
+                continue;
+            $config = FormHelper::getFormFieldConfig($column);
+            switch ($config['type']) {
+                case 'multiselect':
+                    $field = Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->options($config['options'])
+                        ->multiple()
+                        ->searchable()
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default([$config['default']]);
+                    break;
+                case 'select':
+                    $field = Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->options($config['options'])
+                        ->searchable()
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
+                case 'datetime':
+                    $field = DateTimePicker::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->required(false);
+                    break;
+                case 'date':
+                    $field = DatePicker::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
+                case 'password':
+                    $field = TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->password()
+                        ->required(false);
+                    break;
+                case 'textarea':
+                    $field = Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
+                case 'relationship':
+                    $field = Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->relationship($column, $config['label'])
+                        ->searchable()
+                        ->preload()
+                        ->required(false);
+                    break;
+                case 'text':
+                default:
+                    $field = TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    break;
+            }
+
+            $formSchema[$column] = $field;
+        }
+        return $formSchema;
     }
 
     public static function getExcludedColumns(): array

@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TaskResource\Pages;
+use App\Filament\Resources\CountriesResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Task;
+use App\Models\Countries;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
@@ -17,35 +17,36 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class TaskResource extends Resource
+class CountriesResource extends Resource
 {
-    protected static ?string $model = Task::class;
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+    protected static ?string $model = Countries::class;
+    protected static ?string $navigationIcon = 'heroicon-o-globe-europe-africa';
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = 'Threecommerce';
+    protected static ?string $navigationGroup = 'Sistema';
 
     public static function getModelLabel(): string
     {
-        return 'Task';
+        return 'Countries';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Task';
+        return 'Countries';
     }
+
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole('admin');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole('admin');
     }
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Task())->getTable());
+        $columns = DBHelper::getTableColumns((new Countries())->getTable());
         $tableColumns = TableHelper::getColumns($columns);
 
         return $table
@@ -77,7 +78,7 @@ class TaskResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Task())->getTable());
+        $columns = DBHelper::getTableColumns((new Countries())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
         return $form->schema($formSchema);
     }

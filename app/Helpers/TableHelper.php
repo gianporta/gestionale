@@ -7,7 +7,6 @@ use App\Models\Customer;
 use App\Models\Categoria;
 use App\Models\Task;
 use Filament\Tables\Columns\TextColumn;
-
 class TableHelper
 {
     public static function formatColumnValue(string $column, mixed $value): mixed
@@ -153,5 +152,24 @@ class TableHelper
             'created_at',
             'updated_at',
         ];
+    }
+    public static function getColumns($columns): array
+    {
+        $tableColumns = [];
+        foreach ($columns as $column) {
+            if (in_array($column, TableHelper::getExcludedColumns()))
+                continue;
+            $col = TextColumn::make($column)
+                ->label(ucfirst(str_replace('_', ' ', $column)))
+                ->sortable()
+                ->searchable()
+                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
+                ->extraAttributes([
+                    'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
+                ]);
+            TableHelper::decorateColumn($column, $col);
+            $tableColumns[] = $col;
+        }
+        return $tableColumns;
     }
 }
