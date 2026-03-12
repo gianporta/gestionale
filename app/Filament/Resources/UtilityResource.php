@@ -11,6 +11,7 @@ class UtilityResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'Utility';
+
     public static function getModelLabel(): string
     {
         return 'Utility';
@@ -18,7 +19,17 @@ class UtilityResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return 'Utiliies';
+        return 'Utilities';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function getPages(): array

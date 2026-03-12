@@ -22,6 +22,7 @@ class SiteResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Utility';
+
     public static function getModelLabel(): string
     {
         return 'Sito';
@@ -30,6 +31,16 @@ class SiteResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return 'Siti';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
@@ -99,8 +110,21 @@ class SiteResource extends Resource
 
             switch ($config['type']) {
 
-                case 'select':
+                case 'multiselect':
                     $field = Forms\Components\Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->options($config['options'])
+                        ->multiple()
+                        ->searchable()
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default([$config['default']]);
+
+                    $formSchema[] = $field;
+                    break;
+                case 'select':
+                    $field = forms\components\select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
                         ->searchable()
@@ -129,6 +153,17 @@ class SiteResource extends Resource
                         ->required(false);
                     break;
 
+                case 'textarea':
+                    $field = Forms\Components\Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    $formSchema[] = $field;
+                    break;
                 case 'text':
                 default:
                     $field = Forms\Components\TextInput::make($column)
@@ -141,7 +176,28 @@ class SiteResource extends Resource
             }
         }
 
-        return $form->schema($formSchema);
+        return $form->schema([
+
+            Forms\Components\Placeholder::make('environment')
+                ->content(fn ($record) =>
+                $record?->ambiente === 'production'
+                    ? '🟢 PRODUZIONE'
+                    : '🟡 STAGING'
+                ),
+
+            Forms\Components\Grid::make(2)
+                ->schema([
+
+                    Forms\Components\Section::make('Configurazione')
+                        ->schema($formSchema)
+                        ->columnSpan(1),
+
+                    Forms\Components\View::make('filament.sites.info')
+                        ->columnSpan(1),
+
+                ])
+
+        ]);
     }
 
     public static function getPages(): array

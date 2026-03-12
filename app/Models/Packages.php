@@ -11,8 +11,11 @@ class Packages extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'pacchetto_id',
-        'task',
+        'cliente_id',
+        'user_id',
+        'nome',
+        'costo_orario',
+        'ore',
         'attivo',
     ];
 }

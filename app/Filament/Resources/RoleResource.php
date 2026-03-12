@@ -138,6 +138,17 @@ class RoleResource extends Resource
                         ->required(false);
                     break;
 
+                case 'textarea':
+                    $field = Forms\Components\Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    $formSchema[] = $field;
+                    break;
                 case 'text':
                 default:
                     $field = Forms\Components\TextInput::make($column)

@@ -7,7 +7,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -17,8 +17,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Widgets\CountDash;
-use Filament\View\PanelsRenderHook;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -37,11 +35,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
+                \App\Filament\Pages\ThreeDash::class,
+                \App\Filament\Pages\CartaIntestata::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                CountDash::class
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -57,16 +56,29 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->renderHook(
-                PanelsRenderHook::HEAD_END,
-                fn () => '<link rel="stylesheet" href="' . asset('css/filament/custom/style.css') . '">'
-            )
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
                 'Anagrafiche',
                 'Documenti',
                 'Threecommerce',
                 'Utility',
                 'Sistema',
+            ])
+            ->navigationItems([
+                NavigationItem::make('Dash')
+                    ->icon('heroicon-o-chart-bar')
+                    ->url('/admin/three-dash')
+                    ->group('Threecommerce')
+                    ->sort(1)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+
+                NavigationItem::make('Carta intestata')
+                    ->icon('heroicon-o-printer')
+                    ->url('/admin/carta-intestata')
+                    ->openUrlInNewTab()
+                    ->group('Utility')
+                    ->sort(4)
+                    ->visible(fn() => auth()->user()->hasRole('admin'))
             ]);
     }
 }

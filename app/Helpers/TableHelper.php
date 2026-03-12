@@ -27,12 +27,12 @@ class TableHelper
             case 'cliente_id':
                 return Customer::find($value)?->ragione_sociale;
             case 'stato':
-                return self::getSstatusOptions()[$value] ?? $value;
+                return self::getStatusOptions()[$value] ?? $value;
             default:
                 return $value;
         }
     }
-    public static function getSstatusOptions(): array
+    public static function getStatusOptions(): array
     {
         return [
             '1' => 'In lavorazione',
@@ -100,6 +100,7 @@ class TableHelper
             'sito_web',
             'tipo_cliente',
             'user',
+            'user_id',
             'admin_url',
             'http_user',
             'http_psw',

@@ -33,6 +33,15 @@ class UserResource extends Resource
         return 'Utenti';
     }
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole('admin');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasAnyRole('admin');
+    }
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new User())->getTable());
@@ -50,6 +59,9 @@ class UserResource extends Resource
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
         }
+        $tableColumns[] = TextColumn::make('roles.name')
+            ->label('Ruolo')
+            ->badge();
 
         return $table
             ->columns($tableColumns)
@@ -81,16 +93,6 @@ class UserResource extends Resource
                 ]),
             ]);
     }
-    public static function canViewAny(): bool
-    {
-        return auth()->user()->hasRole('admin');
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return auth()->user()->hasRole('admin');
-    }
-
     public static function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new User())->getTable());
@@ -124,6 +126,17 @@ class UserResource extends Resource
                         ->dehydrated(fn ($state) => filled($state))
                         ->dehydrateStateUsing(fn ($state) => md5($state))
                         ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord);
+                    break;
+                case 'textarea':
+                    $field = Forms\Components\Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    $formSchema[] = $field;
                     break;
                 case 'text':
                 default:

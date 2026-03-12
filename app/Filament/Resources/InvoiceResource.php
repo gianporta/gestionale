@@ -110,8 +110,21 @@ class InvoiceResource extends Resource
 
             switch ($config['type']) {
 
-                case 'select':
+                case 'multiselect':
                     $field = Forms\Components\Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->options($config['options'])
+                        ->multiple()
+                        ->searchable()
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default([$config['default']]);
+
+                    $formSchema[] = $field;
+                    break;
+                case 'select':
+                    $field = forms\components\select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
                         ->searchable()
@@ -140,6 +153,17 @@ class InvoiceResource extends Resource
                         ->required(false);
                     break;
 
+                case 'textarea':
+                    $field = Forms\Components\Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    $formSchema[] = $field;
+                    break;
                 case 'text':
                 default:
                     $field = Forms\Components\TextInput::make($column)

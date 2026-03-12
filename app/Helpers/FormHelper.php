@@ -156,9 +156,24 @@ class FormHelper
                 return [
                     'type' => 'password',
                 ];
+            case 'ore_lavorate':
+                return [
+                    'type' => 'number',
+                ];
+            case 'descrizione':
+            case 'note':
+                return [
+                    'type' => 'textarea',
+                ];
             case 'email':
                 return [
                     'type' => 'email',
+                ];
+            case 'user_id':
+                return [
+                    'type' => 'multiselect',
+                    'options' => self::getUserOptions(),
+                    'default' => auth()->id(),
                 ];
             case 'user':
                 return [

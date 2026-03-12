@@ -1,15 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\ThreeDashResource\Pages;
+namespace App\Filament\Pages;
 
-use App\Filament\Resources\ThreeDashResource;
-use Filament\Resources\Pages\Page;
 use App\Models\Packages;
+use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
-class Dash extends Page
+
+class ThreeDash extends Page
 {
-    protected static string $resource = ThreeDashResource::class;
-    protected static string $view = 'filament.resources.threedash-resource.pages.dash';
+
+    protected static string $view = 'filament.pages.three-dash';
+    protected static bool $shouldRegisterNavigation = false;
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
+
     public function getOpenPackages()
     {
         return Packages::query()

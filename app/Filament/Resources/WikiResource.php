@@ -22,6 +22,7 @@ class WikiResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Utility';
+
     public static function getModelLabel(): string
     {
         return 'Wiki';
@@ -30,6 +31,16 @@ class WikiResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return 'Wiki';
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
@@ -95,8 +106,21 @@ class WikiResource extends Resource
 
             switch ($config['type']) {
 
-                case 'select':
+                case 'multiselect':
                     $field = Forms\Components\Select::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->options($config['options'])
+                        ->multiple()
+                        ->searchable()
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default([$config['default']]);
+
+                    $formSchema[] = $field;
+                    break;
+                case 'select':
+                    $field = forms\components\select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
                         ->searchable()
@@ -125,6 +149,17 @@ class WikiResource extends Resource
                         ->required(false);
                     break;
 
+                case 'textarea':
+                    $field = Forms\Components\Textarea::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->rows(4)
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+
+                    $formSchema[] = $field;
+                    break;
                 case 'text':
                 default:
                     $field = Forms\Components\TextInput::make($column)
