@@ -48,5 +48,11 @@
         @endforeach
 
     </div>
+    <x-filament::section>
+        <x-slot name="heading">
+            Task in lavorazione
+        </x-slot>
 
+        {{ $this->table }}
+    </x-filament::section>
 </x-filament-panels::page>

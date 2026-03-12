@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Role extends Authenticatable
+class Role extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'guard_name'
-    ];
-    protected $hidden = [
     ];
 }
