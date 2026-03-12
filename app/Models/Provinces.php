@@ -7,8 +7,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Provinces extends Authenticatable
 {
     protected $fillable = [
-        'provincia',
+        'prov',
         'sigla',
         'regione',
+        'country_code',
     ];
 }

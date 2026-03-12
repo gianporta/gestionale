@@ -71,7 +71,12 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Threecommerce')
                     ->sort(1)
                     ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
-
+                NavigationItem::make('Utility')
+                    ->icon('heroicon-o-wrench-screwdriver')
+                    ->url('/admin/utilities')
+                    ->group('Threecommerce')
+                    ->sort(4)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
                 NavigationItem::make('Carta intestata')
                     ->icon('heroicon-o-printer')
                     ->url('/admin/carta-intestata')

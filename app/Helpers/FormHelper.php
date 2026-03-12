@@ -6,12 +6,17 @@ use App\Models\Customer;
 use App\Models\Packages;
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Country;
+use App\Models\Countries;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use App\Models\Provinces;
+use App\Models\Comuni;
+use App\Models\Caps;
 class FormHelper
 {
     public static function getHashTypes(): array
@@ -108,6 +113,15 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'tipo_cliente':
+                return [
+                    'type' => 'select',
+                    'options' => [
+                        1 => 'Fornitore',
+                        2 => 'Cliente',
+                    ],
+                    'default' => request()->routeIs('filament.admin.resources.suppliers.*') ? 1 : 2,
+                ];
             case 'data_lavorazione':
                 return [
                     'type' => 'date',
@@ -186,11 +200,30 @@ class FormHelper
                     'options' => self::getUserOptions(),
                     'default' => auth()->id(),
                 ];
+            case 'country_code':
+                return [
+                    'type' => 'select',
+                    'options' => Countries::query()
+                        ->orderBy('country_name')
+                        ->pluck('country_name', 'country_code')
+                        ->toArray(),
+                    'default' => 'IT',
+                ];
             case 'nazione':
                 return [
-                    'type' => 'relationship',
-                    'model' => Country::class,
-                    'label' => 'country_name',
+                    'type' => 'country',
+                ];
+            case 'provincia':
+                return [
+                    'type' => 'province',
+                ];
+            case 'citta':
+                return [
+                    'type' => 'city',
+                ];
+            case 'cap':
+                return [
+                    'type' => 'cap',
                 ];
             default:
                 return [
@@ -207,6 +240,52 @@ class FormHelper
                 continue;
             $config = FormHelper::getFormFieldConfig($column);
             switch ($config['type']) {
+                case 'country':
+                    $field = Select::make($column)
+                        ->label('Nazione')
+                        ->options(fn () =>
+                        Countries::orderBy('country_name')
+                            ->pluck('country_name', 'country_code')
+                        )
+                        ->default('IT')
+                        ->disabled(fn ($record) => $record !== null)
+                        ->searchable()
+                        ->preload()
+                        ->reactive()
+                        ->afterStateUpdated(fn (Set $set) => $set('provincia', null));
+                    break;
+                case 'province':
+                    $field = Select::make($column)
+                        ->label('Provincia')
+                        ->options(fn (Get $get) =>
+                        Provinces::where('country_code', $get('nazione'))
+                            ->pluck('prov', 'sigla')
+                        )
+                        ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(fn (Set $set) => $set('citta', null));
+                    break;
+                case 'city':
+                    $field = Select::make($column)
+                        ->label('Città')
+                        ->options(fn (Get $get) =>
+                        Comuni::where('provincia', $get('provincia'))
+                            ->pluck('comune', 'comune')
+                        )
+                        ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(fn (Set $set) => $set('cap', null));
+                    break;
+                case 'cap':
+                    $field = Select::make($column)
+                        ->label('CAP')
+                        ->options(fn (Get $get) =>
+                        Comuni::where('comune', $get('citta'))
+                            ->pluck('cap', 'cap')
+                        )
+                        ->searchable()
+                        ->reactive();
+                    break;
                 case 'multiselect':
                     $field = Select::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
@@ -260,6 +339,8 @@ class FormHelper
                         ->searchable()
                         ->preload()
                         ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
                     break;
                 case 'text':
                 default:
@@ -269,10 +350,8 @@ class FormHelper
 
                     if (isset($config['default']))
                         $field->default($config['default']);
-
                     break;
             }
-
             $formSchema[$column] = $field;
         }
         return $formSchema;

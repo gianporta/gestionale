@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\UtilityResource\Pages;
+namespace App\Filament\Pages;
 
-use App\Filament\Resources\UtilityResource;
-use Filament\Resources\Pages\Page;
+use Filament\Pages\Page;
 
 class Utilities extends Page
 {
     protected static string $resource = UtilityResource::class;
+    protected static bool $shouldRegisterNavigation = false;
     public ?string $countString = null;
-    protected static string $view = 'filament.resources.utility-resource.pages.utilities';
+    protected static string $view = 'filament.pages.utilities';
     public ?string $phpFrom = 'php@8.1';
     public ?string $phpTo = 'php@8.3';
     public ?int $passwordSpecial = 0;
@@ -25,6 +25,10 @@ class Utilities extends Page
     public ?string $cmsLastname = null;
     public ?string $cmsEmail = null;
     public ?string $cmsPassword = null;
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
 
     public function generateCmsUserCommand()
     {

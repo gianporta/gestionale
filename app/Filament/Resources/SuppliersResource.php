@@ -8,7 +8,7 @@ use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\Customer;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -103,83 +103,46 @@ class SuppliersResource extends Resource
     public static function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new Customer())->getTable());
-        $formSchema = [];
-
-        foreach ($columns as $column) {
-            if (in_array($column, FormHelper::getExcludedColumns()))
-                continue;
-
-            $config = FormHelper::getFormFieldConfig($column);
-
-            switch ($config['type']) {
-
-                case 'multiselect':
-                    $field = Forms\Components\Select::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
-                        ->multiple()
-                        ->searchable()
-                        ->required(false);
-
-                    if (isset($config['default']))
-                        $field->default([$config['default']]);
-
-                    $formSchema[] = $field;
-                    break;
-                case 'select':
-                    $field = forms\components\select::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
-                        ->searchable()
-                        ->required(false);
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-                    $formSchema[] = $field;
-                    break;
-                case 'datetime':
-                    $formSchema[] = Forms\Components\DateTimePicker::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    break;
-                case 'date':
-                    $field = forms\components\datePicker::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-                    $formSchema[] = $field;
-                    break;
-                case 'password':
-                    $formSchema[] = Forms\Components\TextInput::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->password()
-                        ->required(false);
-                    break;
-
-                case 'textarea':
-                    $field = Forms\Components\Textarea::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->rows(4)
-                        ->required(false);
-
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-
-                    $formSchema[] = $field;
-                    break;
-                case 'text':
-                default:
-                    $field = Forms\Components\TextInput::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    if (isset($config['default']))
-                        $field->default($config['default']);
-                    $formSchema[] = $field;
-                    break;
-            }
-        }
-
-        return $form->schema($formSchema);
+        $formSchema = FormHelper::getFieldForm($columns);
+        return $form->schema([
+            Section::make('Anagrafica')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'ragione_sociale',
+                    'tipo_cliente',
+                    'email'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Indirizzo')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'indirizzo',
+                    'cap',
+                    'citta',
+                    'provincia',
+                    'nazione'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Fatturazione')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'company_id',
+                    'partita_iva',
+                    'codice_fiscale',
+                    'sdi',
+                    'pec',
+                    'iban',
+                    'banca',
+                    'intestatario_conto'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Contatti')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'telefono',
+                    'cellulare',
+                    'fax',
+                    'sito_web'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            $formSchema['attivo'] ?? null,
+        ]);
     }
 
     public static function getPages(): array

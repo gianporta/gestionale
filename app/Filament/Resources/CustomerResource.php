@@ -108,7 +108,6 @@ class CustomerResource extends Resource
             Section::make('Anagrafica')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'ragione_sociale',
-                    'company_id',
                     'tipo_cliente',
                     'email'
                 ]), ARRAY_FILTER_USE_KEY))
@@ -124,6 +123,7 @@ class CustomerResource extends Resource
                 ->columns(2),
             Section::make('Fatturazione')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'company_id',
                     'partita_iva',
                     'codice_fiscale',
                     'sdi',
