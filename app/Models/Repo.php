@@ -1,0 +1,14 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Repo extends Model
+{
+    use HasFactory;
+    protected $table = 'repo';
+    protected $fillable = ['id', 'packages', 'is_active'];
+}
