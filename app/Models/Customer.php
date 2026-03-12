@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Countries;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Customer extends Authenticatable

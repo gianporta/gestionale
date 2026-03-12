@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Cms extends Authenticatable
+class Provinces extends Authenticatable
 {
     protected $fillable = [
-
+        'provincia',
+        'sigla',
+        'regione',
     ];
 }
