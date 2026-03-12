@@ -292,3 +292,112 @@ select option{
 .fi-ta-pagination > div:nth-child(2) {
     justify-self: end !important;
 }
+
+
+
+.choices {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.choices__inner {
+    min-height: 50px !important;
+    height: 50px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: #111827 !important;
+    padding: 0 48px 0 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: none !important;
+    font-size: 16px !important;
+    color: #fff !important;
+}
+
+.choices__list--single {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
+.choices__item--selectable {
+    color: #fff !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+}
+
+.choices__input {
+    background: transparent !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.choices__input::placeholder {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.choices[data-type*='select-one']::after {
+    border-color: rgba(255, 255, 255, 0.55) transparent transparent transparent !important;
+    right: 18px !important;
+    margin-top: -3px !important;
+}
+
+.choices[data-type*='select-one'].is-open::after {
+    border-color: transparent transparent rgba(255, 255, 255, 0.55) transparent !important;
+    margin-top: -9px !important;
+}
+
+.choices__button {
+    opacity: .65 !important;
+    margin-left: 10px !important;
+    filter: invert(1) !important;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    margin-top: 6px !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: #0f172a !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+    overflow: hidden !important;
+    z-index: 50 !important;
+}
+
+.choices__list--dropdown .choices__input,
+.choices__list[aria-expanded] .choices__input {
+    min-height: 48px !important;
+    padding: 0 16px !important;
+    background: #0f172a !important;
+    color: #fff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.choices__list--dropdown .choices__item,
+.choices__list[aria-expanded] .choices__item {
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: #fff !important;
+    background: transparent !important;
+}
+
+.choices__list--dropdown .choices__item--choice.is-highlighted,
+.choices__list[aria-expanded] .choices__item--choice.is-highlighted {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    border-color: rgba(59, 130, 246, 0.9) !important;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.9) !important;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-selected,
+.choices__list[aria-expanded] .choices__item--selectable.is-selected {
+    background: rgba(59, 130, 246, 0.16) !important;
+}

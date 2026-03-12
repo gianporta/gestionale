@@ -63,15 +63,23 @@ class ThreeDash extends Page implements HasTable
             ->query(
                 Task::query()
                     ->join('hours', 'hours.task_id', '=', 'tasks.id')
+                    ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+                    ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+                    ->leftJoin('users', 'users.id', '=', 'hours.user')
                     ->where('tasks.attivo', 1)
+                    ->where('hours.stato', '!=', 3)
                     ->select(
-                        'tasks.*',
+                        'tasks.id',
+                        'tasks.task',
+                        'hours.stato',
+                        'customers.ragione_sociale as cliente',
+                        'users.name as utente',
                         'hours.data_lavorazione',
                         'hours.ore_lavorate'
                     )
             )
             ->columns([
-                TextColumn::make('cliente.ragione_sociale')
+                TextColumn::make('cliente')
                     ->label('Cliente')
                     ->searchable()
                     ->sortable(),
@@ -81,7 +89,7 @@ class ThreeDash extends Page implements HasTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('user.name')
+                TextColumn::make('utente')
                     ->label('Utente')
                     ->sortable(),
 
@@ -95,8 +103,15 @@ class ThreeDash extends Page implements HasTable
                     ->sortable(),
 
                 TextColumn::make('stato')
+                    ->label('Stato')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => TableHelper::getSstatusOptions()[$state] ?? $state)
+                    ->formatStateUsing(fn ($state) => TableHelper::getStatusOptions()[$state] ?? $state)
+                    ->color(fn ($state) => match ($state) {
+                        1 => 'warning',
+                        2 => 'info',
+                        3 => 'success',
+                        default => 'gray'
+                    })
             ])
             ->filters([
                 SelectFilter::make('stato')
