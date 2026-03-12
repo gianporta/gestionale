@@ -25,11 +25,10 @@
                     <label class="text-sm text-gray-400">CMS</label>
 
                     <x-filament::input.wrapper>
-                        <select wire:model.defer="cmsType" class="fi-input block w-full select">
-                            @foreach(\App\Helpers\FormHelper::getCmsOptions() as $value => $label)
-                            <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
+                        <x-filament::input.select>
+                            <option value="m2">Magento 2</option>
+                            <option value="m1">Magento 1</option>
+                        </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
 
@@ -110,11 +109,11 @@
                     </label>
 
                     <x-filament::input.wrapper>
-                        <select wire:model.defer="convertType" class="fi-input block w-full select">
+                        <x-filament::input.select wire:model.defer="convertType">
                             @foreach(\App\Helpers\FormHelper::getHashTypes() as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
-                        </select>
+                        </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
 
@@ -154,13 +153,14 @@
                     </label>
 
                     <x-filament::input.wrapper>
-                        <select wire:model.defer="passwordSpecial" class="fi-input block w-full select">
+                        <x-filament::input.select wire:model.defer="passwordSpecial">
                             @foreach(\App\Helpers\FormHelper::getYesNoOptions() as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
-                        </select>
+                        </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
+
                 <x-filament::button
                     type="button"
                     wire:click="generatePassword"
@@ -168,6 +168,7 @@
                 >
                     Crea
                 </x-filament::button>
+
             </div>
         </x-filament::section>
 
@@ -201,8 +202,6 @@
             </div>
         </x-filament::section>
 
-
-
         {{-- PHP VERSION --}}
         <x-filament::section>
             <x-slot name="heading">Cambia versione PHP</x-slot>
@@ -215,11 +214,11 @@
                     </label>
 
                     <x-filament::input.wrapper>
-                        <select wire:model.defer="phpFrom" class="fi-input block w-full select">
+                        <x-filament::input.select wire:model.defer="phpFrom">
                             @foreach(\App\Helpers\FormHelper::getPhpVersions() as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
-                        </select>
+                        </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
 
@@ -229,11 +228,11 @@
                     </label>
 
                     <x-filament::input.wrapper>
-                        <select wire:model.defer="phpTo" class="fi-input block w-full select">
+                        <x-filament::input.select wire:model.defer="phpTo">
                             @foreach(\App\Helpers\FormHelper::getPhpVersions() as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
-                        </select>
+                        </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
 
@@ -247,8 +246,6 @@
 
             </div>
         </x-filament::section>
-
-
 
         {{-- COUNT CHAR --}}
         <x-filament::section>
@@ -267,9 +264,7 @@
                 >
                     Conta
                 </x-filament::button>
-
             </div>
-
         </x-filament::section>
 
     </div>
