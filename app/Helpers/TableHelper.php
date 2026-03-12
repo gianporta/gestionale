@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Cms;
 use App\Models\Customer;
 use App\Models\Categoria;
+use App\Models\Packages;
 use App\Models\Task;
 use Filament\Tables\Columns\TextColumn;
 class TableHelper
@@ -25,6 +26,16 @@ class TableHelper
                 return Cms::find($value)?->nome;
             case 'cliente_id':
                 return Customer::find($value)?->ragione_sociale;
+            case 'pacchetto_id':
+                $package = Packages::query()
+                    ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+                    ->where('packages.id', $value)
+                    ->select('packages.nome', 'customers.ragione_sociale as cliente')
+                    ->first();
+
+                return $package
+                    ? $package->cliente . ' - ' . $package->nome
+                    : null;
             case 'stato':
                 return self::getStatusOptions()[$value] ?? $value;
             default:

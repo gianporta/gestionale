@@ -285,3 +285,10 @@ select option{
 .fi-checkbox input{
     accent-color:#3b82f6;
 }
+.fi-ta-pagination {
+    grid-template-columns: auto 1fr auto !important;
+}
+
+.fi-ta-pagination > div:nth-child(2) {
+    justify-self: end !important;
+}

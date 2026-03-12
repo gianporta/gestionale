@@ -62,7 +62,13 @@ class ThreeDash extends Page implements HasTable
         return $table
             ->query(
                 Task::query()
-                    ->where('stato', '!=', 3)
+                    ->join('hours', 'hours.task_id', '=', 'tasks.id')
+                    ->where('tasks.attivo', 1)
+                    ->select(
+                        'tasks.*',
+                        'hours.data_lavorazione',
+                        'hours.ore_lavorate'
+                    )
             )
             ->columns([
                 TextColumn::make('cliente.ragione_sociale')
