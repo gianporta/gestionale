@@ -62,6 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 'Documenti',
                 'Threecommerce',
                 'Utility',
+                'Repository',
                 'Sistema',
             ])
             ->navigationItems([

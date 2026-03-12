@@ -6,7 +6,7 @@ use App\Filament\Resources\OauthUserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditOauthUser extends EditRecord
+class Edit extends EditRecord
 {
     protected static string $resource = OauthUserResource::class;
 

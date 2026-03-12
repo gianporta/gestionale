@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
-namespace App\Filament\Resources\RepoResource\Pages;
+namespace App\Filament\Resources\OauthUserResource\Pages;
 
-use App\Filament\Resources\RepoResource;
+use App\Filament\Resources\OauthUserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListRepo extends ListRecords
+class Listing extends ListRecords
 {
-    protected static string $resource = RepoResource::class;
+    protected static string $resource = OauthUserResource::class;
     protected function getHeaderActions(): array
     {
         return [

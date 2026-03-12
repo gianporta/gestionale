@@ -8,62 +8,69 @@ use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\OauthRepo;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 
 class OauthRepoResource extends Resource
 {
     protected static ?string $model = OauthRepo::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Repository';
 
     public static function getModelLabel(): string
     {
         return 'Auth Repo';
     }
-
-    /**
-     * Nome plurale della risorsa (per il menu e altre visualizzazioni).
-     */
     public static function getPluralModelLabel(): string
     {
         return 'Auth Repo';
     }
-
-    public static function getRelations(): array
+    public static function canViewAny(): bool
     {
-        return [
-            //
-        ];
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
 
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new OauthRepo())->getTable());
-        $tableColumns = [];
-
-        foreach ($columns as $column) {
-            if (in_array($column, TableHelper::getExcludedColumns()))
-                continue;
-            $tableColumns[] = TextColumn::make($column)
-                ->label(ucfirst(str_replace('_', ' ', $column)))
-                ->sortable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state));
-        }
+        $tableColumns = TableHelper::getColumns($columns);
 
         return $table
             ->columns($tableColumns)
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    BulkAction::make('duplicate')
+                        ->label('Duplica selezionati')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->action(function (Collection $records) {
+
+                            foreach ($records as $record) {
+                                $new = $record->replicate();
+
+                                if (isset($new->email))
+                                    $new->email = $record->email . '.copy';
+
+                                $new->save();
+                            }
+                        }),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -71,46 +78,16 @@ class OauthRepoResource extends Resource
     public static function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new OauthRepo())->getTable());
-        $formSchema = [];
-
-        foreach ($columns as $column) {
-            if (in_array($column, FormHelper::getExcludedColumns()))
-                continue;
-
-            $config = FormHelper::getFormFieldConfig($column);
-
-            switch ($config['type']) {
-                case 'select':
-                    $formSchema[] = Forms\Components\Select::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->options($config['options'])
-                        ->required(false);
-                    break;
-
-                case 'datetime':
-                    $formSchema[] = Forms\Components\DateTimePicker::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    break;
-
-                case 'text':
-                default:
-                    $formSchema[] = Forms\Components\TextInput::make($column)
-                        ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->required(false);
-                    break;
-            }
-        }
-
+        $formSchema = FormHelper::getFieldForm($columns);
         return $form->schema($formSchema);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListOauthRepo::route('/'),
-            'create' => Pages\CreateOauthRepo::route('/create'),
-            'edit' => Pages\EditOauthRepo::route('/{record}/edit'),
+            'index' => Pages\Listing::route('/'),
+            'create' => Pages\Create::route('/create'),
+            'edit' => Pages\Edit::route('/{record}/edit'),
         ];
     }
 }

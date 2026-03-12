@@ -6,7 +6,7 @@ use App\Filament\Resources\RepoResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditRepo extends EditRecord
+class Edit extends EditRecord
 {
     protected static string $resource = RepoResource::class;
 
