@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Repo;
 use App\Models\Customer;
 use App\Models\Packages;
 use App\Models\Task;
@@ -194,6 +195,12 @@ class FormHelper
                     'options' => self::getUserOptions(),
                     'default' => auth()->id(),
                 ];
+            case 'id_repo':
+                return [
+                    'type' => 'select',
+                    'options' => Repo::pluck('packages', 'id')->toArray()
+                ];
+            case 'id_user':
             case 'user':
                 return [
                     'type' => 'select',

@@ -2,12 +2,15 @@
 
 namespace App\Helpers;
 
+use App\Models\Categoria;
 use App\Models\Cms;
 use App\Models\Customer;
-use App\Models\Categoria;
 use App\Models\Packages;
+use App\Models\Repo;
 use App\Models\Task;
+use App\Models\User;
 use Filament\Tables\Columns\TextColumn;
+
 class TableHelper
 {
     public static function formatColumnValue(string $column, mixed $value): mixed
@@ -24,6 +27,10 @@ class TableHelper
                 return Task::find($value)?->task;
             case 'cms':
                 return Cms::find($value)?->nome;
+            case 'id_user':
+                return User::find($value)?->name;
+            case 'id_repo':
+                return Repo::find($value)?->packages;
             case 'cliente_id':
                 return Customer::find($value)?->ragione_sociale;
             case 'pacchetto_id':
@@ -32,7 +39,6 @@ class TableHelper
                     ->where('packages.id', $value)
                     ->select('packages.nome', 'customers.ragione_sociale as cliente')
                     ->first();
-
                 return $package
                     ? $package->cliente . ' - ' . $package->nome
                     : null;
@@ -42,6 +48,7 @@ class TableHelper
                 return $value;
         }
     }
+
     public static function getStatusOptions(): array
     {
         return [
@@ -65,7 +72,7 @@ class TableHelper
                 break;
             case 'stato':
                 $col->badge()
-                    ->color(fn ($state) => match ($state) {
+                    ->color(fn($state) => match ($state) {
                         1 => 'warning',
                         2 => 'info',
                         3 => 'success',
@@ -82,7 +89,7 @@ class TableHelper
 
     public static function getExcludedColumns(): array
     {
-        return [
+        $listExclude['default'] = array(
             'remember_token',
             'psw',
             'password',
@@ -162,13 +169,57 @@ class TableHelper
             'costo_orario',
             'created_at',
             'updated_at',
-        ];
+            'tipo_documento',
+            'tipo_doc_fatt_el',
+            'condizioni_pagamento',
+            'modalita_pagamento',
+            'cliente_nazione',
+            'cliente_provincia',
+            'cliente_cap',
+            'cliente_citta',
+            'cliente_indirizzo',
+            'cliente_ragione_sociale',
+            'cliente_company_id',
+            'cliente_partita_iva',
+            'cliente_codice_fiscale',
+            'creato_da',
+            'template',
+            'file',
+            'document_to_state',
+            'stato_documento',
+            'pagato',
+            'anticipo',
+            'data_pagamento',
+            'frase_in_calce',
+            'data_scadenza',
+            'fattura',
+            'mostra_inps',
+            'somma_inps',
+            'mostra_ritenuta',
+            'filexml',
+            'filexmlname',
+            'ricevuta',
+            'ricevutaname',
+            'content',
+            'descrizione',
+            'id'
+        );
+        $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','contributo_inps','ritenuta_di_acconto','attivo');
+        $listExclude['quote'] = array('progressivo_sdi','attivo');
+        $listExclude['creditMemo'] = array('codice_fattura','attivo');
+        $listExclude['proforma'] = array('progressivo_sdi','attivo');
+        $listExclude['invoice'] = array('','attivo');
+        $listExclude['externalInvoice'] = array('','attivo');
+        return $listExclude;
     }
-    public static function getColumns($columns): array
+
+    public static function getColumns($columns, $type = ''): array
     {
         $tableColumns = [];
         foreach ($columns as $column) {
-            if (in_array($column, TableHelper::getExcludedColumns()))
+            if (in_array($column, TableHelper::getExcludedColumns()['default']))
+                continue;
+            if ($type != '' && in_array($column, TableHelper::getExcludedColumns()[$type]))
                 continue;
             $col = TextColumn::make($column)
                 ->label(ucfirst(str_replace('_', ' ', $column)))
