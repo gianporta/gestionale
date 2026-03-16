@@ -51,7 +51,8 @@ class ProformaResource extends Resource
 
         return $table
             ->columns($tableColumns)
-            ->filters([])
+            ->filters(TableHelper::getTableFilter())
+            ->defaultSort('id', 'desc')
             ->actions([
                 EditAction::make(),
             ])

@@ -16,7 +16,8 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\DB;
 class AcquistiResource extends Resource
 {
     protected static ?string $model = Acquisti::class;
@@ -51,7 +52,8 @@ class AcquistiResource extends Resource
 
         return $table
             ->columns($tableColumns)
-            ->filters([])
+            ->filters(TableHelper::getTableFilter())
+            ->defaultSort('id', 'desc')
             ->actions([
                 EditAction::make(),
             ])

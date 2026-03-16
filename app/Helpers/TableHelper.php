@@ -10,6 +10,8 @@ use App\Models\Repo;
 use App\Models\Task;
 use App\Models\User;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\DB;
 
 class TableHelper
 {
@@ -207,9 +209,9 @@ class TableHelper
         $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','contributo_inps','ritenuta_di_acconto','attivo');
         $listExclude['quote'] = array('progressivo_sdi','attivo');
         $listExclude['creditMemo'] = array('codice_fattura','attivo');
-        $listExclude['proforma'] = array('progressivo_sdi','attivo');
-        $listExclude['invoice'] = array('','attivo');
-        $listExclude['externalInvoice'] = array('','attivo');
+        $listExclude['proforma'] = array('progressivo_sdi','codice_fattura','attivo');
+        $listExclude['invoice'] = array('codice_fattura','attivo');
+        $listExclude['externalInvoice'] = array('codice_fattura','ritenuta_di_acconto','contributo_inps','iva','attivo');
         return $listExclude;
     }
 
@@ -233,5 +235,33 @@ class TableHelper
             $tableColumns[] = $col;
         }
         return $tableColumns;
+    }
+    public static function getTableFilter()
+    {
+        return [
+            SelectFilter::make('anno')
+                ->label('Anno')
+                ->multiple()
+                ->default([date('Y')])
+                ->options(
+                    DB::table('documenti')
+                        ->whereNotNull('data_documento')
+                        ->selectRaw('YEAR(data_documento) as anno')
+                        ->distinct()
+                        ->orderByDesc('anno')
+                        ->pluck('anno', 'anno')
+                        ->toArray()
+                )
+                ->query(function ($query, $data) {
+
+                    if (empty($data['values']))
+                        return $query;
+
+                    return $query->whereIn(
+                        DB::raw('YEAR(data_documento)'),
+                        $data['values']
+                    );
+                }),
+        ];
     }
 }
