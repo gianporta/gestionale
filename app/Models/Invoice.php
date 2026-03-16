@@ -3,15 +3,39 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class Invoice  extends Model
+class Invoice extends Model
 {
     protected $table = 'documenti';
+
     protected static function booted()
     {
-        static::addGlobalScope('external_invoice', function ($query) {
-            $query->where('tipo_documento', 1);
+        static::creating(function ($model) {
+            $model->tipo_documento = 1;
+            $model->numero_documento = self::getNextNumeroDocumento();
+            $model->progressivo_sdi = self::getNextProgressivoSdi();
         });
+    }
+    public static function getNextNumeroDocumento(): int
+    {
+        $year = now()->year;
+
+        $lastNumber = DB::table('documenti')
+            ->where('tipo_documento', 1)
+            ->whereYear('data_documento', $year)
+            ->max('numero_documento');
+
+        return ($lastNumber ?? 0) + 1;
+    }
+    public static function getNextProgressivoSdi(): int
+    {
+        $year = now()->year;
+
+        $lastNumber = DB::table('documenti')
+            ->max('progressivo_sdi');
+
+        return ($lastNumber ?? 0) + 1;
     }
     protected $fillable = [
     ];

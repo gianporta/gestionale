@@ -7,19 +7,21 @@ use App\Filament\Resources\SuppliersResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Customer;
+use App\Models\Suppliers;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class SuppliersResource extends Resource
 {
-    protected static ?string $model = Customer::class;
+    protected static ?string $model = Suppliers::class;
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationGroup = 'Anagrafiche';
@@ -52,33 +54,18 @@ class SuppliersResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Customer())->getTable());
-        $tableColumns = [];
-
-        foreach ($columns as $column) {
-            if (in_array($column, TableHelper::getExcludedColumns()))
-                continue;
-
-            $tableColumns[] = TextColumn::make($column)
-                ->label(ucfirst(str_replace('_', ' ', $column)))
-                ->sortable()
-                ->searchable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
-                ->extraAttributes([
-                    'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
-                ]);
-        }
+        $columns = DBHelper::getTableColumns((new Suppliers())->getTable());
+        $tableColumns = TableHelper::getColumns($columns);
 
         return $table
             ->columns($tableColumns)
             ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-
-                    Tables\Actions\BulkAction::make('duplicate')
+                BulkActionGroup::make([
+                    BulkAction::make('duplicate')
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
@@ -91,18 +78,15 @@ class SuppliersResource extends Resource
 
                                 $new->save();
                             }
-
                         }),
-
-                    Tables\Actions\DeleteBulkAction::make(),
-
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Customer())->getTable());
+        $columns = DBHelper::getTableColumns((new Suppliers())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
         return $form->schema([
             Section::make('Anagrafica')
@@ -141,7 +125,11 @@ class SuppliersResource extends Resource
                     'sito_web'
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),
-            $formSchema['attivo'] ?? null,
+            Section::make('Sistema')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'attivo',
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
         ]);
     }
 

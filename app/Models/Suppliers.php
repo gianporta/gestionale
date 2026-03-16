@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Job;
-class Customer  extends Model
+
+class Suppliers  extends Model
 {
+    protected $table = 'customers';
     protected $fillable = [
         'ragione_sociale',
         'company_id',
+        'tipo_cliente',
         'email',
 
         'indirizzo',
@@ -33,12 +35,6 @@ class Customer  extends Model
 
         'attivo',
     ];
-    protected static function booted()
-    {
-        static::creating(function ($model) {
-            $model->tipo_cliente = 2;
-        });
-    }
     public function jobs()
     {
         return $this->hasMany(Job::class, 'cliente');

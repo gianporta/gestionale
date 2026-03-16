@@ -16,6 +16,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Filament\Forms\Components\Section;
 
 class InvoiceResource extends Resource
 {
@@ -81,7 +82,71 @@ class InvoiceResource extends Resource
     {
         $columns = DBHelper::getTableColumns((new Invoice())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
-        return $form->schema($formSchema);
+        return $form->schema([
+            Section::make('Documento')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'numero_documento',
+                    'progressivo_sdi',
+                    'data_documento'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Cliente')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'cliente',
+                    'cliente_ragione_sociale',
+                    'cliente_company_id',
+                    'cliente_partita_iva',
+                    'cliente_codice_fiscale',
+                    'cliente_indirizzo',
+                    'cliente_cap',
+                    'cliente_citta',
+                    'cliente_provincia',
+                    'cliente_nazione'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Dati fiscali')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'contributo_inps',
+                    'ritenuta_di_acconto',
+                    'mostra_inps',
+                    'mostra_ritenuta',
+                    'somma_inps'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Importi')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'imponibile',
+                    'iva',
+                    'netto_a_pagare'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(3),
+            Section::make('Pagamento')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'condizioni_pagamento',
+                    'modalita_pagamento',
+                    'banca',
+                    'iban',
+                    'intestatario_conto',
+                    'anticipo',
+                    'pagato',
+                    'data_pagamento',
+                    'data_scadenza'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+            Section::make('Note')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'descrizione',
+                    'frase_in_calce'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(1),
+            Section::make('Sistema')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'stato_documento',
+                    'document_to_state'
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(2),
+
+        ]);
     }
 
     public static function getPages(): array

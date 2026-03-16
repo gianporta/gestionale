@@ -401,3 +401,11 @@ select option{
 .choices__list[aria-expanded] .choices__item--selectable.is-selected {
     background: rgba(59, 130, 246, 0.16) !important;
 }
+.dark input::-webkit-calendar-picker-indicator,
+.dark input::-webkit-clear-button,
+.dark input::-webkit-search-cancel-button {
+    filter: invert(1);
+}
+.dark .choices[data-type*=select-one] .choices__button {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='21' height='21' viewBox='0 0 21 21'><g stroke='%23ffffff' fill-rule='evenodd'><path d='m2.592.044 18.364 18.364-2.548 2.548L.044 2.592z'/><path d='M0 18.364 18.364 0l2.548 2.548L2.548 20.912z'/></g></svg>") !important;
+}

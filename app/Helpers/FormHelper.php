@@ -2,22 +2,25 @@
 
 namespace App\Helpers;
 
-use App\Models\Repo;
+use App\Models\Caps;
+use App\Models\Comuni;
+use App\Models\Countries;
 use App\Models\Customer;
+use App\Models\Invoice;
 use App\Models\Packages;
+use App\Models\Provinces;
+use App\Models\Repo;
+use App\Models\StatePayment;
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Countries;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use App\Models\Provinces;
-use App\Models\Comuni;
-use App\Models\Caps;
+
 class FormHelper
 {
     public static function getHashTypes(): array
@@ -78,6 +81,7 @@ class FormHelper
     {
         return Customer::query()
             ->where('tipo_cliente', 2)
+            ->where('attivo', 1)
             ->pluck('ragione_sociale', 'id')
             ->toArray();
     }
@@ -114,6 +118,26 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'numero_documento':
+                return [
+                    'type' => 'text',
+                    'disabled' => true,
+                    'default' => Invoice::getNextNumeroDocumento()
+                ];
+            case 'progressivo_sdi':
+                return [
+                    'type' => 'text',
+                    'disabled' => true,
+                    'default' => Invoice::getNextProgressivoSdi()
+                ];
+            case 'stato_documento':
+                return [
+                    'type' => 'select',
+                    'options' =>
+                        StatePayment::query()
+                            ->pluck('nome', 'id')
+                            ->toArray(),
+                    'default' => 1];
             case 'tipo_cliente':
                 return [
                     'type' => 'select',
@@ -123,6 +147,7 @@ class FormHelper
                     ],
                     'default' => request()->routeIs('filament.admin.resources.suppliers.*') ? 1 : 2,
                 ];
+            case 'data_documento':
             case 'data_lavorazione':
                 return [
                     'type' => 'date',
@@ -158,6 +183,7 @@ class FormHelper
                     'type' => 'select',
                     'options' => self::getSstatusOptions(),
                 ];
+            case 'cliente':
             case 'cliente_id':
                 return [
                     'type' => 'select',
@@ -250,44 +276,40 @@ class FormHelper
                 case 'country':
                     $field = Select::make($column)
                         ->label('Nazione')
-                        ->options(fn () =>
-                        Countries::orderBy('country_name')
+                        ->options(fn() => Countries::orderBy('country_name')
                             ->pluck('country_name', 'country_code')
                         )
                         ->default('IT')
-                        ->disabled(fn ($record) => $record !== null)
+                        ->disabled(fn($record) => $record !== null)
                         ->searchable()
                         ->preload()
                         ->reactive()
-                        ->afterStateUpdated(fn (Set $set) => $set('provincia', null));
+                        ->afterStateUpdated(fn(Set $set) => $set('provincia', null));
                     break;
                 case 'province':
                     $field = Select::make($column)
                         ->label('Provincia')
-                        ->options(fn (Get $get) =>
-                        Provinces::where('country_code', $get('nazione'))
+                        ->options(fn(Get $get) => Provinces::where('country_code', $get('nazione'))
                             ->pluck('prov', 'sigla')
                         )
                         ->searchable()
                         ->reactive()
-                        ->afterStateUpdated(fn (Set $set) => $set('citta', null));
+                        ->afterStateUpdated(fn(Set $set) => $set('citta', null));
                     break;
                 case 'city':
                     $field = Select::make($column)
                         ->label('Città')
-                        ->options(fn (Get $get) =>
-                        Comuni::where('provincia', $get('provincia'))
+                        ->options(fn(Get $get) => Comuni::where('provincia', $get('provincia'))
                             ->pluck('comune', 'comune')
                         )
                         ->searchable()
                         ->reactive()
-                        ->afterStateUpdated(fn (Set $set) => $set('cap', null));
+                        ->afterStateUpdated(fn(Set $set) => $set('cap', null));
                     break;
                 case 'cap':
                     $field = Select::make($column)
                         ->label('CAP')
-                        ->options(fn (Get $get) =>
-                        Comuni::where('comune', $get('citta'))
+                        ->options(fn(Get $get) => Comuni::where('comune', $get('citta'))
                             ->pluck('cap', 'cap')
                         )
                         ->searchable()
@@ -334,7 +356,7 @@ class FormHelper
                 case 'textarea':
                     $field = Textarea::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
-                        ->rows(4)
+                        ->rows(10)
                         ->required(false);
                     if (isset($config['default']))
                         $field->default($config['default']);
@@ -359,6 +381,8 @@ class FormHelper
                         $field->default($config['default']);
                     break;
             }
+            if (!empty($config['disabled']))
+                $field->disabled();
             $formSchema[$column] = $field;
         }
         return $formSchema;
@@ -366,6 +390,24 @@ class FormHelper
 
     public static function getExcludedColumns(): array
     {
-        return ['id', 'created_at', 'updated_at', 'remember_token', 'email_verified_at', 'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at'];
+        $listExclude['default'] = array(
+            'id',
+            'created_at',
+            'updated_at',
+            'remember_token',
+            'email_verified_at',
+            'two_factor_secret',
+            'two_factor_recovery_codes',
+            'two_factor_confirmed_at'
+        );
+        $listExclude['customer'] = array('banca','iban','intestatario_conto');
+        $listExclude['acquisti'] = array();
+        $listExclude['quote'] = array();
+        $listExclude['creditMemo'] = array();
+        $listExclude['proforma'] = array();
+        $listExclude['invoice'] = array('tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
+        $listExclude['externalInvoice'] = array();
+        return $listExclude;
     }
 }
+
