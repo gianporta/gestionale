@@ -17,6 +17,10 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Pages\Clienti\Pacchetti;
+use App\Filament\Pages\CartaIntestata;
+use App\Filament\Pages\ThreeDash;
+use App\Filament\Pages\Dashboard;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -35,9 +39,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                \App\Filament\Pages\Dashboard::class,
-                \App\Filament\Pages\ThreeDash::class,
-                \App\Filament\Pages\CartaIntestata::class,
+                Dashboard::class,
+                ThreeDash::class,
+                CartaIntestata::class,
+                Pacchetti::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -58,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
+                'Clienti',
                 'Anagrafiche',
                 'Documenti',
                 'Threecommerce',
@@ -66,6 +72,24 @@ class AdminPanelProvider extends PanelProvider
                 'Sistema',
             ])
             ->navigationItems([
+                NavigationItem::make('Pacchetti')
+                    ->icon('heroicon-o-archive-box')
+                    ->url('/admin/clienti/pacchetti')
+                    ->group('Clienti')
+                    ->sort(1)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+                NavigationItem::make('Ore')
+                    ->icon('heroicon-o-clock')
+                    ->url('/admin/clienti/ore')
+                    ->group('Clienti')
+                    ->sort(2)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+                NavigationItem::make('Stime')
+                    ->icon('heroicon-o-calculator')
+                    ->url('/admin/clienti/stime')
+                    ->group('Clienti')
+                    ->sort(3)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
                 NavigationItem::make('Dash')
                     ->icon('heroicon-o-chart-bar')
                     ->url('/admin/three-dash')

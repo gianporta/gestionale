@@ -409,3 +409,20 @@ select option{
 .dark .choices[data-type*=select-one] .choices__button {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='21' height='21' viewBox='0 0 21 21'><g stroke='%23ffffff' fill-rule='evenodd'><path d='m2.592.044 18.364 18.364-2.548 2.548L.044 2.592z'/><path d='M0 18.364 18.364 0l2.548 2.548L2.548 20.912z'/></g></svg>") !important;
 }
+:root{
+    --info-50:#eff6ff;
+    --info-400:#60a5fa;
+    --info-600:#2563eb;
+}
+
+.fi-badge.fi-color-info{
+    background:var(--info-50);
+    color:var(--info-600);
+    box-shadow:inset 0 0 0 1px rgba(96,165,250,.15);
+}
+
+.dark .fi-badge.fi-color-info{
+    background:rgba(96,165,250,.1);
+    color:var(--info-400);
+    box-shadow:inset 0 0 0 1px rgba(96,165,250,.3);
+}
