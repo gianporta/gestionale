@@ -13,10 +13,11 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\View;
 class WikiResource extends Resource
 {
     protected static ?string $model = Wiki::class;
@@ -78,7 +79,60 @@ class WikiResource extends Resource
     {
         $columns = DBHelper::getTableColumns((new Wiki())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
-        return $form->schema($formSchema);
+
+        return $form->schema([
+            Grid::make(2)
+                ->schema([
+
+                    Grid::make(1)->schema([
+
+                        Section::make('Generale')
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                $formSchema['categoria'] ?? null,
+                                $formSchema['problema'] ?? null,
+                                $formSchema['link'] ?? null,
+                                $formSchema['attivo'] ?? null,
+                            ]),
+
+                        Section::make('Comando')
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                $formSchema['comando'] ?? null,
+                            ]),
+
+                        Section::make('SQL')
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                $formSchema['sql'] ?? null,
+                            ]),
+
+                        Section::make('Note')
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                $formSchema['note'] ?? null,
+                            ]),
+
+                    ])->columnSpan(1),
+
+                    Grid::make(1)->schema([
+
+                        Section::make('Info')
+                            ->schema([
+                                View::make('filament.wiki.info')
+                                    ->viewData(fn ($record) => [
+                                        'record' => $record,
+                                    ]),
+                            ]),
+
+                    ])->columnSpan(1),
+
+                ])
+        ]);
     }
 
     public static function getPages(): array

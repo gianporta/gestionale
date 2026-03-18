@@ -11,6 +11,7 @@ use App\Models\Packages;
 use App\Models\Provinces;
 use App\Models\Repo;
 use App\Models\Job;
+use App\Models\Categoria;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
@@ -152,6 +153,13 @@ class FormHelper
                     'type' => 'select',
                     'options' => Site::getAmbiente(),
                     'default' => 1
+                ];
+            case 'categoria':
+                return [
+                    'type' => 'select',
+                    'options' => Categoria::query()
+                        ->pluck('nome', 'id')
+                        ->toArray()
                 ];
             case 'data_documento':
             case 'data_lavorazione':
@@ -418,7 +426,7 @@ class FormHelper
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->numeric()
                         ->required(false);
-                    if (isset($config['default']))
+                    if (isset($config['fdefault']))
                         $field->default($config['default']);
                     break;
                 case 'text':
