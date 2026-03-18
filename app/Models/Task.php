@@ -9,6 +9,7 @@ class Task extends Model
     protected $fillable = [
         'pacchetto_id',
         'task',
+        'stima',
         'attivo'
     ];
 }

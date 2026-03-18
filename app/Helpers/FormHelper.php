@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\Packages;
 use App\Models\Provinces;
 use App\Models\Repo;
+use App\Models\Stime;
 use App\Models\StatePayment;
 use App\Models\Task;
 use App\Models\User;
@@ -130,6 +131,14 @@ class FormHelper
                     'disabled' => true,
                     'default' => Invoice::getNextProgressivoSdi()
                 ];
+            case 'stima':
+                return [
+                    'type' => 'select',
+                    'options' =>
+                        Stime::query()
+                            ->pluck('nome', 'id')
+                            ->toArray(),
+                    'default' => 1];
             case 'stato_documento':
                 return [
                     'type' => 'select',
