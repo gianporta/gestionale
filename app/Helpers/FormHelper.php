@@ -14,6 +14,7 @@ use App\Models\Job;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
+use App\Models\Site;
 use App\Models\Task;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
@@ -143,11 +144,14 @@ class FormHelper
             case 'tipo_cliente':
                 return [
                     'type' => 'select',
-                    'options' => [
-                        1 => 'Fornitore',
-                        2 => 'Cliente',
-                    ],
+                    'options' => Customer::getTypeCustomer(),
                     'default' => request()->routeIs('filament.admin.resources.suppliers.*') ? 1 : 2,
+                ];
+            case 'ambiente':
+                return [
+                    'type' => 'select',
+                    'options' => Site::getAmbiente(),
+                    'default' => 1
                 ];
             case 'data_documento':
             case 'data_lavorazione':
@@ -160,6 +164,13 @@ class FormHelper
                     'type' => 'text',
                     'default' => 'web'
                 ];
+            case 'sucuri':
+            case 'varnish':
+            case 'opcache':
+            case 'redis':
+            case 'enable_ip':
+            case 'vpn':
+            case 'tunnel_ssh':
             case 'attivo':
             case 'is_active':
                 return [
@@ -225,6 +236,7 @@ class FormHelper
                     'type' => 'number',
                     'default' => 50,
                 ];
+            case 'ssh_key':
             case 'descrizione':
             case 'note':
                 return [

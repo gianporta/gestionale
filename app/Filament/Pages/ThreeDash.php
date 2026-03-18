@@ -9,7 +9,6 @@ use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use App\Models\Task;
-use App\Helpers\TableHelper;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 
@@ -66,16 +65,18 @@ class ThreeDash extends Page implements HasTable
                     ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
                     ->join('customers', 'customers.id', '=', 'packages.cliente_id')
                     ->leftJoin('users', 'users.id', '=', 'hours.user')
+                    ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                     ->where('tasks.attivo', 1)
                     ->where('hours.stato', '!=', 3)
                     ->select(
                         'tasks.id',
                         'tasks.task',
-                        'hours.stato',
                         'customers.ragione_sociale as cliente',
                         'users.name as utente',
                         'hours.data_lavorazione',
-                        'hours.ore_lavorate'
+                        'hours.ore_lavorate',
+                        'stato_tasks.nome as stato_nome',
+                        'stato_tasks.style as stato_style'
                     )
             )
             ->columns([
@@ -102,23 +103,24 @@ class ThreeDash extends Page implements HasTable
                     ->label('Ore')
                     ->sortable(),
 
-                TextColumn::make('stato')
+                TextColumn::make('stato_nome')
                     ->label('Stato')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => TableHelper::getStatusOptions()[$state] ?? $state)
-                    ->color(fn ($state) => match ($state) {
-                        1 => 'warning',
-                        2 => 'info',
-                        3 => 'success',
-                        default => 'gray'
-                    })
+                    ->color(fn ($record) => $record->stato_style ?? 'gray')
             ])
             ->filters([
                 SelectFilter::make('stato')
-                    ->options([
-                        1 => 'In lavorazione',
-                        2 => 'Da testare',
-                    ]),
+                    ->options(
+                        DB::table('stato_tasks')
+                            ->pluck('nome', 'id')
+                            ->toArray()
+                    )
+                    ->query(function ($query, $data) {
+                        if (empty($data['value']))
+                            return $query;
+
+                        return $query->where('hours.stato', $data['value']);
+                    }),
             ])
             ->defaultSort('data_lavorazione', 'desc')
             ->paginated([10, 25, 50]);

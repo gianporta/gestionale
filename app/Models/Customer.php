@@ -48,4 +48,7 @@ class Customer  extends Model
     {
         return $this->belongsTo(Countries::class, 'nazione');
     }
+    public static function getTypeCustomer(){
+        return [1 => 'Fornitore', 2 => 'Cliente'];
+    }
 }

@@ -458,3 +458,12 @@ select option{
     background-color: #6b7280;
     color: #fff;
 }
+.badge-status.danger {
+    background-color: #ef4444;
+    color: #fff;
+}
+
+.badge-status.success {
+    background-color: #22c55e;
+    color: #fff;
+}
