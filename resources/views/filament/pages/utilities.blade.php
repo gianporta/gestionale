@@ -191,6 +191,16 @@
 
             <div class="space-y-4">
 
+                <div class="space-y-1">
+                    <label class="text-sm text-gray-400">Tipo</label>
+                    <x-filament::input.wrapper>
+                        <x-filament::input.select wire:model.defer="magentoType">
+                            <option value="m2">Magento 2</option>
+                            <option value="mageos">Mage-OS</option>
+                        </x-filament::input.select>
+                    </x-filament::input.wrapper>
+                </div>
+
                 <x-filament::input.wrapper>
                     <x-filament::input wire:model.defer="magentoDir" placeholder="Directory (es: magento)" />
                 </x-filament::input.wrapper>
@@ -235,7 +245,11 @@
                     <x-filament::input wire:model.defer="magentoAdminPassword" placeholder="Admin Password" />
                 </x-filament::input.wrapper>
 
-                <x-filament::button type="button" wire:click="generateMagentoInstall" class="bg-amber-500 hover:bg-amber-400 text-white">
+                <x-filament::button
+                    type="button"
+                    wire:click="generateMagentoInstall"
+                    class="bg-amber-500 hover:bg-amber-400 text-white"
+                >
                     Genera comando
                 </x-filament::button>
 

@@ -170,9 +170,27 @@ class Utilities extends Page
             !$this->magentoAdminPassword
         ) return;
 
-        $composer = "composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition {$this->magentoDir}";
+        switch ($this->magentoType) {
 
-        $install = "cd {$this->magentoDir} && php bin/magento setup:install " .
+            case 'mageos':
+
+                $composer = "composer create-project --repository-url=https://repo.mage-os.org/ mage-os/project-community-edition .";
+
+                $cd = ""; // niente cd perché sei già dentro
+
+                break;
+
+            case 'm2':
+            default:
+
+                $composer = "composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition {$this->magentoDir}";
+
+                $cd = "cd {$this->magentoDir} && ";
+
+                break;
+        }
+
+        $install = $cd . "php bin/magento setup:install " .
             "--base-url={$this->magentoBaseUrl} " .
             "--db-host={$this->magentoDbHost} " .
             "--db-name={$this->magentoDbName} " .
