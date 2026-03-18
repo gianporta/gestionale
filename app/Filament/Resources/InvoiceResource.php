@@ -59,22 +59,17 @@ class InvoiceResource extends Resource
             ->columns($tableColumns)
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
-            ->actions([
-                EditAction::make(),
-            ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
-
                             foreach ($records as $record) {
                                 $new = $record->replicate();
-
                                 if (isset($new->email))
                                     $new->email = $record->email . '.copy';
-
                                 $new->save();
                             }
                         }),

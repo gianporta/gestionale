@@ -15,7 +15,6 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -68,9 +67,7 @@ class CustomerResource extends Resource
         return $table
             ->columns($tableColumns)
             ->filters([])
-            ->actions([
-                EditAction::make(),
-            ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

@@ -53,9 +53,7 @@ class ProformaResource extends Resource
             ->columns($tableColumns)
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
-            ->actions([
-                EditAction::make(),
-            ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

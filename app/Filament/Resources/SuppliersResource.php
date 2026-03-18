@@ -14,7 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
+use App\Filament\Resources\SuppliersResource\RelationManagers\JobsRelationManager;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -51,7 +51,12 @@ class SuppliersResource extends Resource
         return parent::getEloquentQuery()
             ->where('tipo_cliente', Suppliers::TYPE_CUSTOMER_SUPPLIERS);
     }
-
+    public static function getRelations(): array
+    {
+        return [
+            JobsRelationManager::class,
+        ];
+    }
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Suppliers())->getTable());
@@ -60,9 +65,7 @@ class SuppliersResource extends Resource
         return $table
             ->columns($tableColumns)
             ->filters([])
-            ->actions([
-                EditAction::make(),
-            ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

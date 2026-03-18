@@ -6,15 +6,14 @@ use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\Job;
-use Filament\Forms\Form;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteBulkAction;
-
+use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
 class JobsRelationManager extends RelationManager
@@ -24,25 +23,20 @@ class JobsRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new Job())->getTable());
-        $formSchema = FormHelper::getFieldForm($columns);
+        $formSchema = FormHelper::getFieldForm($columns,'job_customer');
 
         return $form->schema([
             Section::make('Job')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'nome',
                     'descrizione',
-                    'tipo_job',
-                    'stato',
+                    'stato_job',
                     'attivo'
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),
-
             Section::make('Costi')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'costo',
                     'costo_orario',
-                    'iva',
-                    'durata'
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),
         ]);
@@ -51,14 +45,21 @@ class JobsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Job())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns, 'job_customer');
 
         return $table
             ->columns($tableColumns)
+            ->defaultSort('id', 'desc')
             ->filters([])
-            ->actions([
-                EditAction::make(),
+            ->headerActions([
+                CreateAction::make()
+                    ->label('Nuovo')
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['cliente'] = $this->getOwnerRecord()->id;
+                        return $data;
+                    }),
             ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

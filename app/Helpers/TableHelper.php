@@ -10,7 +10,10 @@ use App\Models\Stime;
 use App\Models\StatoTask;
 use App\Models\Repo;
 use App\Models\Task;
+use App\Models\Job;
 use App\Models\User;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +23,13 @@ class TableHelper
     public static function formatColumnValue(string $column, mixed $value): mixed
     {
         switch ($column) {
+            case 'costo':
             case 'netto_a_pagare':
                 return number_format((float)$value, 2, ',', '.') . ' €';
             case 'data_documento':
                 return \Carbon\Carbon::parse($value)->format('d/m/Y');
+            case 'stato_job':
+                return Job::getStatoJob()[$value];
             case 'is_active':
             case 'attivo':
                 return ($value == 0) ? 'No' : 'Sì';
@@ -161,7 +167,6 @@ class TableHelper
             'link',
             'ore_pacchetto',
             'customer',
-            'costo_orario',
             'created_at',
             'updated_at',
             'tipo_doc_fatt_el',
@@ -201,7 +206,10 @@ class TableHelper
             'ritenuta_di_acconto',
             'iva',
             'imponibile',
+            'durata',
         );
+        $listExclude['job_suppliers'] = array('costo_orario');
+        $listExclude['job_customer'] = array('costo');
         $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','attivo');
         $listExclude['quote'] = array('progressivo_sdi','attivo');
         $listExclude['creditMemo'] = array('codice_fattura','attivo');
@@ -258,6 +266,19 @@ class TableHelper
                         $data['values']
                     );
                 }),
+        ];
+    }
+    public static function getTableActions()
+    {
+        return [
+            EditAction::make()
+                ->color('warning')
+                ->button(),
+                DeleteAction::make()
+                    ->color('danger')
+                    ->button()
+                    ->requiresConfirmation(),
+
         ];
     }
 }

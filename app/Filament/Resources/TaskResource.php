@@ -51,9 +51,7 @@ class TaskResource extends Resource
         return $table
             ->columns($tableColumns)
             ->filters([])
-            ->actions([
-                EditAction::make(),
-            ])
+            ->actions(TableHelper::getTableActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

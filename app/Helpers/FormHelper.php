@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\Packages;
 use App\Models\Provinces;
 use App\Models\Repo;
+use App\Models\Job;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
@@ -179,6 +180,12 @@ class FormHelper
                     'type' => 'select',
                     'options' => self::getOreOptions(),
                 ];
+            case 'stato_job':
+                return [
+                    'type' => 'select',
+                    'options' => Job::getStatoJob(),
+                    'default' => 1
+                ];
             case 'stato':
                 return [
                     'type' => 'select',
@@ -207,10 +214,16 @@ class FormHelper
                 return [
                     'type' => 'password',
                 ];
+            case 'costo':
             case 'max_ore':
             case 'ore_lavorate':
                 return [
                     'type' => 'number',
+                ];
+            case 'costo_orario':
+                return [
+                    'type' => 'number',
+                    'default' => 50,
                 ];
             case 'descrizione':
             case 'note':
@@ -379,6 +392,23 @@ class FormHelper
                     if (isset($config['default']))
                         $field->default($config['default']);
                     break;
+                case 'decimal':
+                    $field = TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->numeric()
+                        ->step(0.01)
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
+                case 'number':
+                    $field = TextInput::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->numeric()
+                        ->required(false);
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
                 case 'text':
                 default:
                     $field = TextInput::make($column)
@@ -406,8 +436,11 @@ class FormHelper
             'email_verified_at',
             'two_factor_secret',
             'two_factor_recovery_codes',
-            'two_factor_confirmed_at'
+            'two_factor_confirmed_at',
+            'durata',
         );
+        $listExclude['job_suppliers'] = array('costo_orario');
+        $listExclude['job_customer'] = array('costo');
         $listExclude['customer'] = array('banca', 'iban', 'intestatario_conto');
         $listExclude['acquisti'] = array();
         $listExclude['quote'] = array();
