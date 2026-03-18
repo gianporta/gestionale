@@ -25,6 +25,23 @@ class Utilities extends Page
     public ?string $cmsLastname = null;
     public ?string $cmsEmail = null;
     public ?string $cmsPassword = null;
+    public ?string $magentoDir = null;
+    public ?string $magentoBaseUrl = null;
+
+    public ?string $magentoDbHost = 'localhost';
+    public ?string $magentoDbName = null;
+    public ?string $magentoDbUser = 'root';
+    public ?string $magentoDbPassword = null;
+
+    public ?string $magentoAdminFirstname = null;
+    public ?string $magentoAdminLastname = null;
+    public ?string $magentoAdminEmail = null;
+    public ?string $magentoAdminUser = null;
+    public ?string $magentoAdminPassword = null;
+
+    public ?string $magentoLanguage = 'en_US';
+    public ?string $magentoCurrency = 'EUR';
+    public ?string $magentoTimezone = 'Europe/Rome';
     public static function canAccess(): bool
     {
         return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
@@ -140,6 +157,39 @@ class Utilities extends Page
             "brew link {$this->phpTo} && " .
             "valet use {$this->phpTo} --force";
         $this->htResult = "{$command}";
+        $this->dispatch('open-modal', id: 'result-modal');
+    }
+    public function generateMagentoInstall()
+    {
+        if (
+            !$this->magentoDir ||
+            !$this->magentoBaseUrl ||
+            !$this->magentoDbName ||
+            !$this->magentoDbPassword ||
+            !$this->magentoAdminUser ||
+            !$this->magentoAdminPassword
+        ) return;
+
+        $composer = "composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition {$this->magentoDir}";
+
+        $install = "cd {$this->magentoDir} && php bin/magento setup:install " .
+            "--base-url={$this->magentoBaseUrl} " .
+            "--db-host={$this->magentoDbHost} " .
+            "--db-name={$this->magentoDbName} " .
+            "--db-user={$this->magentoDbUser} " .
+            "--db-password='{$this->magentoDbPassword}' " .
+            "--admin-firstname='{$this->magentoAdminFirstname}' " .
+            "--admin-lastname='{$this->magentoAdminLastname}' " .
+            "--admin-email={$this->magentoAdminEmail} " .
+            "--admin-user={$this->magentoAdminUser} " .
+            "--admin-password='{$this->magentoAdminPassword}' " .
+            "--language={$this->magentoLanguage} " .
+            "--currency={$this->magentoCurrency} " .
+            "--timezone={$this->magentoTimezone} " .
+            "--use-rewrites=1";
+
+        $this->htResult = $composer . "\n\n" . $install;
+
         $this->dispatch('open-modal', id: 'result-modal');
     }
 }
