@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Job;
 class Customer  extends Model
 {
+    const TYPE_CUSTOMER_CUSTOMER = 2;
     protected $fillable = [
         'ragione_sociale',
         'company_id',
@@ -36,7 +37,7 @@ class Customer  extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->tipo_cliente = 2;
+            $model->tipo_cliente = self::TYPE_CUSTOMER_CUSTOMER;
         });
     }
     public function jobs()

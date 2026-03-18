@@ -20,6 +20,10 @@ class TableHelper
     public static function formatColumnValue(string $column, mixed $value): mixed
     {
         switch ($column) {
+            case 'netto_a_pagare':
+                return number_format((float)$value, 2, ',', '.') . ' €';
+            case 'data_documento':
+                return \Carbon\Carbon::parse($value)->format('d/m/Y');
             case 'is_active':
             case 'attivo':
                 return ($value == 0) ? 'No' : 'Sì';
@@ -37,6 +41,7 @@ class TableHelper
                 return User::find($value)?->name;
             case 'id_repo':
                 return Repo::find($value)?->packages;
+            case 'cliente':
             case 'cliente_id':
                 return Customer::find($value)?->ragione_sociale;
             case 'pacchetto_id':
@@ -93,8 +98,6 @@ class TableHelper
             'company_id',
             'partita_iva',
             'codice_fiscale',
-            'data_creazione',
-            'data_modifica',
             'email',
             'pec',
             'sdi',
@@ -158,11 +161,9 @@ class TableHelper
             'link',
             'ore_pacchetto',
             'customer',
-            'cliente',
             'costo_orario',
             'created_at',
             'updated_at',
-            'tipo_documento',
             'tipo_doc_fatt_el',
             'condizioni_pagamento',
             'modalita_pagamento',
@@ -195,14 +196,18 @@ class TableHelper
             'ricevutaname',
             'content',
             'descrizione',
-            'id'
+            'id',
+            'contributo_inps',
+            'ritenuta_di_acconto',
+            'iva',
+            'imponibile',
         );
-        $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','contributo_inps','ritenuta_di_acconto','attivo');
+        $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','attivo');
         $listExclude['quote'] = array('progressivo_sdi','attivo');
         $listExclude['creditMemo'] = array('codice_fattura','attivo');
         $listExclude['proforma'] = array('progressivo_sdi','codice_fattura','attivo');
         $listExclude['invoice'] = array('codice_fattura','attivo');
-        $listExclude['externalInvoice'] = array('codice_fattura','ritenuta_di_acconto','contributo_inps','iva','attivo');
+        $listExclude['externalInvoice'] = array('codice_fattura','iva','attivo');
         return $listExclude;
     }
 

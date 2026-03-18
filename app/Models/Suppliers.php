@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Suppliers  extends Model
 {
+    const TYPE_CUSTOMER_SUPPLIERS = 1;
     protected $table = 'customers';
     protected $fillable = [
         'ragione_sociale',
@@ -35,6 +36,12 @@ class Suppliers  extends Model
 
         'attivo',
     ];
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $model->tipo_cliente = self::TYPE_CUSTOMER_SUPPLIERS;
+        });
+    }
     public function jobs()
     {
         return $this->hasMany(Job::class, 'cliente');

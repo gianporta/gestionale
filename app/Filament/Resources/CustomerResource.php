@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CustomerResource\RelationManagers\JobsRelationManager;
 use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\RelationManagers\JobsRelationManager;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\Customer;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
@@ -18,7 +19,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Section;
+
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
@@ -49,8 +50,9 @@ class CustomerResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('tipo_cliente', 2);
+            ->where('tipo_cliente', customer::TYPE_CUSTOMER_CUSTOMER);
     }
+
     public static function getRelations(): array
     {
         return [

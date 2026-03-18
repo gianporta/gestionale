@@ -17,7 +17,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Filament\Forms\Components\Section;
-
+use Illuminate\Database\Eloquent\Builder;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
@@ -35,6 +35,11 @@ class InvoiceResource extends Resource
         return 'Fatture';
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('tipo_documento', Invoice::INVOICE_TYPE_DOC);
+    }
     public static function canViewAny(): bool
     {
         return auth()->user()->hasRole('admin');

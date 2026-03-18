@@ -49,7 +49,7 @@ class SuppliersResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('tipo_cliente', 1);
+            ->where('tipo_cliente', Suppliers::TYPE_CUSTOMER_SUPPLIERS);
     }
 
     public static function table(Table $table): Table
