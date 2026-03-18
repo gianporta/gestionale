@@ -188,6 +188,7 @@ class FormHelper
                 return [
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
+                    'default' => null,
                 ];
             case 'task_id':
                 return [
@@ -265,11 +266,13 @@ class FormHelper
         }
     }
 
-    public static function getFieldForm($columns): array
+    public static function getFieldForm($columns,$type=''): array
     {
         $formSchema = [];
         foreach ($columns as $column) {
-            if (in_array($column, FormHelper::getExcludedColumns()))
+            if (in_array($column, FormHelper::getExcludedField()['default']))
+                continue;
+            if ($type != '' && in_array($column, FormHelper::getExcludedField()[$type]))
                 continue;
             $config = FormHelper::getFormFieldConfig($column);
             switch ($config['type']) {
@@ -388,7 +391,7 @@ class FormHelper
         return $formSchema;
     }
 
-    public static function getExcludedColumns(): array
+    public static function getExcludedField(): array
     {
         $listExclude['default'] = array(
             'id',

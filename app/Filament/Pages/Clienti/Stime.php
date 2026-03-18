@@ -13,15 +13,18 @@ class Stime extends Page
     protected static string $view = 'filament.pages.clienti.stime';
     protected static bool $isLazy = false;
     protected static bool $shouldRegisterNavigation = false;
-
+    public function getTitle(): string
+    {
+        return 'Stime';
+    }
+    protected function getClienteId()
+    {
+        return auth()->user()->cliente_id;
+    }
     protected function getViewData(): array
     {
         return [
         ];
     }
 
-    public function getTitle(): string
-    {
-        return 'Dash ' . auth()->user()->roles->first()->name;
-    }
 }

@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\Clienti;
 
 use App\Models\Hours;
-use App\Models\Packages;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 
@@ -14,13 +13,24 @@ class Ore extends Page
     protected static bool $isLazy = false;
     protected static bool $shouldRegisterNavigation = false;
 
+    protected function getClienteId()
+    {
+        return auth()->user()->cliente_id;
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ore';
+    }
+
     public function getHours()
     {
+        $clienteId = $this->getClienteId();
         return Hours::query()
-            ->join('tasks','tasks.id','=','hours.task_id')
-            ->join('packages','packages.id','=','tasks.pacchetto_id')
-            ->whereRaw('JSON_CONTAINS(packages.user_id, ?)', [json_encode((string) auth()->id())])
-            ->where('packages.attivo',1)
+            ->join('tasks', 'tasks.id', '=', 'hours.task_id')
+            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->where('packages.cliente_id', auth()->user()->cliente_id)
+            ->where('packages.attivo', 1)
             ->select(
                 'hours.data_lavorazione',
                 'hours.ore_lavorate',
@@ -39,10 +49,5 @@ class Ore extends Page
         return [
             'hoursByYear' => $this->getHours(),
         ];
-    }
-
-    public function getTitle(): string
-    {
-        return 'Dash ' . auth()->user()->roles->first()->name;
     }
 }

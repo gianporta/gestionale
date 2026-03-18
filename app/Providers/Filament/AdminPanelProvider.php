@@ -77,19 +77,19 @@ class AdminPanelProvider extends PanelProvider
                     ->url('/admin/clienti/pacchetti')
                     ->group('Clienti')
                     ->sort(1)
-                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+                    ->visible(fn() => auth()->user()->hasAnyRole(['cliente'])),
                 NavigationItem::make('Ore')
                     ->icon('heroicon-o-clock')
                     ->url('/admin/clienti/ore')
                     ->group('Clienti')
                     ->sort(2)
-                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+                    ->visible(fn() => auth()->user()->hasAnyRole(['cliente'])),
                 NavigationItem::make('Stime')
                     ->icon('heroicon-o-calculator')
                     ->url('/admin/clienti/stime')
                     ->group('Clienti')
                     ->sort(3)
-                    ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'threecommerce'])),
+                    ->visible(fn() => auth()->user()->hasAnyRole(['cliente'])),
                 NavigationItem::make('Dash')
                     ->icon('heroicon-o-chart-bar')
                     ->url('/admin/three-dash')

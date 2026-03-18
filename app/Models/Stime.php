@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cms  extends Model
+class Stime  extends Model
 {
     protected $fillable = [
-        'nome',
-        'sigla',
-        'attivo',
+        'nome'
     ];
 }

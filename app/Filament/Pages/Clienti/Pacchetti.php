@@ -14,13 +14,24 @@ class Pacchetti extends Page
     protected static bool $isLazy = false;
     protected static bool $shouldRegisterNavigation = false;
 
+    public function getTitle(): string
+    {
+        return 'Pacchetti | Task da lavorare';
+    }
+
+    protected function getClienteId()
+    {
+        return auth()->user()->cliente_id;
+    }
+
     public function getPackages()
     {
+        $clienteId = $this->getClienteId();
         return Packages::query()
             ->join('customers','customers.id','=','packages.cliente_id')
             ->leftJoin('tasks','tasks.pacchetto_id','=','packages.id')
             ->leftJoin('hours','hours.task_id','=','tasks.id')
-            ->whereRaw('JSON_CONTAINS(packages.user_id, ?)', [json_encode((string) auth()->id())])
+            ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo',1)
             ->select(
                 'packages.id',
@@ -39,24 +50,13 @@ class Pacchetti extends Page
             ->get();
     }
 
-    protected function getViewData(): array
-    {
-        return [
-            'packages' => $this->getPackages(),
-            'openTasks' => $this->getOpenTasks(),
-        ];
-    }
-
-    public function getTitle(): string
-    {
-        return 'Dash ' . auth()->user()->roles->first()->name;
-    }
     public function getOpenTasks()
     {
+        $clienteId = $this->getClienteId();
         return Hours::query()
             ->join('tasks','tasks.id','=','hours.task_id')
             ->join('packages','packages.id','=','tasks.pacchetto_id')
-            ->whereRaw('JSON_CONTAINS(packages.user_id, ?)', [json_encode((string) auth()->id())])
+            ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo',1)
             ->where('hours.stato','!=',3)
             ->select(
@@ -67,5 +67,13 @@ class Pacchetti extends Page
             ->groupBy('tasks.id','tasks.task')
             ->orderBy('tasks.task')
             ->get();
+    }
+
+    protected function getViewData(): array
+    {
+        return [
+            'packages' => $this->getPackages(),
+            'openTasks' => $this->getOpenTasks(),
+        ];
     }
 }
