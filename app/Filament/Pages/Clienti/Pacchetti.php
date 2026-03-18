@@ -27,12 +27,13 @@ class Pacchetti extends Page
     public function getPackages()
     {
         $clienteId = $this->getClienteId();
+
         return Packages::query()
-            ->join('customers','customers.id','=','packages.cliente_id')
-            ->leftJoin('tasks','tasks.pacchetto_id','=','packages.id')
-            ->leftJoin('hours','hours.task_id','=','tasks.id')
+            ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+            ->leftJoin('tasks', 'tasks.pacchetto_id', '=', 'packages.id')
+            ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
             ->where('packages.cliente_id', $clienteId)
-            ->where('packages.attivo',1)
+            ->where('packages.attivo', 1)
             ->select(
                 'packages.id',
                 'packages.nome',
@@ -53,18 +54,27 @@ class Pacchetti extends Page
     public function getOpenTasks()
     {
         $clienteId = $this->getClienteId();
+
         return Hours::query()
-            ->join('tasks','tasks.id','=','hours.task_id')
-            ->join('packages','packages.id','=','tasks.pacchetto_id')
+            ->join('tasks', 'tasks.id', '=', 'hours.task_id')
+            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
             ->where('packages.cliente_id', $clienteId)
-            ->where('packages.attivo',1)
-            ->where('hours.stato','!=',3)
+            ->where('packages.attivo', 1)
+            ->where('hours.stato', '!=', 3)
             ->select(
                 'tasks.id',
                 'tasks.task',
+                'stato_tasks.nome as stato_nome',
+                'stato_tasks.style as stato_style',
                 DB::raw('SUM(hours.ore_lavorate) as ore_lavorate')
             )
-            ->groupBy('tasks.id','tasks.task')
+            ->groupBy(
+                'tasks.id',
+                'tasks.task',
+                'stato_tasks.nome',
+                'stato_tasks.style'
+            )
             ->orderBy('tasks.task')
             ->get();
     }

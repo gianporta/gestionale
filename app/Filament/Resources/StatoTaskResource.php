@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StimeResource\Pages;
+use App\Filament\Resources\StatoTaskResource\Pages;
 use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
-use App\Models\Stime;
+use App\Models\StatoTask;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
@@ -17,21 +17,21 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
-class StimeResource extends Resource
+class StatoTaskResource extends Resource
 {
-    protected static ?string $model = Stime::class;
+    protected static ?string $model = StatoTask::class;
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 7;
     protected static ?string $navigationGroup = 'Sistema';
 
     public static function getModelLabel(): string
     {
-        return 'Stima';
+        return 'Stati Task';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Stime';
+        return 'Stato Task';
     }
 
     public static function canViewAny(): bool
@@ -46,7 +46,7 @@ class StimeResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new Stime())->getTable());
+        $columns = DBHelper::getTableColumns((new StatoTask())->getTable());
         $tableColumns = TableHelper::getColumns($columns);
 
         return $table
@@ -78,7 +78,7 @@ class StimeResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new Stime())->getTable());
+        $columns = DBHelper::getTableColumns((new StatoTask())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
         return $form->schema($formSchema);
     }

@@ -1,6 +1,5 @@
 <x-filament-panels::page>
 
-    {{-- PACCHETTI --}}
     <div class="rounded-2xl bg-gray-900 border border-gray-800 p-6">
         <div class="text-lg font-semibold mb-6">Pacchetti</div>
 
@@ -31,8 +30,6 @@
         </div>
     </div>
 
-
-    {{-- TASK APERTI --}}
     <div class="mt-8 rounded-2xl bg-gray-900 border border-gray-800 p-6">
         <div class="text-lg font-semibold mb-4">Task da lavorare</div>
 
@@ -42,6 +39,7 @@
                 <tr>
                     <th class="text-left py-2">Task</th>
                     <th class="text-right py-2">Ore lavorate</th>
+                    <th class="text-right py-2">Stato</th>
                 </tr>
                 </thead>
 
@@ -49,11 +47,16 @@
                 @forelse($openTasks as $task)
                 <tr class="border-b border-gray-800">
                     <td class="py-2">{{ $task->task }}</td>
-                    <td class="text-right">{{ $task->ore_lavorate }}</td>
+                    <td class="text-right py-2">{{ $task->ore_lavorate }}</td>
+                    <td class="text-right py-2">
+                            <span class="badge-status {{ $task->stato_style ?? 'default' }}">
+                                {{ $task->stato_nome ?? 'Unknown' }}
+                            </span>
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="2" class="py-4 text-gray-400">
+                    <td colspan="3" class="py-4 text-gray-400">
                         Nessun task aperto
                     </td>
                 </tr>

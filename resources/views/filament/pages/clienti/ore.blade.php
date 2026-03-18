@@ -3,7 +3,6 @@
     <div class="rounded-2xl bg-gray-900 border border-gray-800 p-6"
          x-data="{search:'',anno:'all',mese:'all',page:1,perPage:10,totalRows: {{ collect($hoursByYear)->flatten()->count() }}}">
 
-        {{-- HEADER / FILTRI --}}
         <div class="mb-6">
             <div class="text-lg font-semibold mb-4">Ore lavorate</div>
 
@@ -40,8 +39,6 @@
             </div>
         </div>
 
-
-        {{-- TABELLA --}}
         @php $rowIndex = 0; @endphp
 
         <div class="rounded-xl bg-gray-950 border border-gray-800 overflow-hidden">
@@ -50,10 +47,10 @@
                     <thead class="text-gray-400 border-b border-gray-800 bg-gray-900">
                     <tr>
                         <th class="text-left py-3 px-2 w-32">Data</th>
-                        <th class="text-left py-3 px-2 w-32">Task</th>
-                        <th class="text-left py-3 px-2 w-40">Descrizione</th>
-                        <th class="text-right py-3 px-2 w-16">Ore</th>
-                        <th class="text-right py-3 px-2 w-32">Stato</th>
+                        <th class="text-left py-3 px-2 w-40">Task</th>
+                        <th class="text-left py-3 px-2">Descrizione</th>
+                        <th class="text-right py-3 px-2 w-20">Ore</th>
+                        <th class="text-right py-3 px-2 w-36">Stato</th>
                     </tr>
                     </thead>
 
@@ -73,32 +70,22 @@
                             {{ \Carbon\Carbon::parse($row->data_lavorazione)->format('d/m/Y') }}
                         </td>
 
-                        <td class="py-2 px-2 w-32">
+                        <td class="py-2 px-2 w-40">
                             {{ $row->task }}
                         </td>
 
-                        <td class="py-2 px-2 w-40 text-gray-300">
+                        <td class="py-2 px-2 text-gray-300">
                             {{ $row->descrizione }}
                         </td>
 
-                        <td class="text-right py-2 px-2 w-16">
+                        <td class="text-right py-2 px-2 w-20">
                             {{ $row->ore_lavorate }}
                         </td>
 
-                        <td class="text-right py-2 px-2 w-32">
-                            @if($row->stato == 1)
-                            <span class="px-2 py-1 text-xs font-medium rounded-md bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
-                                            Da fare
-                                        </span>
-                            @elseif($row->stato == 2)
-                            <span class="px-2 py-1 text-xs font-medium rounded-md bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                                            In lavorazione
-                                        </span>
-                            @elseif($row->stato == 3)
-                            <span class="px-2 py-1 text-xs font-medium rounded-md bg-green-500/20 text-green-400 border border-green-500/30">
-                                            Finito
-                                        </span>
-                            @endif
+                        <td class="text-right py-2 px-2 w-36">
+                                    <span class="badge-status {{ $row->stato_style ?? 'default' }}">
+                                        {{ $row->stato_nome ?? 'Unknown' }}
+                                    </span>
                         </td>
                     </tr>
                     @endforeach
@@ -114,8 +101,6 @@
             </div>
         </div>
 
-
-        {{-- PAGINAZIONE --}}
         <div class="mt-6 flex justify-between items-center text-sm text-gray-400">
             <div class="flex items-center gap-4">
                 <div>

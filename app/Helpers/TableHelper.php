@@ -6,6 +6,8 @@ use App\Models\Categoria;
 use App\Models\Cms;
 use App\Models\Customer;
 use App\Models\Packages;
+use App\Models\Stime;
+use App\Models\StatoTask;
 use App\Models\Repo;
 use App\Models\Task;
 use App\Models\User;
@@ -23,6 +25,8 @@ class TableHelper
                 return ($value == 0) ? 'No' : 'Sì';
             case 'ambiente':
                 return ($value == 0) ? 'Produzione' : 'Staging';
+            case 'stima':
+                return Stime::find($value)?->nome;
             case 'categoria':
                 return Categoria::find($value)?->nome;
             case 'task_id':
@@ -45,19 +49,10 @@ class TableHelper
                     ? $package->cliente . ' - ' . $package->nome
                     : null;
             case 'stato':
-                return self::getStatusOptions()[$value] ?? $value;
+                return StatoTask::find($value)?->nome;
             default:
                 return $value;
         }
-    }
-
-    public static function getStatusOptions(): array
-    {
-        return [
-            '1' => 'In lavorazione',
-            '2' => 'Da Testare',
-            '3' => 'Finito',
-        ];
     }
 
     public static function decorateColumn(string $column, TextColumn $col): void
@@ -74,12 +69,8 @@ class TableHelper
                 break;
             case 'stato':
                 $col->badge()
-                    ->color(fn($state) => match ($state) {
-                        1 => 'warning',
-                        2 => 'info',
-                        3 => 'success',
-                        default => 'gray',
-                    });
+                    ->formatStateUsing(fn ($state) => StatoTask::find($state)?->nome ?? $state)
+                    ->color(fn ($state) => StatoTask::find($state)?->style ?? 'gray');
                 break;
             case 'is_active':
             case 'attivo':

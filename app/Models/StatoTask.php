@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Stime  extends Model
+class StatoTask extends Model
 {
     protected $fillable = [
         'nome',
-        'max_ore',
+        'style'
     ];
 }

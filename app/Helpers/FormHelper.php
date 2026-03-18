@@ -10,8 +10,9 @@ use App\Models\Invoice;
 use App\Models\Packages;
 use App\Models\Provinces;
 use App\Models\Repo;
-use App\Models\Stime;
 use App\Models\StatePayment;
+use App\Models\StatoTask;
+use App\Models\Stime;
 use App\Models\Task;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
@@ -58,15 +59,6 @@ class FormHelper
             'php@8.1' => 'PHP 8.1',
             'php@8.3' => 'PHP 8.3',
             'php@8.4' => 'PHP 8.4',
-        ];
-    }
-
-    public static function getSstatusOptions(): array
-    {
-        return [
-            '1' => 'In lavorazione',
-            '2' => 'Da Testare',
-            '3' => 'Finito',
         ];
     }
 
@@ -190,7 +182,10 @@ class FormHelper
             case 'stato':
                 return [
                     'type' => 'select',
-                    'options' => self::getSstatusOptions(),
+                    'options' => StatoTask::query()
+                        ->pluck('nome', 'id')
+                        ->toArray(),
+                    'default' => 1
                 ];
             case 'cliente':
             case 'cliente_id':
@@ -212,6 +207,7 @@ class FormHelper
                 return [
                     'type' => 'password',
                 ];
+            case 'max_ore':
             case 'ore_lavorate':
                 return [
                     'type' => 'number',
@@ -275,7 +271,7 @@ class FormHelper
         }
     }
 
-    public static function getFieldForm($columns,$type=''): array
+    public static function getFieldForm($columns, $type = ''): array
     {
         $formSchema = [];
         foreach ($columns as $column) {
@@ -412,7 +408,7 @@ class FormHelper
             'two_factor_recovery_codes',
             'two_factor_confirmed_at'
         );
-        $listExclude['customer'] = array('banca','iban','intestatario_conto');
+        $listExclude['customer'] = array('banca', 'iban', 'intestatario_conto');
         $listExclude['acquisti'] = array();
         $listExclude['quote'] = array();
         $listExclude['creditMemo'] = array();
