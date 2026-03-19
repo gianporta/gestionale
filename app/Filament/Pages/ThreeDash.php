@@ -23,7 +23,6 @@ class ThreeDash extends Page implements HasTable
     {
         return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
     }
-
     public function getOpenPackages()
     {
         return Packages::query()
