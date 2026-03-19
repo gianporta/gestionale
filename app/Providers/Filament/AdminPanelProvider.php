@@ -27,6 +27,7 @@ use App\Filament\Pages\Clienti\Pacchetti;
 use App\Filament\Pages\CartaIntestata;
 use App\Filament\Pages\ThreeDash;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Widgets\PacchettiOverview;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -55,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
                 DashboardKpi::class,
                 DashboardKpiFatturato::class,
                 DashboardKpiIva::class,
+                PacchettiOverview::class,
                 CalendarOre::class,
                 ProformaScaduti::class,
             ])
