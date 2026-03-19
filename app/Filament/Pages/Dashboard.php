@@ -2,92 +2,37 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Invoice;
-use App\Models\Proforma;
 use Filament\Pages\Dashboard as BaseDashboard;
-use Illuminate\Support\Facades\DB;
-
+use App\Filament\Widgets\AndamentoMensile;
+use App\Filament\Widgets\DashboardKpi;
+use App\Filament\Widgets\ProformaScaduti;
+use App\Filament\Widgets\DashboardKpiFatturato;
+use App\Filament\Widgets\DashboardKpiIva;
 class Dashboard extends BaseDashboard
 {
+    protected static string $view = 'filament.pages.dash';
+    protected static bool $isLazy = false;
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole('admin');
+    }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin']);
+    }
+
+    public function getTitle(): string
+    {
+        return 'Dash ';
+    }
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Widgets\AndamentoMensile::class,
-            \App\Filament\Widgets\ProformaScaduti::class,
-        ];
-    }
-
-    protected function getViewData(): array
-    {
-        $year = date('Y');
-
-        $fatturato = DB::table('documenti')
-            ->whereYear('data_documento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->sum('netto_a_pagare');
-
-        $incassato = DB::table('documenti')
-            ->whereYear('data_pagamento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->selectRaw("
-                SUM(
-                    CASE
-                        WHEN pagato IS NULL OR pagato = '' THEN netto_a_pagare
-                        ELSE pagato
-                    END
-                ) as totale
-            ")
-            ->value('totale');
-
-        $daIncassare = Proforma::query()
-            ->where(function ($q) {
-                $q->whereNull('data_pagamento')
-                    ->orWhere('data_pagamento', '');
-            })
-            ->sum('netto_a_pagare');
-
-        $fatturatoTrimestri = DB::table('documenti')
-            ->selectRaw('QUARTER(data_documento) as trimestre, SUM(netto_a_pagare) as totale')
-            ->whereYear('data_documento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->groupBy('trimestre')
-            ->pluck('totale', 'trimestre')
-            ->toArray();
-
-        $ivaTrimestri = DB::table('documenti')
-            ->selectRaw("
-                QUARTER(data_pagamento) as trimestre,
-                SUM(
-                    CASE
-                        WHEN pagato IS NULL OR pagato = '' THEN iva
-                        ELSE iva * (pagato / netto_a_pagare)
-                    END
-                ) as totale
-            ")
-            ->whereYear('data_pagamento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->groupBy('trimestre')
-            ->pluck('totale', 'trimestre')
-            ->toArray();
-
-        return [
-            'kpiTop' => [
-                ['label' => 'Fatturato anno', 'value' => $fatturato],
-                ['label' => 'Incassato anno', 'value' => $incassato],
-                ['label' => 'Da incassare', 'value' => $daIncassare],
-            ],
-            'kpiFatturato' => [
-                ['label' => 'Fatturato Q1', 'value' => $fatturatoTrimestri[1] ?? 0],
-                ['label' => 'Fatturato Q2', 'value' => $fatturatoTrimestri[2] ?? 0],
-                ['label' => 'Fatturato Q3', 'value' => $fatturatoTrimestri[3] ?? 0],
-                ['label' => 'Fatturato Q4', 'value' => $fatturatoTrimestri[4] ?? 0],
-            ],
-            'kpiIva' => [
-                ['label' => 'IVA Q1', 'value' => $ivaTrimestri[1] ?? 0],
-                ['label' => 'IVA Q2', 'value' => $ivaTrimestri[2] ?? 0],
-                ['label' => 'IVA Q3', 'value' => $ivaTrimestri[3] ?? 0],
-                ['label' => 'IVA Q4', 'value' => $ivaTrimestri[4] ?? 0],
-            ],
+            AndamentoMensile::class,
+            DashboardKpi::class,
+            DashboardKpiFatturato::class,
+            DashboardKpiIva::class,
+            ProformaScaduti::class,
         ];
     }
 }
