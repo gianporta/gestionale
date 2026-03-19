@@ -35,15 +35,13 @@ class CustomerResource extends Resource
     {
         return 'Clienti';
     }
-
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole('admin');
     }
-
-    public static function shouldRegisterNavigation(): bool
+    public static function canAccess(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole(['admin']);
     }
 
     public static function getEloquentQuery(): Builder
