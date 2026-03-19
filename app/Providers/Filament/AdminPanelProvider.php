@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AndamentoMensile;
+use App\Filament\Widgets\CalendarOre;
+use App\Filament\Widgets\DashboardKpi;
+use App\Filament\Widgets\DashboardKpiFatturato;
+use App\Filament\Widgets\DashboardKpiIva;
+use App\Filament\Widgets\ProformaScaduti;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,8 +50,13 @@ class AdminPanelProvider extends PanelProvider
                 CartaIntestata::class,
                 Pacchetti::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                AndamentoMensile::class,
+                DashboardKpi::class,
+                DashboardKpiFatturato::class,
+                DashboardKpiIva::class,
+                CalendarOre::class,
+                ProformaScaduti::class,
             ])
             ->middleware([
                 EncryptCookies::class,
