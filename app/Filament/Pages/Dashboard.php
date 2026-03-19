@@ -18,11 +18,11 @@ class Dashboard extends BaseDashboard
     {
         return 'Dash ';
     }
-    protected function getRedirectUrl(): ?string
+    public function mount(): void
     {
-        if (auth()->user()->hasRole('threecommerce'))
-            return '/admin/three-dash';
-
-        return null;
+        if (auth()->user()->hasRole('threecommerce')) {
+            redirect()->to('/admin/three-dash')->send();
+            exit;
+        }
     }
 }
