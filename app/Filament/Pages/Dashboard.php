@@ -18,10 +18,4 @@ class Dashboard extends BaseDashboard
     {
         return 'Dash ';
     }
-    public function mount(): void
-    {
-        if (auth()->user()->hasRole('threecommerce')) {
-            $this->redirect('/admin/three-dash');
-        }
-    }
 }

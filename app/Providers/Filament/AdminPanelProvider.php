@@ -28,7 +28,7 @@ use App\Filament\Pages\CartaIntestata;
 use App\Filament\Pages\ThreeDash;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\PacchettiOverview;
-
+use App\Http\Middleware\RedirectThreecommerceDashboard;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -70,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                RedirectThreecommerceDashboard::class
             ])
             ->authMiddleware([
                 Authenticate::class,
