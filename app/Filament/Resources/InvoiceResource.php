@@ -38,7 +38,7 @@ class InvoiceResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('tipo_documento', Invoice::INVOICE_TYPE_DOC);
+            ->where('tipo_documento', Invoice::TYPE_DOC);
     }
     public static function canViewAny(): bool
     {

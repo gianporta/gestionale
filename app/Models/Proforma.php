@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proforma  extends Model
 {
+    const TYPE_DOC = 4;
     protected $table = 'documenti';
     protected static function booted()
     {

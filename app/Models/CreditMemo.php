@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CreditMemo  extends Model
 {
+    const TYPE_DOC = 6;
     protected $table = 'documenti';
     protected static function booted()
     {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Acquisti  extends Model
 {
+    const TYPE_DOC = 3;
     protected $table = 'documenti';
     protected static function booted()
     {

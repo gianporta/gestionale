@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote  extends Model
 {
+    const TYPE_DOC = 1;
     protected $table = 'documenti';
     protected static function booted()
     {

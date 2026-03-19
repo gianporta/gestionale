@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExternalInvoice  extends Model
 {
+    const TYPE_DOC = 5;
     protected $table = 'documenti';
     protected static function booted()
     {

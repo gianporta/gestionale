@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 class Invoice extends Model
 {
-    const INVOICE_TYPE_DOC = 2;
+    const TYPE_DOC = 2;
     protected $table = 'documenti';
 
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->tipo_documento = self::INVOICE_TYPE_DOC;
+            $model->tipo_documento = self::TYPE_DOC;
             $model->numero_documento = self::getNextNumeroDocumento();
             $model->progressivo_sdi = self::getNextProgressivoSdi();
         });
@@ -23,7 +23,7 @@ class Invoice extends Model
         $year = now()->year;
 
         $lastNumber = DB::table('documenti')
-            ->where('tipo_documento', self::INVOICE_TYPE_DOC)
+            ->where('tipo_documento', self::TYPE_DOC)
             ->whereYear('data_documento', $year)
             ->max('numero_documento');
 

@@ -3,7 +3,10 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
-
+use App\Filament\Widgets\FatturatoMensile;
+use App\Filament\Widgets\IncassatoMensile;
+use App\Filament\Widgets\ProformaMensile;
+use App\Filament\Widgets\AcquistiMensile;
 class Dashboard extends BaseDashboard
 {
     protected static string $view = 'filament.pages.dash';
@@ -20,5 +23,14 @@ class Dashboard extends BaseDashboard
     public function getTitle(): string
     {
         return 'Dash ';
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            FatturatoMensile::class,
+            IncassatoMensile::class,
+            ProformaMensile::class,
+            AcquistiMensile::class,
+        ];
     }
 }
