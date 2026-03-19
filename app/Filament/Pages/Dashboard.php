@@ -10,7 +10,6 @@ use App\Filament\Widgets\DashboardKpiFatturato;
 use App\Filament\Widgets\DashboardKpiIva;
 class Dashboard extends BaseDashboard
 {
-    protected static string $view = 'filament.pages.dash';
     protected static bool $isLazy = false;
     public static function canViewAny(): bool
     {
