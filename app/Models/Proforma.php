@@ -11,7 +11,7 @@ class Proforma  extends Model
     protected static function booted()
     {
         static::addGlobalScope('invoice', function ($query) {
-            $query->where('tipo_documento', 1);
+            $query->where('tipo_documento', self::TYPE_DOC);
         });
     }
     protected $fillable = [

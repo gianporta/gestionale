@@ -11,7 +11,7 @@ class ExternalInvoice  extends Model
     protected static function booted()
     {
         static::addGlobalScope('external_invoice', function ($query) {
-            $query->where('tipo_documento', 4);
+            $query->where('tipo_documento', self::TYPE_DOC);
         });
     }
     protected $fillable = [

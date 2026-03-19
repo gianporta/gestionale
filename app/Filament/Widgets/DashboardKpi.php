@@ -1,23 +1,17 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Widgets;
 
-use App\Models\Invoice;
 use App\Models\Proforma;
-use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
+use App\Models\Invoice;
 
-class Dashboard extends BaseDashboard
+class DashboardKpi extends BaseWidget
 {
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            \App\Filament\Widgets\AndamentoMensile::class,
-            \App\Filament\Widgets\ProformaScaduti::class,
-        ];
-    }
-
-    protected function getViewData(): array
+    protected int | string | array $columnSpan = 'full';
+    protected function getStats(): array
     {
         $year = date('Y');
 
@@ -47,7 +41,10 @@ class Dashboard extends BaseDashboard
             ->sum('netto_a_pagare');
 
         $fatturatoTrimestri = DB::table('documenti')
-            ->selectRaw('QUARTER(data_documento) as trimestre, SUM(netto_a_pagare) as totale')
+            ->selectRaw("
+                QUARTER(data_documento) as trimestre,
+                SUM(netto_a_pagare) as totale
+            ")
             ->whereYear('data_documento', $year)
             ->where('tipo_documento', Invoice::TYPE_DOC)
             ->groupBy('trimestre')
@@ -71,23 +68,9 @@ class Dashboard extends BaseDashboard
             ->toArray();
 
         return [
-            'kpiTop' => [
-                ['label' => 'Fatturato anno', 'value' => $fatturato],
-                ['label' => 'Incassato anno', 'value' => $incassato],
-                ['label' => 'Da incassare', 'value' => $daIncassare],
-            ],
-            'kpiFatturato' => [
-                ['label' => 'Fatturato Q1', 'value' => $fatturatoTrimestri[1] ?? 0],
-                ['label' => 'Fatturato Q2', 'value' => $fatturatoTrimestri[2] ?? 0],
-                ['label' => 'Fatturato Q3', 'value' => $fatturatoTrimestri[3] ?? 0],
-                ['label' => 'Fatturato Q4', 'value' => $fatturatoTrimestri[4] ?? 0],
-            ],
-            'kpiIva' => [
-                ['label' => 'IVA Q1', 'value' => $ivaTrimestri[1] ?? 0],
-                ['label' => 'IVA Q2', 'value' => $ivaTrimestri[2] ?? 0],
-                ['label' => 'IVA Q3', 'value' => $ivaTrimestri[3] ?? 0],
-                ['label' => 'IVA Q4', 'value' => $ivaTrimestri[4] ?? 0],
-            ],
+            Stat::make('Fatturato anno', number_format($fatturato, 2, ',', '.') . ' €'),
+            Stat::make('Incassato anno', number_format($incassato, 2, ',', '.') . ' €'),
+            Stat::make('Da incassare', number_format($daIncassare, 2, ',', '.') . ' €'),
         ];
     }
 }

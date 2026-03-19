@@ -11,7 +11,7 @@ class CreditMemo  extends Model
     protected static function booted()
     {
         static::addGlobalScope('credit_memo', function ($query) {
-            $query->where('tipo_documento', 5);
+            $query->where('tipo_documento', self::TYPE_DOC);
         });
     }
     protected $fillable = [

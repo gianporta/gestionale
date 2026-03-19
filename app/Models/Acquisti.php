@@ -11,7 +11,7 @@ class Acquisti  extends Model
     protected static function booted()
     {
         static::addGlobalScope('acquisti', function ($query) {
-            $query->where('tipo_documento', 2);
+            $query->where('tipo_documento', self::TYPE_DOC);
         });
     }
     protected $fillable = [

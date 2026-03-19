@@ -11,7 +11,7 @@ class Quote  extends Model
     protected static function booted()
     {
         static::addGlobalScope('quote', function ($query) {
-            $query->where('tipo_documento', 0);
+            $query->where('tipo_documento', self::TYPE_DOC);
         });
     }
     protected $fillable = [
