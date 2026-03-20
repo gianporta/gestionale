@@ -39,34 +39,6 @@ class DashboardKpi extends BaseWidget
                     ->orWhere('data_pagamento', '');
             })
             ->sum('netto_a_pagare');
-
-        $fatturatoTrimestri = DB::table('documenti')
-            ->selectRaw("
-                QUARTER(data_documento) as trimestre,
-                SUM(netto_a_pagare) as totale
-            ")
-            ->whereYear('data_documento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->groupBy('trimestre')
-            ->pluck('totale', 'trimestre')
-            ->toArray();
-
-        $ivaTrimestri = DB::table('documenti')
-            ->selectRaw("
-                QUARTER(data_pagamento) as trimestre,
-                SUM(
-                    CASE
-                        WHEN pagato IS NULL OR pagato = '' THEN iva
-                        ELSE iva * (pagato / netto_a_pagare)
-                    END
-                ) as totale
-            ")
-            ->whereYear('data_pagamento', $year)
-            ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->groupBy('trimestre')
-            ->pluck('totale', 'trimestre')
-            ->toArray();
-
         return [
             Stat::make('Fatturato anno', number_format($fatturato, 2, ',', '.') . ' €'),
             Stat::make('Incassato anno', number_format($incassato, 2, ',', '.') . ' €'),
