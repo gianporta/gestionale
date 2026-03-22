@@ -9,6 +9,7 @@ class NotaSpese  extends Model
     protected $fillable = [
         'nome',
         'costo',
+        'tipo_acquisto',
         'data_pagamento',
         'user',
     ];

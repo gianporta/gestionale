@@ -16,6 +16,7 @@ use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
 use App\Models\Site;
+use App\Models\TipoAcquisto;
 use App\Models\Task;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
@@ -199,6 +200,13 @@ class FormHelper
                 return [
                     'type' => 'select',
                     'options' => self::getOreOptions(),
+                ];
+            case 'tipo_acquisto':
+                return [
+                    'type' => 'select',
+                    'options' => TipoAcquisto::query()
+                        ->pluck('nome', 'id')
+                        ->toArray(),
                 ];
             case 'stato_job':
                 return [

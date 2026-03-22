@@ -11,6 +11,7 @@ use App\Models\StatoTask;
 use App\Models\Repo;
 use App\Models\Task;
 use App\Models\Job;
+use App\Models\TipoAcquisto;
 use App\Models\User;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -30,6 +31,8 @@ class TableHelper
             case 'data_pagamento':
             case 'data_documento':
                 return \Carbon\Carbon::parse($value)->format('d/m/Y');
+            case 'tipo_acquisto':
+                return TipoAcquisto::find($value)?->nome;
             case 'stato_job':
                 return Job::getStatoJob()[$value];
             case 'is_active':
@@ -190,7 +193,6 @@ class TableHelper
             'stato_documento',
             'pagato',
             'anticipo',
-            'data_pagamento',
             'frase_in_calce',
             'data_scadenza',
             'fattura',
