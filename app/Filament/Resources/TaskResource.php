@@ -21,7 +21,7 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string

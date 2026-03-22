@@ -161,6 +161,7 @@ class FormHelper
                         ->pluck('nome', 'id')
                         ->toArray()
                 ];
+            case 'data_pagamento':
             case 'data_documento':
             case 'data_lavorazione':
                 return [

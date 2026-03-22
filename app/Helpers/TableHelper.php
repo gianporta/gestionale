@@ -26,6 +26,8 @@ class TableHelper
             case 'costo':
             case 'netto_a_pagare':
                 return number_format((float)$value, 2, ',', '.') . ' €';
+            case 'data_lavorazione':
+            case 'data_pagamento':
             case 'data_documento':
                 return \Carbon\Carbon::parse($value)->format('d/m/Y');
             case 'stato_job':

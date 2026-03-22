@@ -21,7 +21,7 @@ class PackagesResource extends Resource
 {
     protected static ?string $model = Packages::class;
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'Threecommerce';
 
     public static function getModelLabel(): string
