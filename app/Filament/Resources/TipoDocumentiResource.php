@@ -21,8 +21,8 @@ class TipoDocumentiResource extends Resource
 {
     protected static ?string $model = TipoDocumenti::class;
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?int $navigationSort = 10;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Sistema Documenti';
 
     public static function getModelLabel(): string
     {
@@ -39,7 +39,7 @@ class TipoDocumentiResource extends Resource
     }
     public static function canAccess(): bool
     {
-        return auth()->user()->hasAnyRole(['admin']);
+        return auth()->user()->hasAnyRole('admin');
     }
 
     public static function table(Table $table): Table

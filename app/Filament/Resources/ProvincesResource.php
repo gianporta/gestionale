@@ -21,8 +21,8 @@ class ProvincesResource extends Resource
 {
     protected static ?string $model = Provinces::class;
     protected static ?string $navigationIcon = 'heroicon-o-map';
-    protected static ?int $navigationSort = 4;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Sistema Indirizzo';
 
     public static function getModelLabel(): string
     {

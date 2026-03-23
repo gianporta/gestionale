@@ -8,16 +8,17 @@ use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\Invoice;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
-use Illuminate\Support\Collection;
-use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
@@ -40,6 +41,7 @@ class InvoiceResource extends Resource
         return parent::getEloquentQuery()
             ->where('tipo_documento', Invoice::TYPE_DOC);
     }
+
     public static function canViewAny(): bool
     {
         return auth()->user()->hasRole('admin');
@@ -53,7 +55,7 @@ class InvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Invoice())->getTable());
-        $tableColumns = TableHelper::getColumns($columns,'invoice');
+        $tableColumns = TableHelper::getColumns($columns, 'invoice');
 
         return $table
             ->columns($tableColumns)
@@ -82,14 +84,31 @@ class InvoiceResource extends Resource
     {
         $columns = DBHelper::getTableColumns((new Invoice())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
+
         return $form->schema([
-            Section::make('Documento')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'numero_documento',
-                    'progressivo_sdi',
-                    'data_documento'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(2),
+
+            Grid::make(2)->schema([
+
+                Section::make('Documento')
+                    ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                        'data_documento',
+                        'numero_documento',
+                        'progressivo_sdi',
+                    ]), ARRAY_FILTER_USE_KEY))
+                    ->columns(2)
+                    ->columnSpan(1),
+
+                Section::make('Dati Banca')
+                    ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                        'banca',
+                        'iban',
+                        'intestatario_conto',
+                    ]), ARRAY_FILTER_USE_KEY))
+                    ->columns(2)
+                    ->columnSpan(1),
+
+            ]),
+
             Section::make('Cliente')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'cliente',
@@ -101,50 +120,62 @@ class InvoiceResource extends Resource
                     'cliente_cap',
                     'cliente_citta',
                     'cliente_provincia',
-                    'cliente_nazione'
+                    'cliente_nazione',
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),
-            Section::make('Dati fiscali')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'contributo_inps',
-                    'ritenuta_di_acconto',
-                    'mostra_inps',
-                    'mostra_ritenuta',
-                    'somma_inps'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(2),
-            Section::make('Importi')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'imponibile',
-                    'iva',
-                    'netto_a_pagare'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(3),
-            Section::make('Pagamento')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'condizioni_pagamento',
-                    'modalita_pagamento',
-                    'banca',
-                    'iban',
-                    'intestatario_conto',
-                    'anticipo',
-                    'pagato',
-                    'data_pagamento',
-                    'data_scadenza'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(2),
-            Section::make('Note')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'descrizione',
-                    'frase_in_calce'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(1),
-            Section::make('Sistema')
-                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                    'stato_documento',
-                    'document_to_state'
-                ]), ARRAY_FILTER_USE_KEY))
-                ->columns(2),
+
+            Grid::make(2)->schema([
+                Grid::make(1)->schema([
+                    Section::make('Condizioni di vendita')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'mostra_inps',
+                            'mostra_ritenuta',
+                            'somma_inps',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(2),
+
+                    Section::make('Pagamento')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'condizioni_pagamento',
+                            'modalita_pagamento',
+                            'anticipo',
+                            'pagato',
+                            'data_pagamento',
+                            'data_scadenza',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(2),
+
+                    Section::make('Note')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'descrizione',
+                            'frase_in_calce',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(1),
+
+                ])->columnSpan(1),
+
+                Grid::make(1)->schema([
+
+                    Section::make('Importi')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'imponibile',
+                            'contributo_inps',
+                            'ritenuta_di_acconto',
+                            'iva',
+                            'netto_a_pagare',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(3),
+
+                    Section::make('Sistema')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'stato_documento',
+                            'document_to_state',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(2),
+
+                ])->columnSpan(1),
+
+            ]),
 
         ]);
     }

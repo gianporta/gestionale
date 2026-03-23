@@ -21,8 +21,8 @@ class CmsResource extends Resource
 {
     protected static ?string $model = Cms::class;
     protected static ?string $navigationIcon = 'heroicon-o-code-bracket';
-    protected static ?int $navigationSort = 7;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Sistema Task';
 
     public static function getModelLabel(): string
     {

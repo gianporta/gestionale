@@ -89,7 +89,10 @@ class AdminPanelProvider extends PanelProvider
                 'Threecommerce',
                 'Utility',
                 'Repository',
-                'Sistema',
+                'Sistema Utenti',
+                'Sistema Indirizzo',
+                'Sistema Documenti',
+                'Sistema Task',
             ])
             ->navigationItems([
                 NavigationItem::make('Pacchetti')

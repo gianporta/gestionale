@@ -20,8 +20,8 @@ class StatoDocumentoResource extends Resource
 {
     protected static ?string $model = StatoDocumento::class;
     protected static ?string $navigationIcon = 'heroicon-o-code-bracket';
-    protected static ?int $navigationSort = 9;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Sistema Documenti';
 
     public static function getModelLabel(): string
     {

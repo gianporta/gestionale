@@ -21,17 +21,17 @@ class StatePaymentResource extends Resource
 {
     protected static ?string $model = StatePayment::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?int $navigationSort = 5;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Sistema Documenti';
 
     public static function getModelLabel(): string
     {
-        return 'StatePayment';
+        return 'Stato Pagamento';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'StatePayment';
+        return 'Stati Pagamento';
     }
 
     public static function canViewAny(): bool

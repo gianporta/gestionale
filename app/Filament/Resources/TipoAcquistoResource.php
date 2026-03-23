@@ -20,8 +20,8 @@ class TipoAcquistoResource extends Resource
 {
     protected static ?string $model = TipoAcquisto::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?int $navigationSort = 8;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Sistema Documenti';
 
     public static function getModelLabel(): string
     {
@@ -35,12 +35,12 @@ class TipoAcquistoResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole('admin');
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'threecommerce']);
+        return auth()->user()->hasAnyRole('admin');
     }
 
     public static function table(Table $table): Table

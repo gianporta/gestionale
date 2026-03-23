@@ -3,36 +3,34 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\ModalitaPagamentoResource\Pages;
 use App\Helpers\DBHelper;
-use App\Helpers\TableHelper;
 use App\Helpers\FormHelper;
-use App\Models\User;
-use Filament\Forms\Components\Select;
+use App\Helpers\TableHelper;
+use App\Models\ModalitaPagamento;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-class UserResource extends Resource
-{
-    protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?int $navigationSort = 2;
-    protected static ?string $navigationGroup = 'Sistema Utenti';
+class ModalitaPagamentoResource extends Resource
+{
+    protected static ?string $model = ModalitaPagamento::class;
+    protected static ?string $navigationIcon = 'heroicon-o-exclamation-circle';
+    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Sistema Documenti';
+
     public static function getModelLabel(): string
     {
-        return 'Utente';
+        return 'Modalità Pagamento';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Utenti';
+        return 'Modalità Pagamento';
     }
 
     public static function canViewAny(): bool
@@ -44,13 +42,12 @@ class UserResource extends Resource
     {
         return auth()->user()->hasAnyRole('admin');
     }
+
     public static function table(Table $table): Table
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new ModalitaPagamento())->getTable());
         $tableColumns = TableHelper::getColumns($columns);
-        $tableColumns[] = TextColumn::make('roles.name')
-            ->label('Ruolo')
-            ->badge();
+
         return $table
             ->columns($tableColumns)
             ->filters([])
@@ -78,14 +75,8 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $columns = DBHelper::getTableColumns((new User())->getTable());
+        $columns = DBHelper::getTableColumns((new ModalitaPagamento())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
-        $formSchema[] = Select::make('roles')
-            ->label('Ruoli')
-            ->multiple()
-            ->relationship('roles', 'name')
-            ->preload();
-
         return $form->schema($formSchema);
     }
 

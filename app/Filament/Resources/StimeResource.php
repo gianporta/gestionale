@@ -21,8 +21,8 @@ class StimeResource extends Resource
 {
     protected static ?string $model = Stime::class;
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?int $navigationSort = 6;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Sistema Task';
 
     public static function getModelLabel(): string
     {

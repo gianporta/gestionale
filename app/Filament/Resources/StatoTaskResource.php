@@ -20,9 +20,9 @@ use Illuminate\Support\Collection;
 class StatoTaskResource extends Resource
 {
     protected static ?string $model = StatoTask::class;
-    protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?int $navigationSort = 7;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?string $navigationIcon = 'heroicon-o-rocket-launch';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Sistema Task';
 
     public static function getModelLabel(): string
     {

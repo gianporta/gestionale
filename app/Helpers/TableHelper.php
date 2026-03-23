@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Cms;
 use App\Models\Customer;
 use App\Models\Packages;
+use App\Models\StatoDocumento;
 use App\Models\Stime;
 use App\Models\StatoTask;
 use App\Models\Repo;
@@ -42,6 +43,8 @@ class TableHelper
                 return ($value == 0) ? 'Produzione' : 'Staging';
             case 'stima':
                 return Stime::find($value)?->nome;
+            case 'stato_documento':
+                return StatoDocumento::find($value)?->nome;
             case 'categoria':
                 return Categoria::find($value)?->nome;
             case 'task_id':
@@ -174,6 +177,7 @@ class TableHelper
             'customer',
             'created_at',
             'updated_at',
+            'tipo_documento',
             'tipo_doc_fatt_el',
             'condizioni_pagamento',
             'modalita_pagamento',
@@ -190,7 +194,7 @@ class TableHelper
             'template',
             'file',
             'document_to_state',
-            'stato_documento',
+            'data_pagamento',
             'pagato',
             'anticipo',
             'frase_in_calce',

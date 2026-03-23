@@ -21,8 +21,8 @@ class CountriesResource extends Resource
 {
     protected static ?string $model = Countries::class;
     protected static ?string $navigationIcon = 'heroicon-o-globe-europe-africa';
-    protected static ?int $navigationSort = 3;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Sistema Indirizzo';
 
     public static function getModelLabel(): string
     {

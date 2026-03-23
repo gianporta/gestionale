@@ -3,21 +3,23 @@
 namespace App\Helpers;
 
 use App\Models\Caps;
+use App\Models\Categoria;
 use App\Models\Comuni;
+use App\Models\CondizioniPagamento;
 use App\Models\Countries;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Job;
+use App\Models\ModalitaPagamento;
 use App\Models\Packages;
 use App\Models\Provinces;
 use App\Models\Repo;
-use App\Models\Job;
-use App\Models\Categoria;
+use App\Models\Site;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
-use App\Models\Site;
-use App\Models\TipoAcquisto;
 use App\Models\Task;
+use App\Models\TipoAcquisto;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -115,16 +117,34 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'banca':
+                return [
+                    'type' => 'text',
+                    'readonly' => true,
+                    'default' => auth()->user()->banca ?? null,
+                ];
+            case 'iban':
+                return [
+                    'type' => 'text',
+                    'readonly' => true,
+                    'default' => auth()->user()->iban ?? null,
+                ];
+            case 'intestatario_conto':
+                return [
+                    'type' => 'text',
+                    'readonly' => true,
+                    'default' => auth()->user()->intestatario_conto ?? null,
+                ];
             case 'numero_documento':
                 return [
                     'type' => 'text',
-                    'disabled' => true,
+                    'readonly' => true,
                     'default' => Invoice::getNextNumeroDocumento()
                 ];
             case 'progressivo_sdi':
                 return [
                     'type' => 'text',
-                    'disabled' => true,
+                    'readonly' => true,
                     'default' => Invoice::getNextProgressivoSdi()
                 ];
             case 'stima':
@@ -162,6 +182,7 @@ class FormHelper
                         ->pluck('nome', 'id')
                         ->toArray()
                 ];
+            case 'data_scadenza':
             case 'data_pagamento':
             case 'data_documento':
             case 'data_lavorazione':
@@ -174,6 +195,8 @@ class FormHelper
                     'type' => 'text',
                     'default' => 'web'
                 ];
+            case 'mostra_ritenuta':
+            case 'mostra_inps':
             case 'sucuri':
             case 'varnish':
             case 'opcache':
@@ -190,6 +213,15 @@ class FormHelper
                         1 => 'Sì',
                     ],
                     'default' => 1,
+                ];
+            case 'somma_inps':
+                return [
+                    'type' => 'select',
+                    'options' => [
+                        0 => 'No',
+                        1 => 'Sì',
+                    ],
+                    'default' => 0,
                 ];
             case 'pacchetto_id':
                 return [
@@ -222,8 +254,26 @@ class FormHelper
                         ->toArray(),
                     'default' => 1
                 ];
-            case 'cliente':
             case 'cliente_id':
+                return [
+                    'type' => 'select',
+                    'options' => self::getClienteOptions(),
+                    'reactive' => true,
+                    'afterStateUpdated' => function ($state, Set $set) {
+                        $cliente = Customer::find($state);
+                        if (!$cliente) return;
+                        $set('cliente_ragione_sociale', $cliente->ragione_sociale);
+                        $set('cliente_company_id', $cliente->company_id);
+                        $set('cliente_partita_iva', $cliente->partita_iva);
+                        $set('cliente_codice_fiscale', $cliente->codice_fiscale);
+                        $set('cliente_indirizzo', $cliente->indirizzo);
+                        $set('cliente_cap', $cliente->cap);
+                        $set('cliente_citta', $cliente->citta);
+                        $set('cliente_provincia', $cliente->provincia);
+                        $set('cliente_nazione', $cliente->nazione);
+                    }
+                ];
+            case 'cliente':
                 return [
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
@@ -269,6 +319,24 @@ class FormHelper
                     'options' => self::getUserOptions(),
                     'default' => auth()->id(),
                 ];
+            case 'condizioni_pagamento':
+                return [
+                    'type' => 'select',
+                    'options' => CondizioniPagamento::pluck('nome', 'id')->toArray(),
+                    'default' => 1
+                ];
+            case 'modalita_pagamento':
+                return [
+                    'type' => 'select',
+                    'options' => ModalitaPagamento::pluck('nome', 'id')->toArray(),
+                    'default' => 1
+                ];
+            case 'document_to_state':
+                return [
+                    'type' => 'select',
+                    'options' => Countries::pluck('country_name', 'country_code')->toArray(),
+                    'default' => 'IT'
+                ];
             case 'id_repo':
                 return [
                     'type' => 'select',
@@ -290,18 +358,22 @@ class FormHelper
                         ->toArray(),
                     'default' => 'IT',
                 ];
+            case 'cliente_nazione':
             case 'nazione':
                 return [
                     'type' => 'country',
                 ];
+            case 'cliente_provincia':
             case 'provincia':
                 return [
                     'type' => 'province',
                 ];
+            case 'cliente_citta':
             case 'citta':
                 return [
                     'type' => 'city',
                 ];
+            case 'cliente_cap':
             case 'cap':
                 return [
                     'type' => 'cap',
@@ -450,6 +522,8 @@ class FormHelper
             }
             if (!empty($config['disabled']))
                 $field->disabled();
+            if (!empty($config['readonly']))
+                $field->readOnly();
             $formSchema[$column] = $field;
         }
         return $formSchema;
@@ -467,6 +541,15 @@ class FormHelper
             'two_factor_recovery_codes',
             'two_factor_confirmed_at',
             'durata',
+            'cliente_nazione',
+            'cliente_provincia',
+            'cliente_citta',
+            'cliente_cap',
+            'cliente_indirizzo',
+            'cliente_ragione_sociale',
+            'cliente_partita_iva',
+            'cliente_codice_fiscale',
+            'cliente_company_id',
         );
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');

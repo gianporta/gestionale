@@ -21,8 +21,8 @@ class ComuniResource extends Resource
 {
     protected static ?string $model = Comuni::class;
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
-    protected static ?int $navigationSort = 5;
-    protected static ?string $navigationGroup = 'Sistema';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Sistema Indirizzo';
 
     public static function getModelLabel(): string
     {
