@@ -10,8 +10,20 @@ use Illuminate\Support\Facades\DB;
 
 class PacchettiOverview extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
+    protected function getColumns(): int
+    {
+        return 4;
+    }
+    public function getDefaultTableRecordsPerPageSelectOption(): int
+    {
+        return 10;
+    }
 
+    public function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [10, 25, 50];
+    }
     public function table(Table $table): Table
     {
         return $table
@@ -63,7 +75,6 @@ class PacchettiOverview extends BaseWidget
                         ($record->ore_rimaste < ($record->ore * 0.3) ? 'warning' : 'success')
                     ),
             ])
-            ->defaultSort('ore_rimaste', 'asc')
-            ->paginated(false);
+            ->defaultSort('ore_rimaste', 'asc');
     }
 }

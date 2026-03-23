@@ -5,7 +5,7 @@ namespace App\Filament\Pages\Clienti;
 use App\Models\Hours;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\StatoTask;
 class Rilasci extends Page
 {
     protected static ?string $slug = 'clienti/rilasci';
@@ -27,7 +27,7 @@ class Rilasci extends Page
     {
         $clienteId = $this->getClienteId();
 
-        $rilascioId = \App\Models\StatoTask::where('nome', 'rilascio')->value('id');
+        $rilascioId = StatoTask::where('nome', 'rilascio')->value('id');
 
         return Hours::query()
             ->join('tasks', 'tasks.id', '=', 'hours.task_id')

@@ -28,6 +28,7 @@ use App\Filament\Pages\CartaIntestata;
 use App\Filament\Pages\ThreeDash;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\PacchettiOverview;
+use App\Filament\Widgets\RilasciOverview;
 use App\Filament\Widgets\FatturatoTotale;
 use App\Http\Middleware\RedirectDashboard;
 class AdminPanelProvider extends PanelProvider
@@ -61,6 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 DashboardKpiFatturato::class,
                 DashboardKpiIva::class,
                 PacchettiOverview::class,
+                RilasciOverview::class,
                 CalendarOre::class,
                 ProformaScaduti::class,
             ])
