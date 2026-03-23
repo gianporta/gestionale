@@ -22,6 +22,11 @@ class User extends Authenticatable
         'percentuale_ritenuta_di_acconto',
         'percentuale_inps',
         'percentuale_iva',
+        'ragione_sociale',
+        'p_iva',
+        'cf',
+        'indirizzo',
+        'site',
     ];
     protected $hidden = [
         'password',

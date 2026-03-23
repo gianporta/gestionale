@@ -297,17 +297,14 @@ class FormHelper
                     'options' => self::getClienteOptions(),
                     'reactive' => true,
                     'afterStateUpdated' => function ($state, Set $set) {
-                        $cliente = Customer::find($state);
-                        if (!$cliente) return;
-                        $set('cliente_ragione_sociale', $cliente->ragione_sociale);
-                        $set('cliente_company_id', $cliente->company_id);
-                        $set('cliente_partita_iva', $cliente->partita_iva);
-                        $set('cliente_codice_fiscale', $cliente->codice_fiscale);
-                        $set('cliente_indirizzo', $cliente->indirizzo);
-                        $set('cliente_cap', $cliente->cap);
-                        $set('cliente_citta', $cliente->citta);
-                        $set('cliente_provincia', $cliente->provincia);
-                        $set('cliente_nazione', $cliente->nazione);
+                        $set('content', [
+                            [
+                                'descrizione' => null,
+                                'ore' => null,
+                                'costo' => null,
+                                'imponibile' => 0,
+                            ]
+                        ]);
                     }
                 ];
             case 'cliente_id':
@@ -654,16 +651,7 @@ class FormHelper
             'two_factor_secret',
             'two_factor_recovery_codes',
             'two_factor_confirmed_at',
-            'durata',
-            'cliente_nazione',
-            'cliente_provincia',
-            'cliente_citta',
-            'cliente_cap',
-            'cliente_indirizzo',
-            'cliente_ragione_sociale',
-            'cliente_partita_iva',
-            'cliente_codice_fiscale',
-            'cliente_company_id',
+            'durata'
         );
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');
