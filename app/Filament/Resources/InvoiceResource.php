@@ -95,7 +95,7 @@ class InvoiceResource extends Resource
                         'numero_documento',
                         'progressivo_sdi',
                     ]), ARRAY_FILTER_USE_KEY))
-                    ->columns(2)
+                    ->columns(3)
                     ->columnSpan(1),
 
                 Section::make('Dati Banca')
@@ -104,7 +104,7 @@ class InvoiceResource extends Resource
                         'iban',
                         'intestatario_conto',
                     ]), ARRAY_FILTER_USE_KEY))
-                    ->columns(2)
+                    ->columns(3)
                     ->columnSpan(1),
 
             ]),
@@ -112,30 +112,20 @@ class InvoiceResource extends Resource
             Section::make('Cliente')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'cliente',
-                    'cliente_ragione_sociale',
-                    'cliente_company_id',
-                    'cliente_partita_iva',
-                    'cliente_codice_fiscale',
-                    'cliente_indirizzo',
-                    'cliente_cap',
-                    'cliente_citta',
-                    'cliente_provincia',
-                    'cliente_nazione',
                 ]), ARRAY_FILTER_USE_KEY))
-                ->columns(2),
+                ->columns(1),
+            Section::make('Attività')
+                ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'content',
+                ]), ARRAY_FILTER_USE_KEY))
+                ->columns(1),
 
             Grid::make(2)->schema([
                 Grid::make(1)->schema([
-                    Section::make('Condizioni di vendita')
-                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                            'mostra_inps',
-                            'mostra_ritenuta',
-                            'somma_inps',
-                        ]), ARRAY_FILTER_USE_KEY))
-                        ->columns(2),
-
                     Section::make('Pagamento')
                         ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'stato_documento',
+                            'document_to_state',
                             'condizioni_pagamento',
                             'modalita_pagamento',
                             'anticipo',
@@ -144,10 +134,15 @@ class InvoiceResource extends Resource
                             'data_scadenza',
                         ]), ARRAY_FILTER_USE_KEY))
                         ->columns(2),
-
+                    Section::make('Condizioni di vendita')
+                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                            'mostra_inps',
+                            'mostra_ritenuta',
+                            'somma_inps',
+                        ]), ARRAY_FILTER_USE_KEY))
+                        ->columns(3),
                     Section::make('Note')
                         ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                            'descrizione',
                             'frase_in_calce',
                         ]), ARRAY_FILTER_USE_KEY))
                         ->columns(1),
@@ -165,14 +160,6 @@ class InvoiceResource extends Resource
                             'netto_a_pagare',
                         ]), ARRAY_FILTER_USE_KEY))
                         ->columns(3),
-
-                    Section::make('Sistema')
-                        ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                            'stato_documento',
-                            'document_to_state',
-                        ]), ARRAY_FILTER_USE_KEY))
-                        ->columns(2),
-
                 ])->columnSpan(1),
 
             ]),

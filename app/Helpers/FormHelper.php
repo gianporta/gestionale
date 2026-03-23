@@ -23,6 +23,7 @@ use App\Models\TipoAcquisto;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -81,6 +82,9 @@ class FormHelper
         return Customer::query()
             ->where('tipo_cliente', 2)
             ->where('attivo', 1)
+            ->whereHas('jobs', function ($q) {
+                $q->where('stato_job', '!=', Job::STATO_CHIUSO);
+            })
             ->pluck('ragione_sociale', 'id')
             ->toArray();
     }
@@ -117,6 +121,20 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'pagato':
+                return [
+                    'type' => 'number',
+                    'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
+                ];
+            case 'imponibile':
+            case 'contributo_inps':
+            case 'iva':
+            case 'ritenuta di acconto':
+            case 'netto_a_pagare':
+                return [
+                    'type' => 'text',
+                    'readonly' => true,
+                ];
             case 'banca':
                 return [
                     'type' => 'text',
@@ -183,7 +201,16 @@ class FormHelper
                         ->toArray()
                 ];
             case 'data_scadenza':
+                return [
+                    'type' => 'date',
+                    'default' => fn(Get $get) => $get('data_documento')
+                        ? \Carbon\Carbon::parse($get('data_documento'))->addDays(30)->toDateString()
+                        : now()->addDays(30)->toDateString(),
+                ];
             case 'data_pagamento':
+                return [
+                    'type' => 'date',
+                ];
             case 'data_documento':
             case 'data_lavorazione':
                 return [
@@ -254,7 +281,7 @@ class FormHelper
                         ->toArray(),
                     'default' => 1
                 ];
-            case 'cliente_id':
+            case 'cliente':
                 return [
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
@@ -273,7 +300,7 @@ class FormHelper
                         $set('cliente_nazione', $cliente->nazione);
                     }
                 ];
-            case 'cliente':
+            case 'cliente_id':
                 return [
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
@@ -292,6 +319,7 @@ class FormHelper
                 return [
                     'type' => 'password',
                 ];
+            case 'num_ore':
             case 'costo':
             case 'max_ore':
             case 'ore_lavorate':
@@ -378,6 +406,11 @@ class FormHelper
                 return [
                     'type' => 'cap',
                 ];
+            case 'content':
+                return [
+                    'type' => 'repeater_attivita'
+                ];
+
             default:
                 return [
                     'type' => 'text',
@@ -493,6 +526,70 @@ class FormHelper
                     if (isset($config['default']))
                         $field->default($config['default']);
                     break;
+                case 'repeater_attivita':
+                    $field = Repeater::make('content')
+                        ->label('')
+                        ->reactive()
+                        ->schema([
+
+                            Select::make('descrizione')
+                                ->label('Attività')
+                                ->columnSpan(4)
+                                ->options(fn (Get $get) =>
+                                Job::query()
+                                    ->where('cliente', $get('../../cliente'))
+                                    ->selectRaw("id, CONCAT(nome, ' - ', descrizione) as label")
+                                    ->pluck('label', 'id')
+                                )
+                                ->searchable()
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, Get $get, Set $set) {
+                                    $job = Job::find($state);
+                                    if (!$job) return;
+
+                                    $ore = (float) ($get('ore') ?? 0);
+                                    $costo = (float) $job->costo_orario;
+
+                                    $set('costo', $costo);
+                                    $set('imponibile', $ore * $costo);
+                                    self::updateTotali($get, $set);
+                                }),
+
+                            TextInput::make('ore')
+                                ->columnSpan(1)
+                                ->numeric()
+                                ->reactive()
+                                ->afterStateUpdated(function (Get $get, Set $set) {
+                                    $ore = (float) ($get('ore') ?? 0);
+                                    $costo = (float) ($get('costo') ?? 0);
+
+                                    $set('imponibile', $ore * $costo);
+
+                                    self::updateTotali($get, $set);
+                                }),
+
+                            TextInput::make('costo')
+                                ->columnSpan(1)
+                                ->numeric()
+                                ->reactive()
+                                ->afterStateUpdated(function (Get $get, Set $set) {
+                                    $ore = (float) ($get('ore') ?? 0);
+                                    $costo = (float) ($get('costo') ?? 0);
+
+                                    $set('imponibile', $ore * $costo);
+
+                                    self::updateTotali($get, $set);
+                                }),
+
+                            TextInput::make('imponibile')
+                                ->columnSpan(1)
+                                ->numeric()
+                                ->disabled(),
+                        ])
+                        ->columns(7)
+                        ->defaultItems(1)
+                        ->addActionLabel('Aggiungi riga');
+                    break;
                 case 'decimal':
                     $field = TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
@@ -507,8 +604,13 @@ class FormHelper
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->numeric()
                         ->required(false);
-                    if (isset($config['fdefault']))
+
+                    if (isset($config['default']))
                         $field->default($config['default']);
+
+                    if (isset($config['disabled_callback']))
+                        $field->disabled($config['disabled_callback']);
+
                     break;
                 case 'text':
                 default:
@@ -558,9 +660,30 @@ class FormHelper
         $listExclude['quote'] = array();
         $listExclude['creditMemo'] = array();
         $listExclude['proforma'] = array();
-        $listExclude['invoice'] = array('tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
+        $listExclude['invoice'] = array('descrizione', 'tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
         $listExclude['externalInvoice'] = array();
         return $listExclude;
+    }
+    private static function updateTotali(Get $get, Set $set): void
+    {
+        $rows = $get('content') ?? [];
+        $imponibile = collect($rows)
+            ->sum(fn ($row) => (float)($row['imponibile'] ?? 0));
+        $set('imponibile', round($imponibile, 2));
+        $user = auth()->user();
+        $inpsPerc = (float) ($user->inps ?? 0);
+        $ritenutaPerc = (float) ($user->ritenuta ?? 0);
+        $mostraInps = $get('mostra_inps');
+        $mostraRitenuta = $get('mostra_ritenuta');
+        $inps = $mostraInps ? ($imponibile * $inpsPerc / 100) : 0;
+        $set('contributo_inps', round($inps, 2));
+        $ivaBase = $imponibile + $inps;
+        $iva = $ivaBase * 0.22;
+        $set('iva', round($iva, 2));
+        $ritenuta = $mostraRitenuta ? ($imponibile * $ritenutaPerc / 100) : 0;
+        $set('ritenuta_di_acconto', round($ritenuta, 2));
+        $netto = $imponibile + $inps + $iva - $ritenuta;
+        $set('netto_a_pagare', round($netto, 2));
     }
 }
 

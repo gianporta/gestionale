@@ -36,6 +36,7 @@ class JobsRelationManager extends RelationManager
                 ->columns(2),
             Section::make('Costi')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
+                    'num_ore',
                     'costo_orario',
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class Job  extends Model
 {
+    const STATO_CHIUSO = 0;
+    const STATO_APERTO = 1;
     protected $fillable = [
         'cliente',
         'attivo',
@@ -14,6 +16,7 @@ class Job  extends Model
         'descrizione',
         'iva',
         'costo',
+        'num_ore',
     ];
     public function customer()
     {
