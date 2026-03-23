@@ -215,6 +215,12 @@ class TableHelper
             'iva',
             'imponibile',
             'durata',
+            'nome_banca',
+            'iban_bonifici',
+            'intestatario_conto_corrente',
+            'percentuale_ritenuta_di_acconto',
+            'percentuale_inps',
+            'percentuale_iva',
         );
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');

@@ -129,7 +129,7 @@ class FormHelper
             case 'imponibile':
             case 'contributo_inps':
             case 'iva':
-            case 'ritenuta di acconto':
+            case 'ritenuta_di_acconto':
             case 'netto_a_pagare':
                 return [
                     'type' => 'text',
@@ -139,19 +139,19 @@ class FormHelper
                 return [
                     'type' => 'text',
                     'readonly' => true,
-                    'default' => auth()->user()->banca ?? null,
+                    'default' => auth()->user()->nome_banca ?? null,
                 ];
             case 'iban':
                 return [
                     'type' => 'text',
                     'readonly' => true,
-                    'default' => auth()->user()->iban ?? null,
+                    'default' => auth()->user()->iban_bonifici ?? null,
                 ];
             case 'intestatario_conto':
                 return [
                     'type' => 'text',
                     'readonly' => true,
-                    'default' => auth()->user()->intestatario_conto ?? null,
+                    'default' => auth()->user()->intestatario_conto_corrente ?? null,
                 ];
             case 'numero_documento':
                 return [
@@ -224,6 +224,16 @@ class FormHelper
                 ];
             case 'mostra_ritenuta':
             case 'mostra_inps':
+                return [
+                    'type' => 'select',
+                    'options' => [
+                        0 => 'No',
+                        1 => 'Sì',
+                    ],
+                    'default' => 1,
+                    'reactive' => true,
+                    'afterStateUpdated' => fn(Get $get, Set $set) => self::updateTotali($get, $set),
+                ];
             case 'sucuri':
             case 'varnish':
             case 'opcache':
@@ -486,9 +496,12 @@ class FormHelper
                         ->options($config['options'])
                         ->searchable()
                         ->required(false);
-
                     if (isset($config['default']))
                         $field->default($config['default']);
+                    if (!empty($config['reactive']))
+                        $field->live();
+                    if (isset($config['afterStateUpdated']))
+                        $field->afterStateUpdated($config['afterStateUpdated']);
                     break;
                 case 'datetime':
                     $field = DateTimePicker::make($column)
@@ -529,62 +542,59 @@ class FormHelper
                 case 'repeater_attivita':
                     $field = Repeater::make('content')
                         ->label('')
-                        ->reactive()
+                        ->live()
                         ->schema([
 
                             Select::make('descrizione')
                                 ->label('Attività')
                                 ->columnSpan(4)
-                                ->options(fn (Get $get) =>
-                                Job::query()
+                                ->options(fn(Get $get) => Job::query()
                                     ->where('cliente', $get('../../cliente'))
                                     ->selectRaw("id, CONCAT(nome, ' - ', descrizione) as label")
                                     ->pluck('label', 'id')
                                 )
                                 ->searchable()
-                                ->reactive()
+                                ->live()
                                 ->afterStateUpdated(function ($state, Get $get, Set $set) {
                                     $job = Job::find($state);
-                                    if (!$job) return;
+                                    if (!$job)
+                                        return;
 
-                                    $ore = (float) ($get('ore') ?? 0);
-                                    $costo = (float) $job->costo_orario;
+                                    $set('costo', (float)($job->costo_orario ?? 0));
 
-                                    $set('costo', $costo);
-                                    $set('imponibile', $ore * $costo);
+                                    if ((float)($get('ore') ?? 0) === 0 && !empty($job->num_ore))
+                                        $set('ore', (float)$job->num_ore);
+
+                                    self::updateRiga($get, $set);
                                     self::updateTotali($get, $set);
                                 }),
 
                             TextInput::make('ore')
+                                ->label('Ore')
                                 ->columnSpan(1)
                                 ->numeric()
-                                ->reactive()
+                                ->live(debounce: 300)
                                 ->afterStateUpdated(function (Get $get, Set $set) {
-                                    $ore = (float) ($get('ore') ?? 0);
-                                    $costo = (float) ($get('costo') ?? 0);
-
-                                    $set('imponibile', $ore * $costo);
-
+                                    self::updateRiga($get, $set);
                                     self::updateTotali($get, $set);
                                 }),
 
                             TextInput::make('costo')
+                                ->label('Costo')
                                 ->columnSpan(1)
                                 ->numeric()
-                                ->reactive()
+                                ->live(debounce: 300)
                                 ->afterStateUpdated(function (Get $get, Set $set) {
-                                    $ore = (float) ($get('ore') ?? 0);
-                                    $costo = (float) ($get('costo') ?? 0);
-
-                                    $set('imponibile', $ore * $costo);
-
+                                    self::updateRiga($get, $set);
                                     self::updateTotali($get, $set);
                                 }),
 
                             TextInput::make('imponibile')
+                                ->label('Imponibile')
                                 ->columnSpan(1)
                                 ->numeric()
-                                ->disabled(),
+                                ->readOnly()
+                                ->dehydrated(),
                         ])
                         ->columns(7)
                         ->defaultItems(1)
@@ -624,8 +634,10 @@ class FormHelper
             }
             if (!empty($config['disabled']))
                 $field->disabled();
-            if (!empty($config['readonly']))
+            if (!empty($config['readonly'])) {
                 $field->readOnly();
+                $field->dehydrated(true);
+            }
             $formSchema[$column] = $field;
         }
         return $formSchema;
@@ -664,26 +676,44 @@ class FormHelper
         $listExclude['externalInvoice'] = array();
         return $listExclude;
     }
+
+    private static function updateRiga(Get $get, Set $set): void
+    {
+        $ore = (float)($get('ore') ?? 0);
+        $costo = (float)($get('costo') ?? 0);
+
+        $set('imponibile', round($ore * $costo, 2));
+    }
+
     private static function updateTotali(Get $get, Set $set): void
     {
-        $rows = $get('content') ?? [];
-        $imponibile = collect($rows)
-            ->sum(fn ($row) => (float)($row['imponibile'] ?? 0));
-        $set('imponibile', round($imponibile, 2));
+        $rows = collect($get('../../content') ?? []);
+
+        $imponibile = $rows->sum(fn($row) => (float)($row['imponibile'] ?? 0));
+        $set('../../imponibile', round($imponibile, 2));
+
         $user = auth()->user();
-        $inpsPerc = (float) ($user->inps ?? 0);
-        $ritenutaPerc = (float) ($user->ritenuta ?? 0);
-        $mostraInps = $get('mostra_inps');
-        $mostraRitenuta = $get('mostra_ritenuta');
+
+        $inpsPerc = (float)($user->percentuale_inps ?? 0);
+        $ritenutaPerc = (float)($user->percentuale_ritenuta_di_acconto ?? 0);
+        $ivaPerc = (float)($user->percentuale_iva ?? 22);
+
+        $mostraInps = (int)($get('../../mostra_inps') ?? 0);
+        $mostraRitenuta = (int)($get('../../mostra_ritenuta') ?? 0);
+
         $inps = $mostraInps ? ($imponibile * $inpsPerc / 100) : 0;
-        $set('contributo_inps', round($inps, 2));
-        $ivaBase = $imponibile + $inps;
-        $iva = $ivaBase * 0.22;
-        $set('iva', round($iva, 2));
-        $ritenuta = $mostraRitenuta ? ($imponibile * $ritenutaPerc / 100) : 0;
-        $set('ritenuta_di_acconto', round($ritenuta, 2));
+        $set('../../contributo_inps', round($inps, 2));
+
+        $baseContributiva = $imponibile + $inps;
+
+        $iva = $baseContributiva * $ivaPerc / 100;
+        $set('../../iva', round($iva, 2));
+
+        $ritenuta = $mostraRitenuta ? ($baseContributiva * $ritenutaPerc / 100) : 0;
+        $set('../../ritenuta_di_acconto', round($ritenuta, 2));
+
         $netto = $imponibile + $inps + $iva - $ritenuta;
-        $set('netto_a_pagare', round($netto, 2));
+        $set('../../netto_a_pagare', round($netto, 2));
     }
 }
 

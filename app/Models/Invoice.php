@@ -28,24 +28,27 @@ class Invoice extends Model
         'cliente_citta',
         'cliente_provincia',
         'cliente_nazione',
-
         'banca',
         'iban',
         'intestatario_conto',
-
         'imponibile',
+        'contributo_inps',
         'iva',
+        'ritenuta_di_acconto',
         'netto_a_pagare',
-
+        'condizioni_pagamento',
+        'modalita_pagamento',
+        'document_to_state',
+        'stato_documento',
+        'anticipo',
         'pagato',
         'data_pagamento',
         'data_scadenza',
-
+        'mostra_inps',
+        'somma_inps',
+        'mostra_ritenuta',
         'descrizione',
         'frase_in_calce',
-
-        'stato_documento',
-
         'content',
     ];
 

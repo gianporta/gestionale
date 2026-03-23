@@ -159,7 +159,7 @@ class InvoiceResource extends Resource
                             'iva',
                             'netto_a_pagare',
                         ]), ARRAY_FILTER_USE_KEY))
-                        ->columns(3),
+                        ->columns(1),
                 ])->columnSpan(1),
 
             ]),

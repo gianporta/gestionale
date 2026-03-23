@@ -15,7 +15,13 @@ class User extends Authenticatable
         'name',
         'email',
         'cliente_id',
-        'password'
+        'password',
+        'nome_banca',
+        'iban_bonifici',
+        'intestatario_conto_corrente',
+        'percentuale_ritenuta_di_acconto',
+        'percentuale_inps',
+        'percentuale_iva',
     ];
     protected $hidden = [
         'password',
