@@ -108,6 +108,12 @@ class AdminPanelProvider extends PanelProvider
                     ->group('Clienti')
                     ->sort(3)
                     ->visible(fn() => auth()->user()->hasAnyRole(['cliente'])),
+                NavigationItem::make('Rilasci')
+                    ->icon('heroicon-o-rocket-launch')
+                    ->url('/admin/clienti/rilasci')
+                    ->group('Clienti')
+                    ->sort(4)
+                    ->visible(fn() => auth()->user()->hasAnyRole(['cliente'])),
                 NavigationItem::make('Dash')
                     ->icon('heroicon-o-chart-bar')
                     ->url('/admin/three-dash')
