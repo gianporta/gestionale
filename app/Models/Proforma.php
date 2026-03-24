@@ -1,19 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class Proforma  extends Model
+class Proforma extends Model
 {
     const TYPE_DOC = 4;
+
     protected $table = 'documenti';
+
+    protected $fillable = [
+        'numero_documento',
+        'data_documento',
+        'cliente',
+        'cliente_nazione',
+        'cliente_provincia',
+        'cliente_citta',
+        'cliente_cap',
+        'cliente_indirizzo',
+        'cliente_ragione_sociale',
+        'cliente_partita_iva',
+        'cliente_codice_fiscale',
+        'cliente_company_id',
+        'cliente_ragione_sociale',
+        'banca',
+        'iban',
+        'intestatario_conto',
+        'imponibile',
+        'contributo_inps',
+        'iva',
+        'ritenuta_di_acconto',
+        'netto_a_pagare',
+        'condizioni_pagamento',
+        'modalita_pagamento',
+        'document_to_state',
+        'stato_documento',
+        'anticipo',
+        'pagato',
+        'data_pagamento',
+        'data_scadenza',
+        'mostra_inps',
+        'somma_inps',
+        'mostra_ritenuta',
+        'descrizione',
+        'frase_in_calce',
+        'content',
+    ];
+
+    protected $casts = [
+        'data_documento' => 'date',
+        'data_pagamento' => 'date',
+        'data_scadenza' => 'date',
+
+        'imponibile' => 'float',
+        'contributo_inps' => 'float',
+        'iva' => 'float',
+        'ritenuta_di_acconto' => 'float',
+        'netto_a_pagare' => 'float',
+        'pagato' => 'boolean',
+
+        'content' => 'array',
+    ];
+
     protected static function booted()
     {
-        static::addGlobalScope('invoice', function ($query) {
-            $query->where('tipo_documento', self::TYPE_DOC);
+        static::creating(function ($model) {
+            $model->tipo_documento = self::TYPE_DOC;
+            if (empty($model->numero_documento))
+                $model->numero_documento = self::getNextNumeroDocumento();
         });
     }
-    protected $fillable = [
-    ];
+
+    public static function getNextNumeroDocumento(): int
+    {
+        $year = now()->year;
+
+        $lastNumber = DB::table('documenti')
+            ->where('tipo_documento', self::TYPE_DOC)
+            ->whereYear('data_documento', $year)
+            ->max('numero_documento');
+
+        return ($lastNumber ?? 0) + 1;
+    }
 }

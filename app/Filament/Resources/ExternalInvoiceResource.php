@@ -47,13 +47,13 @@ class ExternalInvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new ExternalInvoice())->getTable());
-        $tableColumns = TableHelper::getColumns($columns,'externalInvoice');
+        $tableColumns = TableHelper::getColumns($columns,'external_invoice');
 
         return $table
             ->columns($tableColumns)
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
-            ->actions(TableHelper::getTableActions())
+            ->actions(TableHelper::getTableActions('external_invoice'))
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

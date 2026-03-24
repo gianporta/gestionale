@@ -19,7 +19,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\DB;
-
+use Filament\Tables\Actions\Action;
 class TableHelper
 {
     public static function formatColumnValue(string $column, mixed $value): mixed
@@ -230,11 +230,11 @@ class TableHelper
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');
         $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','attivo');
-        $listExclude['quote'] = array('progressivo_sdi','attivo');
+        $listExclude['quote'] = array('progressivo_sdi','attivo','stato_documento','codice_fattura');
         $listExclude['creditMemo'] = array('codice_fattura','attivo');
         $listExclude['proforma'] = array('progressivo_sdi','codice_fattura','attivo');
         $listExclude['invoice'] = array('codice_fattura','attivo');
-        $listExclude['externalInvoice'] = array('codice_fattura','iva','attivo');
+        $listExclude['external_invoice'] = array('codice_fattura','iva','attivo');
         return $listExclude;
     }
 
@@ -287,17 +287,44 @@ class TableHelper
                 }),
         ];
     }
-    public static function getTableActions()
+    public static function getTableActions($type = '')
     {
-        return [
+        $actionsDocument = [];
+        if($type == 'invoice' || $type == 'external_invoice' || $type == 'quote' || $type == 'proforma') {
+            $actionsDocument = [
+                Action::make('print')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->label('')
+                    ->button()
+                    ->url(fn($record) => route('invoice.print', $record))
+                    ->openUrlInNewTab(),
+            ];
+        }
+        $actionsInvoice = [];
+        if($type == 'invoice' || $type == 'external_invoice') {
+            $actionsInvoice = [
+                Action::make('xml')
+                    ->icon('heroicon-o-code-bracket')
+                    ->color('warning')
+                    ->label('')
+                    ->button()
+                    ->action(fn($record) => redirect()->route('invoice.xml', $record)),
+            ];
+        }
+        $actionsGeneric = [
             EditAction::make()
                 ->color('warning')
+                ->label('')
                 ->button(),
-                DeleteAction::make()
-                    ->color('danger')
-                    ->button()
-                    ->requiresConfirmation(),
+            DeleteAction::make()
+                ->color('danger')
+                ->label('')
+                ->button()
+                ->requiresConfirmation(),
 
         ];
+        $actions = array_merge($actionsDocument, $actionsInvoice, $actionsGeneric);
+        return $actions;
     }
 }
