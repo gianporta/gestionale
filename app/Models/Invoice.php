@@ -57,10 +57,12 @@ class Invoice extends Model
         'data_pagamento' => 'date',
         'data_scadenza' => 'date',
 
-        'imponibile' => 'decimal:2',
-        'iva' => 'decimal:2',
-        'netto_a_pagare' => 'decimal:2',
-        'pagato' => 'decimal:2',
+        'imponibile' => 'float',
+        'contributo_inps' => 'float',
+        'iva' => 'float',
+        'ritenuta_di_acconto' => 'float',
+        'netto_a_pagare' => 'float',
+        'pagato' => 'boolean',
 
         'content' => 'array',
     ];
@@ -96,5 +98,11 @@ class Invoice extends Model
             ->max('progressivo_sdi');
 
         return ($lastNumber ?? 0) + 1;
+    }
+    public function getTipoDocumento(): string
+    {
+        return \DB::table('type_document')
+            ->where('id', $this->tipo_doc_fatt_el)
+            ->value('codice') ?? 'TD01';
     }
 }

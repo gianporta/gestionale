@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\InvoiceXmlController;
 Route::get('/', function () {
     return redirect('/admin');
 });
@@ -11,4 +12,4 @@ Route::get('/carta-intestata', function () {
 
 
 Route::get('/invoice/{invoice}/print', [InvoiceController::class, 'print'])->name('invoice.print');
-Route::get('/invoice/{invoice}/xml', [InvoiceController::class, 'xml'])->name('invoice.xml');
+Route::get('/invoice/{invoice}/xml', [InvoiceXmlController::class, 'generate'])->name('invoice.xml');

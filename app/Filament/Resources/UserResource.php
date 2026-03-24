@@ -47,7 +47,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new User())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns,'user');
         $tableColumns[] = TextColumn::make('roles.name')
             ->label('Ruolo')
             ->badge();

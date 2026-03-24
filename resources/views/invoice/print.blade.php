@@ -26,10 +26,12 @@ $user = auth()->user();
 
         {{-- CENTRO --}}
         <td style="width:33%; vertical-align:top;">
+            <div style="font-weight:bold;">Indirizzo fornitore</div>
             <span style="font-weight:bold;">Rag. Soc.</span> {{ $user->name }}<br>
             <span style="font-weight:bold;">P.IVA:</span> {{ $user->p_iva }}<br>
             <span style="font-weight:bold;">C.F.:</span> {{ $user->cf }}<br>
-            <span style="font-weight:bold;">Indirizzo:</span> {{ $user->indirizzo }}
+            <span style="font-weight:bold;">Indirizzo:</span> {{ $user->indirizzo }}<br>
+            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }})
         </td>
 
         {{-- DESTRA --}}

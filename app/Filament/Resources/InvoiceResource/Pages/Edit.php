@@ -28,7 +28,7 @@ class Edit extends EditRecord
                 ->label('Genera XML')
                 ->icon('heroicon-o-code-bracket')
                 ->color('warning')
-                ->action(fn () => redirect()->route('invoice.xml', $this->record)),
+                ->url(fn () => route('invoice.xml', $this->record)),
 
             Action::make('save_top')
                 ->label('Salva')

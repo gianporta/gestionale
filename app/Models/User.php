@@ -25,8 +25,13 @@ class User extends Authenticatable
         'ragione_sociale',
         'p_iva',
         'cf',
-        'indirizzo',
         'site',
+        'nazione',
+        'provincia',
+        'citta',
+        'cap',
+        'indirizzo',
+        'telefono'
     ];
     protected $hidden = [
         'password',

@@ -221,7 +221,12 @@ class TableHelper
             'percentuale_ritenuta_di_acconto',
             'percentuale_inps',
             'percentuale_iva',
+            'citta',
+            'site',
+            'cf',
+            'p_iva',
         );
+        $listExclude['user'] = array('ragione_sociale');
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');
         $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','attivo');
