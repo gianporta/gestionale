@@ -441,7 +441,7 @@ class FormHelper
                         ->options(fn() => Countries::orderBy('country_name')
                             ->pluck('country_name', 'country_code')
                         )
-                        ->default(fn (Get $get) => $get($column) ?: 'IT')
+                        ->default(fn(Get $get) => $get($column) ?: 'IT')
                         ->searchable()
                         ->preload()
                         ->reactive()
@@ -656,10 +656,10 @@ class FormHelper
         $listExclude['job_customer'] = array('costo');
         $listExclude['customer'] = array('banca', 'iban', 'intestatario_conto');
         $listExclude['acquisti'] = array();
-        $listExclude['quote'] = array();
+        $listExclude['quote'] = array('condizioni_pagamento', 'modalita_pagamento', 'stato_documento', 'data_pagamento', 'anticipo', 'pagato');
         $listExclude['creditMemo'] = array();
-        $listExclude['proforma'] = array();
-        $listExclude['invoice'] = array('descrizione', 'tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
+        $listExclude['proforma'] = array('anticipo');
+        $listExclude['invoice'] = array('anticipo', 'descrizione', 'tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
         $listExclude['externalInvoice'] = array();
         return $listExclude;
     }

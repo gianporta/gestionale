@@ -40,7 +40,6 @@ class Invoice extends Model
         'modalita_pagamento',
         'document_to_state',
         'stato_documento',
-        'anticipo',
         'pagato',
         'data_pagamento',
         'data_scadenza',

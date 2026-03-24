@@ -127,7 +127,6 @@ class ProformaResource extends Resource
                             'document_to_state',
                             'condizioni_pagamento',
                             'modalita_pagamento',
-                            'anticipo',
                             'pagato',
                             'data_pagamento',
                             'data_scadenza',

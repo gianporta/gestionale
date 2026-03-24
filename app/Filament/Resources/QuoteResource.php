@@ -123,13 +123,8 @@ class QuoteResource extends Resource
                 Grid::make(1)->schema([
                     Section::make('Pagamento')
                         ->schema(array_filter($formSchema, fn($k) => in_array($k, [
-                            'stato_documento',
                             'document_to_state',
-                            'condizioni_pagamento',
-                            'modalita_pagamento',
                             'anticipo',
-                            'pagato',
-                            'data_pagamento',
                             'data_scadenza',
                         ]), ARRAY_FILTER_USE_KEY))
                         ->columns(2),
