@@ -50,6 +50,7 @@ class PackagesResource extends Resource
 
         return $table
             ->columns($tableColumns)
+            ->defaultSort('id', 'desc')
             ->filters([])
             ->actions(TableHelper::getTableActions())
             ->bulkActions([

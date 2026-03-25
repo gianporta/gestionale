@@ -5,21 +5,22 @@ namespace App\Helpers;
 use App\Models\Categoria;
 use App\Models\Cms;
 use App\Models\Customer;
-use App\Models\Packages;
-use App\Models\StatoDocumento;
-use App\Models\Stime;
-use App\Models\StatoTask;
-use App\Models\Repo;
-use App\Models\Task;
 use App\Models\Job;
+use App\Models\Packages;
+use App\Models\Repo;
+use App\Models\StatoDocumento;
+use App\Models\StatoTask;
+use App\Models\Stime;
+use App\Models\Task;
 use App\Models\TipoAcquisto;
 use App\Models\User;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\DB;
-use Filament\Tables\Actions\Action;
+
 class TableHelper
 {
     public static function formatColumnValue(string $column, mixed $value): mixed
@@ -36,6 +37,9 @@ class TableHelper
                 return TipoAcquisto::find($value)?->nome;
             case 'stato_job':
                 return Job::getStatoJob()[$value];
+            case 'proforma':
+            case 'fatturato':
+            case 'pagato':
             case 'is_active':
             case 'attivo':
                 return ($value == 0) ? 'No' : 'Sì';
@@ -88,8 +92,8 @@ class TableHelper
                 break;
             case 'stato':
                 $col->badge()
-                    ->formatStateUsing(fn ($state) => StatoTask::find($state)?->nome ?? $state)
-                    ->color(fn ($state) => StatoTask::find($state)?->style ?? 'gray');
+                    ->formatStateUsing(fn($state) => StatoTask::find($state)?->nome ?? $state)
+                    ->color(fn($state) => StatoTask::find($state)?->style ?? 'gray');
                 break;
             case 'is_active':
             case 'attivo':
@@ -195,7 +199,6 @@ class TableHelper
             'file',
             'document_to_state',
             'data_pagamento',
-            'pagato',
             'anticipo',
             'frase_in_calce',
             'data_scadenza',
@@ -208,7 +211,6 @@ class TableHelper
             'ricevuta',
             'ricevutaname',
             'content',
-            'descrizione',
             'id',
             'contributo_inps',
             'ritenuta_di_acconto',
@@ -227,14 +229,14 @@ class TableHelper
             'p_iva',
         );
         $listExclude['user'] = array('ragione_sociale');
-        $listExclude['job_suppliers'] = array('costo_orario');
-        $listExclude['job_customer'] = array('costo');
-        $listExclude['acquisti'] = array('progressivo_sdi','numero_documento','attivo');
-        $listExclude['quote'] = array('progressivo_sdi','attivo','stato_documento','codice_fattura');
-        $listExclude['creditMemo'] = array('codice_fattura','attivo');
-        $listExclude['proforma'] = array('progressivo_sdi','codice_fattura','attivo');
-        $listExclude['invoice'] = array('codice_fattura','attivo');
-        $listExclude['external_invoice'] = array('codice_fattura','iva','attivo');
+        $listExclude['job_suppliers'] = array('costo_orario','descrizione');
+        $listExclude['job_customer'] = array('costo','descrizione');
+        $listExclude['acquisti'] = array('progressivo_sdi', 'numero_documento', 'attivo', 'pagato','descrizione');
+        $listExclude['quote'] = array('progressivo_sdi', 'attivo', 'stato_documento', 'codice_fattura', 'pagato','descrizione');
+        $listExclude['creditMemo'] = array('codice_fattura', 'attivo', 'pagato','descrizione');
+        $listExclude['proforma'] = array('progressivo_sdi', 'codice_fattura', 'attivo', 'pagato','descrizione');
+        $listExclude['invoice'] = array('codice_fattura', 'attivo', 'pagato','descrizione');
+        $listExclude['external_invoice'] = array('codice_fattura', 'iva', 'attivo', 'pagato','descrizione');
         return $listExclude;
     }
 
@@ -259,6 +261,7 @@ class TableHelper
         }
         return $tableColumns;
     }
+
     public static function getTableFilter()
     {
         return [
@@ -287,10 +290,11 @@ class TableHelper
                 }),
         ];
     }
+
     public static function getTableActions($type = '')
     {
         $actionsDocument = [];
-        if($type == 'invoice' || $type == 'external_invoice' || $type == 'quote' || $type == 'proforma') {
+        if ($type == 'invoice' || $type == 'external_invoice' || $type == 'quote' || $type == 'proforma') {
             $actionsDocument = [
                 Action::make('print')
                     ->icon('heroicon-o-printer')
@@ -302,7 +306,7 @@ class TableHelper
             ];
         }
         $actionsInvoice = [];
-        if($type == 'invoice' || $type == 'external_invoice') {
+        if ($type == 'invoice' || $type == 'external_invoice') {
             $actionsInvoice = [
                 Action::make('xml')
                     ->icon('heroicon-o-code-bracket')

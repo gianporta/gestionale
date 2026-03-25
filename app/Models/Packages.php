@@ -8,10 +8,12 @@ class Packages extends Model
 {
     protected $fillable = [
         'cliente_id',
-        'user_id',
         'nome',
         'costo_orario',
         'ore',
         'attivo',
+        'proforma',
+        'fatturato',
+        'pagato',
     ];
 }

@@ -234,6 +234,9 @@ class FormHelper
                     'reactive' => true,
                     'afterStateUpdated' => fn(Get $get, Set $set) => self::updateTotali($get, $set),
                 ];
+            case 'proforma':
+            case 'fatturato':
+            case 'pagato':
             case 'sucuri':
             case 'varnish':
             case 'opcache':
