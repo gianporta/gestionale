@@ -9,7 +9,7 @@
                 <tr>
                     <th class="text-left py-2">Task</th>
                     <th class="text-left py-2">Stima</th>
-                    <th class="text-right py-2">Ore lavorate</th>
+                    <th class="text-right py-2">Totale Ore Lavorate</th>
                     <th class="text-right py-2">Stato</th>
                 </tr>
                 </thead>
@@ -19,7 +19,7 @@
                 <tr class="border-b border-gray-800">
                     <td class="py-2">{{ $task->task }}</td>
                     <td class="py-2">{{ $task->stima ?? '-' }}</td>
-                    <td class="text-right py-2">{{ $task->ore_lavorate }}</td>
+                    <td class="text-right py-2">{{ $task->totale_ore_lavorate }}</td>
                     <td class="text-right py-2">
                         <span class="badge-status {{ $task->stato_style ?? 'default' }}">{{ $task->stato_nome ?? 'Unknown' }}</span>
                     </td>

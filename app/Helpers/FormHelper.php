@@ -650,7 +650,8 @@ class FormHelper
             'two_factor_secret',
             'two_factor_recovery_codes',
             'two_factor_confirmed_at',
-            'durata'
+            'durata',
+            'totale_ore_lavorate'
         );
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');

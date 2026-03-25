@@ -10,6 +10,7 @@ class Task extends Model
         'pacchetto_id',
         'task',
         'stima',
-        'attivo'
+        'task_ore',
+        'attivo',
     ];
 }

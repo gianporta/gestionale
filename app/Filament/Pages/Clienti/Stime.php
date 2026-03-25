@@ -54,7 +54,7 @@ class Stime extends Page
                 'stimes.nome as stima',
                 'stato_tasks.nome as stato_nome',
                 'stato_tasks.style as stato_style',
-                DB::raw('SUM(hours.ore_lavorate) as ore_lavorate')
+                'totale_ore_lavorate'
             )
             ->groupBy(
                 'tasks.id',
