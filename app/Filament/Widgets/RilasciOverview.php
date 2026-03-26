@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
+use App\Helpers\TableHelper;
 use Filament\Tables;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +26,7 @@ class RilasciOverview extends TableWidget
 
     public function getTableRecordsPerPageSelectOptions(): array
     {
-        return [10, 25, 50];
+        return TableHelper::getNumberRecordTable();
     }
 
     protected function getTableQuery(): Builder
@@ -35,7 +36,7 @@ class RilasciOverview extends TableWidget
         return Hours::query()
             ->from('hours as h')
             ->join('tasks as t', 't.id', '=', 'h.task_id')
-            ->join('packages as p', 'p.id', '=', 't.pacchetto_id')
+            ->join('packages as p', 'p.id', '=', 'h.packages_id')
             ->join('customers as c', 'c.id', '=', 'p.cliente_id')
             ->where('h.stato', $stato)
             ->select(
@@ -45,7 +46,7 @@ class RilasciOverview extends TableWidget
                 't.task',
                 'h.descrizione as desc'
             )
-            ->orderBy('h.id', 'desc'); // 🔥 FIX ERRORE
+            ->orderBy('h.id', 'desc');
     }
 
     protected function getTableColumns(): array

@@ -31,7 +31,7 @@ class Rilasci extends Page
 
         return Hours::query()
             ->join('tasks', 'tasks.id', '=', 'hours.task_id')
-            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->join('packages', 'packages.id', '=', 'hours.packages_id')
             ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo', 1)
             ->where('hours.stato', $rilascioId)

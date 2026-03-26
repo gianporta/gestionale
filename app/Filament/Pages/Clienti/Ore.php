@@ -29,7 +29,7 @@ class Ore extends Page
 
         return Hours::query()
             ->join('tasks', 'tasks.id', '=', 'hours.task_id')
-            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->join('packages', 'packages.id', '=', 'hours.packages_id')
             ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
             ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo', 1)

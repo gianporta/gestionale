@@ -84,8 +84,6 @@ class TaskResource extends Resource
     {
         return [
             'index' => Pages\Listing::route('/'),
-            'create' => Pages\Create::route('/create'),
-            'edit' => Pages\Edit::route('/{record}/edit'),
         ];
     }
 }

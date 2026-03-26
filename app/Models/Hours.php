@@ -14,6 +14,7 @@ class Hours  extends Model
         'stato',
         'user',
         'attivo',
+        'packages_id'
     ];
     protected static function booted()
     {

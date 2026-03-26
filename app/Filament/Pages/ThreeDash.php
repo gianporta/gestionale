@@ -27,24 +27,17 @@ class ThreeDash extends Page implements HasTable
     {
         return Packages::query()
             ->join('customers', 'customers.id', '=', 'packages.cliente_id')
-            ->leftJoin('tasks', 'tasks.pacchetto_id', '=', 'packages.id')
-            ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
             ->where('packages.attivo', 1)
+            ->whereRaw('COALESCE(packages.totale_ore_lavorate, 0) < packages.ore')
             ->select(
                 'packages.id',
                 'packages.nome',
                 'packages.ore',
                 'customers.ragione_sociale as cliente',
-                DB::raw('COALESCE(SUM(hours.ore_lavorate),0) as ore_usate'),
-                DB::raw('(packages.ore - COALESCE(SUM(hours.ore_lavorate),0)) as ore_rimaste')
+                DB::raw('COALESCE(packages.totale_ore_lavorate, 0) as ore_usate'),
+                DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste')
             )
-            ->groupBy(
-                'packages.id',
-                'packages.nome',
-                'packages.ore',
-                'customers.ragione_sociale'
-            )
-            ->orderByRaw('(packages.ore - COALESCE(SUM(hours.ore_lavorate),0)) ASC')
+            ->orderBy('customers.ragione_sociale')
             ->get();
     }
 
@@ -60,13 +53,22 @@ class ThreeDash extends Page implements HasTable
         return $table
             ->query(
                 Task::query()
-                    ->join('hours', 'hours.task_id', '=', 'tasks.id')
-                    ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
-                    ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+                    ->joinSub(
+                        DB::table('hours')
+                            ->selectRaw('MAX(id) as id, task_id')
+                            ->where('stato', '!=', 3)
+                            ->groupBy('task_id'),
+                        'hmax',
+                        'hmax.task_id',
+                        '=',
+                        'tasks.id'
+                    )
+                    ->join('hours', 'hours.id', '=', 'hmax.id')
+                    ->join('packages', 'packages.id', '=', 'hours.packages_id')
+                    ->join('customers', 'customers.id', '=', 'tasks.cliente_id')
                     ->leftJoin('users', 'users.id', '=', 'hours.user')
                     ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                     ->where('tasks.attivo', 1)
-                    ->where('hours.stato', '!=', 3)
                     ->select(
                         'tasks.id',
                         'tasks.task',

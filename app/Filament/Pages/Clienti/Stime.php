@@ -39,7 +39,7 @@ class Stime extends Page
 
         return Hours::query()
             ->join('tasks', 'tasks.id', '=', 'hours.task_id')
-            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->join('packages', 'packages.id', '=', 'hours.packages_id')
             ->leftJoin('stimes', 'stimes.id', '=', 'tasks.stima')
             ->joinSub($lastHoursSubquery, 'last_hours', function ($join) {
                 $join->on('last_hours.task_id', '=', 'tasks.id');
@@ -54,14 +54,15 @@ class Stime extends Page
                 'stimes.nome as stima',
                 'stato_tasks.nome as stato_nome',
                 'stato_tasks.style as stato_style',
-                'totale_ore_lavorate'
+                DB::raw('COALESCE(packages.totale_ore_lavorate,0) as totale_ore_lavorate')
             )
             ->groupBy(
                 'tasks.id',
                 'tasks.task',
                 'stimes.nome',
                 'stato_tasks.nome',
-                'stato_tasks.style'
+                'stato_tasks.style',
+                'packages.totale_ore_lavorate'
             )
             ->orderBy('tasks.task')
             ->get();

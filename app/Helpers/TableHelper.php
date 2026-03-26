@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\DB;
 
 class TableHelper
 {
+    public static function getNumberRecordTable(): array
+    {
+        return [10, 25, 50, -1];
+    }
     public static function formatColumnValue(string $column, mixed $value): mixed
     {
         switch ($column) {
@@ -227,16 +231,18 @@ class TableHelper
             'site',
             'cf',
             'p_iva',
+            'packages_id',
         );
         $listExclude['user'] = array('ragione_sociale');
-        $listExclude['job_suppliers'] = array('costo_orario','descrizione');
-        $listExclude['job_customer'] = array('costo','descrizione');
-        $listExclude['acquisti'] = array('progressivo_sdi', 'numero_documento', 'attivo', 'pagato','descrizione');
-        $listExclude['quote'] = array('progressivo_sdi', 'attivo', 'stato_documento', 'codice_fattura', 'pagato','descrizione');
-        $listExclude['creditMemo'] = array('codice_fattura', 'attivo', 'pagato','descrizione');
-        $listExclude['proforma'] = array('progressivo_sdi', 'codice_fattura', 'attivo', 'pagato','descrizione');
-        $listExclude['invoice'] = array('codice_fattura', 'attivo', 'pagato','descrizione');
-        $listExclude['external_invoice'] = array('codice_fattura', 'iva', 'attivo', 'pagato','descrizione');
+        $listExclude['job_suppliers'] = array('costo_orario', 'descrizione');
+        $listExclude['job_customer'] = array('costo', 'descrizione');
+        $listExclude['pack_vs_hours'] = array('descrizione', 'stato', 'attivo');
+        $listExclude['acquisti'] = array('progressivo_sdi', 'numero_documento', 'attivo', 'pagato', 'descrizione');
+        $listExclude['quote'] = array('progressivo_sdi', 'attivo', 'stato_documento', 'codice_fattura', 'pagato', 'descrizione');
+        $listExclude['creditMemo'] = array('codice_fattura', 'attivo', 'pagato', 'descrizione');
+        $listExclude['proforma'] = array('progressivo_sdi', 'codice_fattura', 'attivo', 'pagato', 'descrizione');
+        $listExclude['invoice'] = array('codice_fattura', 'attivo', 'pagato', 'descrizione');
+        $listExclude['external_invoice'] = array('codice_fattura', 'iva', 'attivo', 'pagato', 'descrizione');
         return $listExclude;
     }
 

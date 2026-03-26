@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Helpers\TableHelper;
 use App\Models\Packages;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -22,7 +23,7 @@ class PacchettiOverview extends BaseWidget
 
     public function getTableRecordsPerPageSelectOptions(): array
     {
-        return [10, 25, 50];
+        return TableHelper::getNumberRecordTable();
     }
     public function table(Table $table): Table
     {
@@ -30,22 +31,15 @@ class PacchettiOverview extends BaseWidget
             ->query(
                 Packages::query()
                     ->join('customers', 'customers.id', '=', 'packages.cliente_id')
-                    ->leftJoin('tasks', 'tasks.pacchetto_id', '=', 'packages.id')
-                    ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
                     ->where('packages.attivo', 1)
+                    ->whereRaw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) > 0')
                     ->select(
                         'packages.id',
                         'packages.nome',
                         'packages.ore',
                         'customers.ragione_sociale as cliente',
-                        DB::raw('COALESCE(SUM(CAST(hours.ore_lavorate as DECIMAL(10,2))),0) as ore_usate'),
-                        DB::raw('(packages.ore - COALESCE(SUM(CAST(hours.ore_lavorate as DECIMAL(10,2))),0)) as ore_rimaste')
-                    )
-                    ->groupBy(
-                        'packages.id',
-                        'packages.nome',
-                        'packages.ore',
-                        'customers.ragione_sociale'
+                        DB::raw('COALESCE(packages.totale_ore_lavorate, 0) as ore_usate'),
+                        DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste')
                     )
             )
             ->columns([

@@ -126,6 +126,7 @@ class FormHelper
                     'type' => 'number',
                     'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
                 ];
+            case 'packages_id':
             case 'imponibile':
             case 'contributo_inps':
             case 'iva':

@@ -30,23 +30,16 @@ class Pacchetti extends Page
 
         return Packages::query()
             ->join('customers', 'customers.id', '=', 'packages.cliente_id')
-            ->leftJoin('tasks', 'tasks.pacchetto_id', '=', 'packages.id')
-            ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
             ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo', 1)
+            ->whereRaw('COALESCE(packages.totale_ore_lavorate,0) < packages.ore')
             ->select(
                 'packages.id',
                 'packages.nome',
                 'packages.ore',
                 'customers.ragione_sociale as cliente',
-                DB::raw('COALESCE(SUM(hours.ore_lavorate),0) as ore_usate'),
-                DB::raw('(packages.ore - COALESCE(SUM(hours.ore_lavorate),0)) as ore_rimaste')
-            )
-            ->groupBy(
-                'packages.id',
-                'packages.nome',
-                'packages.ore',
-                'customers.ragione_sociale'
+                DB::raw('COALESCE(packages.totale_ore_lavorate,0) as ore_usate'),
+                DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate,0)) as ore_rimaste')
             )
             ->get();
     }
@@ -57,7 +50,7 @@ class Pacchetti extends Page
 
         return Hours::query()
             ->join('tasks', 'tasks.id', '=', 'hours.task_id')
-            ->join('packages', 'packages.id', '=', 'tasks.pacchetto_id')
+            ->join('packages', 'packages.id', '=', 'hours.packages_id')
             ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
             ->where('packages.cliente_id', $clienteId)
             ->where('packages.attivo', 1)
@@ -67,7 +60,7 @@ class Pacchetti extends Page
                 'tasks.task',
                 'stato_tasks.nome as stato_nome',
                 'stato_tasks.style as stato_style',
-                DB::raw('SUM(hours.ore_lavorate) as ore_lavorate')
+                DB::raw('SUM(CAST(REPLACE(hours.ore_lavorate, ",", ".") AS DECIMAL(10,2))) as ore_lavorate')
             )
             ->groupBy(
                 'tasks.id',
