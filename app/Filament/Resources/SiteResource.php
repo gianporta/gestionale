@@ -142,6 +142,16 @@ class SiteResource extends Resource
                                 $formSchema['tunnel_ssh'] ?? null,
                                 $formSchema['local_port'] ?? null,
                             ]),
+                        Section::make('Vpn')
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                $formSchema['vpn_host'] ?? null,
+                                $formSchema['vpn_name'] ?? null,
+                                $formSchema['vpn_user'] ?? null,
+                                $formSchema['vpn_psw'] ?? null,
+                                $formSchema['vpn_port'] ?? null,
+                            ]),
 
                         Section::make('Tecnologie')
                             ->collapsible()
