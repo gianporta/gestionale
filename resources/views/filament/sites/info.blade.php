@@ -89,6 +89,27 @@ cd " . ($record->base_dir ?? '~') }}
         @endif
     </div>
 
+    @if ($record->vpn)
+    <div class="rounded-lg bg-gray-800 p-4">
+        <div class="text-gray-400 mb-2">Vpn</div>
+
+        @if ($record->vpn_host)
+        <div><b>Host:</b> {{ $record->vpn_host }}</div>
+        @endif
+
+        @if ($record->vpn_name)
+        <div><b>Name:</b> {{ $record->vpn_name }}</div>
+        @endif
+
+        @if ($record->vpn_user)
+        <div><b>User:</b> {{ $record->vpn_user }}</div>
+        @endif
+
+        @if ($record->vpn_psw)
+        <div><b>Psw:</b> {{ $record->vpn_psw }}</div>
+        @endif
+    </div>
+    @endif
 
     <div class="rounded-lg bg-gray-800 p-4">
         <div class="text-gray-400 mb-2">Tecnologie</div>
