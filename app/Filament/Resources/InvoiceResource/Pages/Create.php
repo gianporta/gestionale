@@ -15,9 +15,7 @@ class Create extends CreateRecord
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')
-                ->action(function () {
-                    $this->save();
-                }),
+                ->submit('create')
         ];
     }
     protected function mutateFormDataBeforeSave(array $data): array
