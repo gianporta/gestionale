@@ -20,7 +20,9 @@ class Create extends CreateRecord
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')
-                ->submit('create')
+                ->action(function () {
+                    $this->create();
+                }),
         ];
     }
 }
