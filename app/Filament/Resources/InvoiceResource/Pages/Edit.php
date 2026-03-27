@@ -16,6 +16,11 @@ class Edit extends EditRecord
     {
         return [
             DeleteAction::make(),
+            Action::make('back')
+                ->label('Indietro')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(fn () => static::getResource()::getUrl('index')),
             Action::make('stampa')
                 ->label('Stampa PDF')
                 ->icon('heroicon-o-printer')

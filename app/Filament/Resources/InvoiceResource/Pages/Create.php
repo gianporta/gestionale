@@ -12,6 +12,11 @@ class Create extends CreateRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('back')
+                ->label('Indietro')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(fn () => static::getResource()::getUrl('index')),
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')
