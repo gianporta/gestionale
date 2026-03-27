@@ -52,29 +52,31 @@ class SiteResource extends Resource
         $columns = DBHelper::getTableColumns((new Site())->getTable());
         $tableColumns = TableHelper::getColumns($columns, 'siti');
 
-        return $table
-            ->columns($tableColumns)
-            ->filters([])
-            ->actions(TableHelper::getTableActions())
-            ->bulkActions([
-                BulkActionGroup::make([
-                    BulkAction::make('duplicate')
-                        ->label('Duplica selezionati')
-                        ->icon('heroicon-o-document-duplicate')
-                        ->action(function (Collection $records) {
+        return TableHelper::applySearchToTable(
+            $table
+                ->columns($tableColumns)
+                ->filters([])
+                ->actions(TableHelper::getTableActions())
+                ->bulkActions([
+                    BulkActionGroup::make([
+                        BulkAction::make('duplicate')
+                            ->label('Duplica selezionati')
+                            ->icon('heroicon-o-document-duplicate')
+                            ->action(function (Collection $records) {
 
-                            foreach ($records as $record) {
-                                $new = $record->replicate();
+                                foreach ($records as $record) {
+                                    $new = $record->replicate();
 
-                                if (isset($new->email))
-                                    $new->email = $record->email . '.copy';
+                                    if (isset($new->email))
+                                        $new->email = $record->email . '.copy';
 
-                                $new->save();
-                            }
-                        }),
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+                                    $new->save();
+                                }
+                            }),
+                        DeleteBulkAction::make(),
+                    ]),
+                ])
+        );
     }
 
     public static function form(Form $form): Form
@@ -85,9 +87,7 @@ class SiteResource extends Resource
         return $form->schema([
             Grid::make(2)
                 ->schema([
-
                     Grid::make(1)->schema([
-
                         Section::make('Generale')
                             ->collapsible()
                             ->collapsed()
@@ -97,7 +97,6 @@ class SiteResource extends Resource
                                 $formSchema['ambiente'] ?? null,
                                 $formSchema['url'] ?? null,
                             ]),
-
                         Section::make('Accesso Web')
                             ->collapsible()
                             ->collapsed()
@@ -116,7 +115,6 @@ class SiteResource extends Resource
                                 $formSchema['cpanel_user'] ?? null,
                                 $formSchema['cpanel_psw'] ?? null,
                             ]),
-
                         Section::make('Accesso Server')
                             ->collapsible()
                             ->collapsed()
@@ -155,7 +153,6 @@ class SiteResource extends Resource
                                 $formSchema['composer_version'] ?? null,
                                 $formSchema['elasticsearch_version'] ?? null,
                             ]),
-
                         Section::make('Integrazioni')
                             ->collapsible()
                             ->collapsed()
@@ -168,7 +165,6 @@ class SiteResource extends Resource
                                 $formSchema['trello'] ?? null,
                                 $formSchema['clickup'] ?? null,
                             ]),
-
                         Section::make('VPN')
                             ->collapsible()
                             ->collapsed()
@@ -180,7 +176,6 @@ class SiteResource extends Resource
                                 $formSchema['vpn_psw'] ?? null,
                                 $formSchema['vpn_port'] ?? null,
                             ]),
-
                         Section::make('Altro')
                             ->collapsible()
                             ->collapsed()

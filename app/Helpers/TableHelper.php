@@ -19,8 +19,9 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -308,6 +309,45 @@ class TableHelper
                     );
                 }),
         ];
+    }
+    public static function applySearchToTable($table)
+    {
+        return $table->modifyQueryUsing(function ($query) {
+
+            $search = request()->get('tableSearch');
+
+            if (!$search)
+                return $query;
+
+            return TableHelper::applyGlobalSearch($query, $search);
+        });
+    }
+    public static function applyGlobalSearch(Builder $query, string $search): Builder
+    {
+        $searchMap = [
+            'cliente_id' => ['model' => Customer::class, 'field' => 'ragione_sociale'],
+            'cliente' => ['model' => Customer::class, 'field' => 'ragione_sociale'],
+            'cms' => ['model' => Cms::class, 'field' => 'nome'],
+            'id_user' => ['model' => User::class, 'field' => 'name'],
+            'id_repo' => ['model' => Repo::class, 'field' => 'packages'],
+        ];
+
+        return $query->where(function ($q) use ($search, $searchMap) {
+
+            foreach ($searchMap as $column => $config) {
+
+                if (!\Schema::hasColumn($q->getModel()->getTable(), $column))
+                    continue;
+
+                $model = $config['model'];
+                $field = $config['field'];
+
+                $q->orWhereIn($column, $model::query()
+                    ->select('id')
+                    ->where($field, 'like', "%{$search}%"));
+            }
+
+        });
     }
 
     public static function getTableActions($type = '')
