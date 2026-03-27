@@ -1,5 +1,5 @@
 <div class="mt-2">
-    @if($ambiente === 'production')
+    @if($ambiente === 0)
     <div class="w-full text-center py-3 rounded-lg bg-red-600 text-white font-semibold">
         PRODUZIONE
     </div>
