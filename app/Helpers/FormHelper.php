@@ -667,7 +667,6 @@ class FormHelper
         );
         $listExclude['job_suppliers'] = array('costo_orario');
         $listExclude['job_customer'] = array('costo');
-        $listExclude['siti'] = array('attivo');
         $listExclude['customer'] = array('banca', 'iban', 'intestatario_conto');
         $listExclude['acquisti'] = array();
         $listExclude['quote'] = array('condizioni_pagamento', 'modalita_pagamento', 'stato_documento', 'data_pagamento', 'anticipo', 'pagato');
