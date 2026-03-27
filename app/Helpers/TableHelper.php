@@ -260,7 +260,7 @@ class TableHelper
             'cms' => ['table' => 'cms', 'field' => 'nome'],
             'id_user' => ['table' => 'users', 'field' => 'name'],
             'id_repo' => ['table' => 'repos', 'field' => 'packages'],
-            'task_id' => ['table' => 'tasks', 'field' => 'nome'],
+            'task_id' => ['table' => 'tasks', 'field' => 'task'],
         ];
 
         foreach ($columns as $column) {
