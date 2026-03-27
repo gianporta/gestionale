@@ -7,6 +7,7 @@ class Site  extends Model
 {
     protected $fillable = [
         'brand',
+        'cliente_id',
         'ambiente',
         'url',
         'admin_url',
