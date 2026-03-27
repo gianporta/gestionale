@@ -16,20 +16,22 @@ class Edit extends EditRecord
     {
         return [
             DeleteAction::make(),
-
             Action::make('stampa')
                 ->label('Stampa PDF')
                 ->icon('heroicon-o-printer')
                 ->color('success')
                 ->url(fn () => route('invoice.print', $this->record))
                 ->openUrlInNewTab(),
-
             Action::make('xml')
                 ->label('Genera XML')
                 ->icon('heroicon-o-code-bracket')
                 ->color('warning')
                 ->url(fn () => route('invoice.xml', $this->record)),
-
+            Action::make('new')
+                ->label('Nuovo')
+                ->icon('heroicon-o-plus')
+                ->color('success')
+                ->url(fn () => static::getResource()::getUrl('create')),
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')

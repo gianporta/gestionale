@@ -14,6 +14,11 @@ class Edit extends EditRecord
     {
         return [
             DeleteAction::make(),
+            Action::make('new')
+                ->label('Nuovo')
+                ->icon('heroicon-o-plus')
+                ->color('success')
+                ->url(fn () => static::getResource()::getUrl('create')),
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')
