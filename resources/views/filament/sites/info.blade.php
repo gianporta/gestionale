@@ -115,7 +115,7 @@ cd " . ($record->base_dir ?? '~') }}
         <div class="text-gray-400 mb-2">Tecnologie</div>
 
         @if ($record->cms)
-        <div><b>CMS:</b> {{ $record->cms }}</div>
+        <div><b>CMS:</b> {{ $record->cmsRel?->nome }}</div>
         @endif
 
         @if ($record->cms_version)

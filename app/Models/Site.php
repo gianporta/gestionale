@@ -68,4 +68,8 @@ class Site  extends Model
     {
         return ['Produzione', 'Staging'];
     }
+    public function cmsRel()
+    {
+        return $this->belongsTo(Cms::class, 'cms');
+    }
 }
