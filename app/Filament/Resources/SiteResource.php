@@ -52,31 +52,29 @@ class SiteResource extends Resource
         $columns = DBHelper::getTableColumns((new Site())->getTable());
         $tableColumns = TableHelper::getColumns($columns, 'siti');
 
-        return TableHelper::applySearchToTable(
-            $table
-                ->columns($tableColumns)
-                ->filters([])
-                ->actions(TableHelper::getTableActions())
-                ->bulkActions([
-                    BulkActionGroup::make([
-                        BulkAction::make('duplicate')
-                            ->label('Duplica selezionati')
-                            ->icon('heroicon-o-document-duplicate')
-                            ->action(function (Collection $records) {
+        return $table
+            ->columns($tableColumns)
+            ->filters([])
+            ->actions(TableHelper::getTableActions())
+            ->bulkActions([
+                BulkActionGroup::make([
+                    BulkAction::make('duplicate')
+                        ->label('Duplica selezionati')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->action(function (Collection $records) {
 
-                                foreach ($records as $record) {
-                                    $new = $record->replicate();
+                            foreach ($records as $record) {
+                                $new = $record->replicate();
 
-                                    if (isset($new->email))
-                                        $new->email = $record->email . '.copy';
+                                if (isset($new->email))
+                                    $new->email = $record->email . '.copy';
 
-                                    $new->save();
-                                }
-                            }),
-                        DeleteBulkAction::make(),
-                    ]),
-                ])
-        );
+                                $new->save();
+                            }
+                        }),
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function form(Form $form): Form

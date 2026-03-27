@@ -252,12 +252,24 @@ class TableHelper
     public static function getColumns($columns, $type = ''): array
     {
         $tableColumns = [];
+        $searchMap = [
+            'cliente_id' => ['table' => 'customers', 'field' => 'ragione_sociale'],
+            'cliente' => ['table' => 'customers', 'field' => 'ragione_sociale'],
+            'cms' => ['table' => 'cms', 'field' => 'nome'],
+            'id_user' => ['table' => 'users', 'field' => 'name'],
+            'id_repo' => ['table' => 'repos', 'field' => 'packages'],
+        ];
+
         foreach ($columns as $column) {
             if (in_array($column, TableHelper::getExcludedColumns()['default']))
                 continue;
+
             if ($type != '' && in_array($column, TableHelper::getExcludedColumns()[$type]))
                 continue;
-            $label = isset($column['label']) ? $column['label'] : ucfirst(str_replace('_', ' ', $column));
+
+            $formatted = TableHelper::formatColumnValue($column, null);
+            $label = $formatted['label'] ?? ucfirst(str_replace('_', ' ', $column));
+
             $col = TextColumn::make($column)
                 ->label($label)
                 ->sortable()
@@ -265,22 +277,25 @@ class TableHelper
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
-            TableHelper::decorateColumn($column, $col);
-            $tableColumns[] = $col;
-            if (in_array($column, ['cliente', 'cliente_id'])) {
+
+            if (isset($searchMap[$column]))
                 $col->searchable(
-                    query: function (Builder $query, string $search) use ($column) {
-                        return $query->whereIn($column, Customer::query()
-                            ->select('id')
-                            ->where('ragione_sociale', 'like', "%{$search}%")
+                    query: function (\Illuminate\Database\Eloquent\Builder $query, string $search) use ($column, $searchMap) {
+                        return $query->whereIn(
+                            $column,
+                            DB::table($searchMap[$column]['table'])
+                                ->select('id')
+                                ->where($searchMap[$column]['field'], 'like', "%{$search}%")
                         );
                     }
                 );
-            } else
+            else
                 $col->searchable();
+
             TableHelper::decorateColumn($column, $col);
             $tableColumns[] = $col;
         }
+
         return $tableColumns;
     }
 
