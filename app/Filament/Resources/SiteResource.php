@@ -93,6 +93,7 @@ class SiteResource extends Resource
                             ->collapsed()
                             ->schema([
                                 $formSchema['brand'] ?? null,
+                                $formSchema['cliente_id'] ?? null,
                                 $formSchema['ambiente'] ?? null,
                                 $formSchema['url'] ?? null,
                             ]),
