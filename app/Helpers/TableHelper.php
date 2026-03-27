@@ -240,7 +240,7 @@ class TableHelper
         $listExclude['job_customer'] = array('costo', 'descrizione');
         $listExclude['siti'] = array('attivo');
         $listExclude['task'] = array('attivo');
-        $listExclude['packages'] = array('attivo');
+        $listExclude['package'] = array('attivo');
         $listExclude['pack_vs_hours'] = array('descrizione', 'stato', 'attivo');
         $listExclude['acquisti'] = array('progressivo_sdi', 'numero_documento', 'attivo', 'pagato', 'descrizione');
         $listExclude['quote'] = array('progressivo_sdi', 'attivo', 'stato_documento', 'codice_fattura', 'pagato', 'descrizione');
