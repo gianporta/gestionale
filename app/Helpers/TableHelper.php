@@ -265,6 +265,8 @@ class TableHelper
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
+            TableHelper::decorateColumn($column, $col);
+            $tableColumns[] = $col;
             if (in_array($column, ['cliente', 'cliente_id'])) {
                 $col->searchable(
                     query: function (Builder $query, string $search) use ($column) {
@@ -313,13 +315,27 @@ class TableHelper
     public static function applySearchToTable($table)
     {
         return $table->modifyQueryUsing(function ($query) {
-
-            $search = request()->get('tableSearch');
-
+            $search = request()->input('tableSearch');
             if (!$search)
                 return $query;
-
-            return TableHelper::applyGlobalSearch($query, $search);
+            return $query->where(function ($q) use ($search) {
+                if (\Schema::hasColumn($q->getModel()->getTable(), 'nome'))
+                    $q->orWhere('nome', 'like', "%{$search}%");
+                if (\Schema::hasColumn($q->getModel()->getTable(), 'url'))
+                    $q->orWhere('url', 'like', "%{$search}%");
+                if (\Schema::hasColumn($q->getModel()->getTable(), 'cliente_id'))
+                    $q->orWhereIn('cliente_id', function ($sub) use ($search) {
+                        $sub->select('id')
+                            ->from('customers')
+                            ->where('ragione_sociale', 'like', "%{$search}%");
+                    });
+                if (\Schema::hasColumn($q->getModel()->getTable(), 'cliente'))
+                    $q->orWhereIn('cliente', function ($sub) use ($search) {
+                        $sub->select('id')
+                            ->from('customers')
+                            ->where('ragione_sociale', 'like', "%{$search}%");
+                    });
+            });
         });
     }
     public static function applyGlobalSearch(Builder $query, string $search): Builder
