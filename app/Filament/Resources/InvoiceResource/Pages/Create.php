@@ -3,11 +3,23 @@
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use App\Models\Customer;
 class Create extends CreateRecord
 {
     protected static string $resource = InvoiceResource::class;
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('save_top')
+                ->label('Salva')
+                ->color('primary')
+                ->action(function () {
+                    $this->save();
+                }),
+        ];
+    }
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (!empty($data['cliente'])) {
