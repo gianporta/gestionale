@@ -28,8 +28,10 @@ class ThreeDash extends Page implements HasTable
         return Packages::query()
             ->join('customers', 'customers.id', '=', 'packages.cliente_id')
             ->where('packages.attivo', 1)
-            ->where('packages.saldato', 0)
-            ->whereColumn(DB::raw('COALESCE(packages.totale_ore_lavorate, 0)'), '<', 'packages.ore')
+            ->where(function ($q) {
+                $q->whereColumn('packages.ore', '!=', 'packages.totale_ore_lavorate')
+                    ->orWhere('packages.saldato', 0);
+            })
             ->select(
                 'packages.id',
                 'packages.nome',
