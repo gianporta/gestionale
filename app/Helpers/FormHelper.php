@@ -235,9 +235,6 @@ class FormHelper
                     'reactive' => true,
                     'afterStateUpdated' => fn(Get $get, Set $set) => self::updateTotali($get, $set),
                 ];
-            case 'proforma':
-            case 'fatturato':
-            case 'pagato':
             case 'sucuri':
             case 'varnish':
             case 'opcache':
@@ -245,6 +242,17 @@ class FormHelper
             case 'enable_ip':
             case 'vpn':
             case 'tunnel_ssh':
+            return [
+                'type' => 'select',
+                'options' => [
+                    0 => 'No',
+                    1 => 'Sì',
+                ],
+                'default' => 0,
+            ];
+            case 'proforma':
+            case 'fatturato':
+            case 'pagato':
             case 'attivo':
             case 'is_active':
                 return [
