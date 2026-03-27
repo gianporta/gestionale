@@ -101,10 +101,10 @@ class SiteResource extends Resource
                             ->collapsed()
                             ->schema([
                                 $formSchema['admin_url'] ?? null,
-                                $formSchema['http_user'] ?? null,
-                                $formSchema['http_psw'] ?? null,
                                 $formSchema['admin_user'] ?? null,
                                 $formSchema['admin_psw'] ?? null,
+                                $formSchema['http_user'] ?? null,
+                                $formSchema['http_psw'] ?? null,
                             ]),
                         Section::make('Cpanel')
                             ->collapsible()
