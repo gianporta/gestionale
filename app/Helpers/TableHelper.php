@@ -58,7 +58,7 @@ class TableHelper
             case 'categoria':
                 return ['value' => Categoria::find($value)?->nome];
             case 'task_id':
-                return ['value' => Task::find($value)?->task];
+                return ['label'=>'Task','value' => Task::find($value)?->task];
             case 'cms':
                 return ['value' => Cms::find($value)?->nome];
             case 'id_user':
@@ -260,6 +260,7 @@ class TableHelper
             'cms' => ['table' => 'cms', 'field' => 'nome'],
             'id_user' => ['table' => 'users', 'field' => 'name'],
             'id_repo' => ['table' => 'repos', 'field' => 'packages'],
+            'task_id' => ['table' => 'tasks', 'field' => 'nome'],
         ];
 
         foreach ($columns as $column) {
