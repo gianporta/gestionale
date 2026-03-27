@@ -271,9 +271,9 @@ class TableHelper
                         );
                     }
                 );
-            } else {
-                $col->searchable();
             }
+//            else
+//                $col->searchable();
             TableHelper::decorateColumn($column, $col);
             $tableColumns[] = $col;
         }
