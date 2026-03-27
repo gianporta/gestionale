@@ -232,6 +232,7 @@ class TableHelper
             'cf',
             'p_iva',
             'packages_id',
+            'cms_version',
         );
         $listExclude['user'] = array('ragione_sociale');
         $listExclude['job_suppliers'] = array('costo_orario', 'descrizione');
