@@ -1,4 +1,0 @@
-TFU: staging@138.68.95.128
-Bicocchi: staging@157.230.25.50
-Villoresi: staging@209.38.224.235
-F&M: staging@167.71.62.192

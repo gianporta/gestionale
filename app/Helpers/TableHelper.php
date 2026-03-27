@@ -258,7 +258,19 @@ class TableHelper
             $col = TextColumn::make($column)
                 ->label(ucfirst(str_replace('_', ' ', $column)))
                 ->sortable()
-                ->searchable()
+                ->searchable(
+                    query: function ($query, string $search) use ($column) {
+                        if (in_array($column, ['cliente', 'cliente_id'])) {
+                            $query->whereIn($column, function ($q) use ($search) {
+                                $q->select('id')
+                                    ->from('customers')
+                                    ->where('ragione_sociale', 'like', "%{$search}%");
+                            });
+                            return;
+                        }
+                        $query->orWhere($column, 'like', "%{$search}%");
+                    }
+                )
                 ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
