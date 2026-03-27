@@ -43,7 +43,7 @@ class TableHelper
                 return Job::getStatoJob()[$value];
             case 'proforma':
             case 'fatturato':
-            case 'pagato':
+            case 'saldato':
             case 'is_active':
             case 'attivo':
                 return ($value == 0) ? 'No' : 'Sì';

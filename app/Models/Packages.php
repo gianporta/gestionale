@@ -14,6 +14,6 @@ class Packages extends Model
         'attivo',
         'proforma',
         'fatturato',
-        'pagato',
+        'saldato',
     ];
 }
