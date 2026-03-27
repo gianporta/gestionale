@@ -33,37 +33,37 @@ class TableHelper
         switch ($column) {
             case 'costo':
             case 'netto_a_pagare':
-                return ['value' =>number_format((float)$value, 2, ',', '.') . ' €'];
+                return ['value' => number_format((float)$value, 2, ',', '.') . ' €'];
             case 'data_lavorazione':
             case 'data_pagamento':
             case 'data_documento':
-                return ['value' =>\Carbon\Carbon::parse($value)->format('d/m/Y')];
+                return ['value' => \Carbon\Carbon::parse($value)->format('d/m/Y')];
             case 'tipo_acquisto':
-                return ['value' =>TipoAcquisto::find($value)?->nome];
+                return ['value' => TipoAcquisto::find($value)?->nome];
             case 'stato_job':
-                return ['value' =>Job::getStatoJob()[$value]];
+                return ['value' => Job::getStatoJob()[$value]];
             case 'proforma':
             case 'fatturato':
             case 'saldato':
             case 'is_active':
             case 'attivo':
-                return ['value' =>($value == 0) ? 'No' : 'Sì'];
+                return ['value' => ($value == 0) ? 'No' : 'Sì'];
             case 'ambiente':
                 return ($value == 0) ? 'Produzione' : 'Staging';
             case 'stima':
-                return ['value' =>Stime::find($value)?->nome];
+                return ['value' => Stime::find($value)?->nome];
             case 'stato_documento':
-                return ['value' =>StatoDocumento::find($value)?->nome];
+                return ['value' => StatoDocumento::find($value)?->nome];
             case 'categoria':
-                return ['value' =>Categoria::find($value)?->nome];
+                return ['value' => Categoria::find($value)?->nome];
             case 'task_id':
-                return ['value' =>Task::find($value)?->task];
+                return ['value' => Task::find($value)?->task];
             case 'cms':
-                return ['value' =>Cms::find($value)?->nome];
+                return ['value' => Cms::find($value)?->nome];
             case 'id_user':
-                return ['value' =>User::find($value)?->name];
+                return ['value' => User::find($value)?->name];
             case 'id_repo':
-                return ['value' =>Repo::find($value)?->packages];
+                return ['value' => Repo::find($value)?->packages];
             case 'cliente':
             case 'cliente_id':
                 return ['label' => 'Cliente', 'value' => Customer::find($value)?->ragione_sociale];
@@ -73,13 +73,13 @@ class TableHelper
                     ->where('packages.id', $value)
                     ->select('packages.nome', 'customers.ragione_sociale as cliente')
                     ->first();
-                return ['value' =>$package
+                return ['value' => $package
                     ? $package->cliente . ' - ' . $package->nome
                     : null];
             case 'stato':
-                return ['value' =>StatoTask::find($value)?->nome];
+                return ['value' => StatoTask::find($value)?->nome];
             default:
-                return ['value' =>$value];
+                return ['value' => $value];
         }
     }
 
@@ -260,7 +260,7 @@ class TableHelper
             $col = TextColumn::make($column)
                 ->label($label)
                 ->sortable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state)['value'])
+                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
