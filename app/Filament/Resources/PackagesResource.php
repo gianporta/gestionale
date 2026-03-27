@@ -46,7 +46,7 @@ class PackagesResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Packages())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns,'package');
 
         return $table
             ->columns($tableColumns)
