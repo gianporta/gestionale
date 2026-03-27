@@ -20,7 +20,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Database\Eloquent\Builder;
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -264,7 +264,17 @@ class TableHelper
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
-            $col->searchable();
+            if (in_array($column, ['cliente', 'cliente_id'])) {
+                $col->searchable(
+                    query: function (Builder $query, string $search) use ($column) {
+                        return $query->whereIn($column, Customer::query()
+                            ->select('id')
+                            ->where('ragione_sociale', 'like', "%{$search}%")
+                        );
+                    }
+                );
+            } else
+                $col->searchable();
             TableHelper::decorateColumn($column, $col);
             $tableColumns[] = $col;
         }
