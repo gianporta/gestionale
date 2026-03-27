@@ -19,66 +19,68 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+
 class TableHelper
 {
     public static function getNumberRecordTable(): array
     {
         return [10, 25, 50, -1];
     }
+
     public static function formatColumnValue(string $column, mixed $value): mixed
     {
         switch ($column) {
             case 'costo':
             case 'netto_a_pagare':
-                return number_format((float)$value, 2, ',', '.') . ' €';
+                return ['value', number_format((float)$value, 2, ',', '.') . ' €'];
             case 'data_lavorazione':
             case 'data_pagamento':
             case 'data_documento':
-                return \Carbon\Carbon::parse($value)->format('d/m/Y');
+                return ['value', \Carbon\Carbon::parse($value)->format('d/m/Y')];
             case 'tipo_acquisto':
-                return TipoAcquisto::find($value)?->nome;
+                return ['value', TipoAcquisto::find($value)?->nome];
             case 'stato_job':
-                return Job::getStatoJob()[$value];
+                return ['value', Job::getStatoJob()[$value]];
             case 'proforma':
             case 'fatturato':
             case 'saldato':
             case 'is_active':
             case 'attivo':
-                return ($value == 0) ? 'No' : 'Sì';
+                return ['value', ($value == 0) ? 'No' : 'Sì'];
             case 'ambiente':
                 return ($value == 0) ? 'Produzione' : 'Staging';
             case 'stima':
-                return Stime::find($value)?->nome;
+                return ['value', Stime::find($value)?->nome];
             case 'stato_documento':
-                return StatoDocumento::find($value)?->nome;
+                return ['value', StatoDocumento::find($value)?->nome];
             case 'categoria':
-                return Categoria::find($value)?->nome;
+                return ['value', Categoria::find($value)?->nome];
             case 'task_id':
-                return Task::find($value)?->task;
+                return ['value', Task::find($value)?->task];
             case 'cms':
-                return Cms::find($value)?->nome;
+                return ['value', Cms::find($value)?->nome];
             case 'id_user':
-                return User::find($value)?->name;
+                return ['value', User::find($value)?->name];
             case 'id_repo':
-                return Repo::find($value)?->packages;
+                return ['value', Repo::find($value)?->packages];
             case 'cliente':
             case 'cliente_id':
-                return Customer::find($value)?->ragione_sociale;
+                return ['label' => 'Cliente', 'value' => Customer::find($value)?->ragione_sociale];
             case 'pacchetto_id':
                 $package = Packages::query()
                     ->join('customers', 'customers.id', '=', 'packages.cliente_id')
                     ->where('packages.id', $value)
                     ->select('packages.nome', 'customers.ragione_sociale as cliente')
                     ->first();
-                return $package
+                return ['value', $package
                     ? $package->cliente . ' - ' . $package->nome
-                    : null;
+                    : null];
             case 'stato':
-                return StatoTask::find($value)?->nome;
+                return ['value', StatoTask::find($value)?->nome];
             default:
-                return $value;
+                return ['value', $value];
         }
     }
 
@@ -255,10 +257,11 @@ class TableHelper
                 continue;
             if ($type != '' && in_array($column, TableHelper::getExcludedColumns()[$type]))
                 continue;
+            $label = isset($column['label']) ? $column['label'] : ucfirst(str_replace('_', ' ', $column));
             $col = TextColumn::make($column)
-                ->label(ucfirst(str_replace('_', ' ', $column)))
+                ->label($label)
                 ->sortable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
+                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state)['value'])
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
@@ -271,9 +274,8 @@ class TableHelper
                         );
                     }
                 );
-            }
-//            else
-//                $col->searchable();
+            } else
+                $col->searchable();
             TableHelper::decorateColumn($column, $col);
             $tableColumns[] = $col;
         }
