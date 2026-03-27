@@ -242,6 +242,9 @@ class FormHelper
             case 'enable_ip':
             case 'vpn':
             case 'tunnel_ssh':
+            case 'proforma':
+            case 'fatturato':
+            case 'saldato':
             return [
                 'type' => 'select',
                 'options' => [
@@ -250,9 +253,6 @@ class FormHelper
                 ],
                 'default' => 0,
             ];
-            case 'proforma':
-            case 'fatturato':
-            case 'pagato':
             case 'attivo':
             case 'is_active':
                 return [
