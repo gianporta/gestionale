@@ -8,17 +8,18 @@ use App\Helpers\DBHelper;
 use App\Helpers\FormHelper;
 use App\Helpers\TableHelper;
 use App\Models\Site;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\View;
+
 class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
@@ -49,7 +50,7 @@ class SiteResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Site())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns, 'siti');
 
         return $table
             ->columns($tableColumns)
@@ -191,14 +192,14 @@ class SiteResource extends Resource
                         Section::make('Ambiente')
                             ->schema([
                                 Placeholder::make('environment')
-                                    ->content(fn ($record) => view('filament.components.environment-badge', [
+                                    ->content(fn($record) => view('filament.components.environment-badge', [
                                         'ambiente' => $record?->ambiente
                                     ])),
                             ]),
                         Section::make('Info')
                             ->schema([
                                 View::make('filament.sites.info')
-                                    ->viewData(fn ($record) => [
+                                    ->viewData(fn($record) => [
                                         'record' => $record,
                                     ]),
                             ])
