@@ -18,6 +18,7 @@ use App\Models\Site;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
+use App\Models\Cms;
 use App\Models\Task;
 use App\Models\TipoAcquisto;
 use App\Models\User;
@@ -45,15 +46,6 @@ class FormHelper
         return [
             0 => 'No',
             1 => 'Sì',
-        ];
-    }
-
-    public static function getCmsOptions(): array
-    {
-        return [
-            'm2' => 'Magento 2',
-            'm1' => 'Magento 1',
-            'wp' => 'Wordpress',
         ];
     }
 
@@ -171,6 +163,14 @@ class FormHelper
                     'type' => 'select',
                     'options' =>
                         Stime::query()
+                            ->pluck('nome', 'id')
+                            ->toArray(),
+                    'default' => 1];
+            case 'cms':
+                return [
+                    'type' => 'select',
+                    'options' =>
+                        Cms::query()
                             ->pluck('nome', 'id')
                             ->toArray(),
                     'default' => 1];
