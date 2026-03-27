@@ -49,7 +49,7 @@ class TableHelper
             case 'attivo':
                 return ['value' => ($value == 0) ? 'No' : 'Sì'];
             case 'ambiente':
-                return ($value == 0) ? 'Produzione' : 'Staging';
+                return ['value' => ($value == 0) ? 'Produzione' : 'Staging'];
             case 'stima':
                 return ['value' => Stime::find($value)?->nome];
             case 'stato_documento':
@@ -86,7 +86,6 @@ class TableHelper
     public static function decorateColumn(string $column, TextColumn $col): void
     {
         switch ($column) {
-
             case 'ambiente':
                 $col->badge()
                     ->color(fn($state) => match ($state) {
@@ -260,7 +259,7 @@ class TableHelper
             $col = TextColumn::make($column)
                 ->label($label)
                 ->sortable()
-                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state))
+                ->formatStateUsing(fn($state) => TableHelper::formatColumnValue($column, $state)['value'])
                 ->extraAttributes([
                     'style' => 'max-width:250px; overflow-x:auto; white-space:nowrap;'
                 ]);
