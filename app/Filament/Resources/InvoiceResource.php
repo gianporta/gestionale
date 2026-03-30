@@ -62,6 +62,7 @@ class InvoiceResource extends Resource
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
             ->actions(TableHelper::getTableActions('invoice'))
+            ->headerActions(TableHelper::getHeaderActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')

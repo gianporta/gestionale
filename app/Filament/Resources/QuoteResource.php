@@ -62,6 +62,7 @@ class QuoteResource extends Resource
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
             ->actions(TableHelper::getTableActions('quote'))
+            ->headerActions(TableHelper::getHeaderActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
