@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class Job  extends Model
+
+class Job extends Model
 {
     const STATO_CHIUSO = 0;
     const STATO_APERTO = 1;
@@ -18,6 +19,7 @@ class Job  extends Model
         'costo',
         'num_ore',
     ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'cliente');
@@ -27,8 +29,9 @@ class Job  extends Model
     {
         return $this->belongsTo(Suppliers::class, 'cliente');
     }
+
     public static function getStatoJob()
     {
-        return ['Chiuso', 'Aperto'];
+        return [0 => 'Chiuso', 1 => 'Aperto'];
     }
 }
