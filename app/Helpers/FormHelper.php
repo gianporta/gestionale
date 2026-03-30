@@ -557,6 +557,19 @@ class FormHelper
                     $field = Repeater::make('content')
                         ->label('')
                         ->live()
+                        ->afterStateHydrated(function (Get $get, Set $set, $state) {
+                            $rows = collect($state ?? [])->map(function ($row) {
+                                $ore = (float)($row['ore'] ?? 0);
+                                $costo = (float)($row['costo'] ?? 0);
+
+                                $row['imponibile'] = round($ore * $costo, 2);
+
+                                return $row;
+                            })->toArray();
+
+                            $set('content', $rows);
+                            self::updateTotali($get, $set);
+                        })
                         ->schema([
 
                             Select::make('descrizione')
@@ -565,10 +578,12 @@ class FormHelper
                                 ->options(function (Get $get) {
                                     $cliente = $get('../../cliente');
                                     $current = $get('descrizione');
+
                                     return Job::query()
                                         ->where('cliente', $cliente)
                                         ->where(function ($q) use ($current) {
                                             $q->where('stato_job', '!=', Job::STATO_CHIUSO);
+
                                             if ($current)
                                                 $q->orWhere('id', $current);
                                         })
@@ -581,9 +596,12 @@ class FormHelper
                                     $job = Job::find($state);
                                     if (!$job)
                                         return;
+
                                     $set('costo', (float)($job->costo_orario ?? 0));
+
                                     if (($get('ore') === null || $get('ore') === '' || (float)$get('ore') === 0) && !empty($job->num_ore))
                                         $set('ore', (float)$job->num_ore);
+
                                     self::updateRiga($get, $set);
                                     self::updateTotali($get, $set);
                                 }),
