@@ -216,6 +216,7 @@ class FormHelper
             case 'data_pagamento':
                 return [
                     'type' => 'date',
+                    'default' => null,
                 ];
             case 'data_documento':
             case 'data_lavorazione':
