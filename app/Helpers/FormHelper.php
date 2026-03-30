@@ -121,7 +121,6 @@ class FormHelper
             case 'pagato':
                 return [
                     'type' => 'number',
-                    'default' => 0,
                     'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
                 ];
             case 'packages_id':

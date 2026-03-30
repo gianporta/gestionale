@@ -174,8 +174,4 @@ class InvoiceResource extends Resource
             'edit' => Pages\Edit::route('/{record}/edit'),
         ];
     }
-    protected function getPagatoAttribute($value)
-    {
-        return is_numeric($value) ? $value : 0;
-    }
 }

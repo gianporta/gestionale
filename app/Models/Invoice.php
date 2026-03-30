@@ -60,7 +60,7 @@ class Invoice extends Model
         'iva' => 'float',
         'ritenuta_di_acconto' => 'float',
         'netto_a_pagare' => 'float',
-        'pagato' => 'boolean',
+        'pagato' => 'float',
         'content' => 'array',
     ];
 

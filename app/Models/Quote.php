@@ -55,7 +55,6 @@ class Quote extends Model
         'iva' => 'float',
         'ritenuta_di_acconto' => 'float',
         'netto_a_pagare' => 'float',
-        'pagato' => 'boolean',
         'content' => 'array',
     ];
     protected static function booted()
