@@ -120,7 +120,7 @@ class FormHelper
         switch ($column) {
             case 'pagato':
                 return [
-                    'type' => 'number',
+                    'type' => 'text',
                     'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
                 ];
             case 'packages_id':
