@@ -42,7 +42,7 @@ class TableHelper
             case 'tipo_acquisto':
                 return ['value' => TipoAcquisto::find($value)?->nome];
             case 'stato_job':
-                return ['value' => Job::getStatoJob()[$value]];
+                return ['value' => Job::getStatoJob()];
             case 'proforma':
             case 'fatturato':
             case 'saldato':
