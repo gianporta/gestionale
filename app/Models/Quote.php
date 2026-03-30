@@ -50,17 +50,14 @@ class Quote extends Model
         'data_documento' => 'date',
         'data_pagamento' => 'date',
         'data_scadenza' => 'date',
-
         'imponibile' => 'float',
         'contributo_inps' => 'float',
         'iva' => 'float',
         'ritenuta_di_acconto' => 'float',
         'netto_a_pagare' => 'float',
         'pagato' => 'boolean',
-
         'content' => 'array',
     ];
-
     protected static function booted()
     {
         static::creating(function ($model) {
