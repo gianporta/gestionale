@@ -34,6 +34,8 @@ class Proforma extends Model
         'contributo_inps',
         'iva',
         'ritenuta_di_acconto',
+        'condizioni_pagamento',
+        'modalita_pagamento',
         'netto_a_pagare',
         'condizioni_pagamento',
         'modalita_pagamento',
