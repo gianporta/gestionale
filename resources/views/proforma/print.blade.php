@@ -41,7 +41,7 @@ $user = auth()->user();
             <span style="font-weight:bold;">Partita Iva:</span> {{ $proforma->cliente_partita_iva }}<br>
             <span style="font-weight:bold;">Codice Fiscale:</span> {{ $proforma->cliente_codice_fiscale }}<br>
             <span style="font-weight:bold;">Indirizzo:</span> {{ $proforma->cliente_indirizzo }}<br>
-            {{ $proforma->cliente_cap }} - {{ $proforma->cliente_citta }} ({{ $proforma->cliente_provincia }}) {{ $proforma->cliente_nazione }}
+            {{ $proforma->cliente_cap }} - {{ $proforma->cliente_citta }} ({{ $proforma->cliente_provincia }}) - {{ $proforma->cliente_nazione }}
         </td>
 
     </tr>
@@ -90,7 +90,7 @@ $user = auth()->user();
     </div>
 
     @if($proforma->frase_in_calce)
-    <div style="margin-bottom: 40px;border: 1px solid #ccc;padding: 5px;border-radius: 5px;">
+    <div style="border: 1px solid #ccc;padding: 5px;border-radius: 5px;">
         {{ $proforma->frase_in_calce }}
     </div>
     @endif
