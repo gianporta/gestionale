@@ -121,6 +121,7 @@ class FormHelper
             case 'pagato':
                 return [
                     'type' => 'number',
+                    'default' => 0,
                     'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
                 ];
             case 'packages_id':
@@ -612,8 +613,7 @@ class FormHelper
                                 ->label('Imponibile')
                                 ->columnSpan(1)
                                 ->numeric()
-                                ->readOnly()
-                                ->dehydrated(),
+                                ->readOnly(),
                         ])
                         ->columns(7)
                         ->defaultItems(1)
@@ -655,7 +655,6 @@ class FormHelper
                 $field->disabled();
             if (!empty($config['readonly'])) {
                 $field->readOnly();
-                $field->dehydrated(true);
             }
             $formSchema[$column] = $field;
         }

@@ -467,3 +467,11 @@ select option{
     background-color: #22c55e;
     color: #fff;
 }
+.fi-fo-field-wrp-error-message {
+    display: block !important;
+    color: #dc2626 !important;
+    font-size: 14px !important;
+    margin-top: 4px;
+    opacity: 1 !important;
+    visibility: visible !important;
+}

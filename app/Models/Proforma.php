@@ -85,4 +85,8 @@ class Proforma extends Model
 
         return ($lastNumber ?? 0) + 1;
     }
+    protected function getPagatoAttribute($value)
+    {
+        return is_numeric($value) ? $value : 0;
+    }
 }
