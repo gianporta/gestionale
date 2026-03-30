@@ -509,7 +509,8 @@ class FormHelper
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->options($config['options'])
                         ->searchable()
-                        ->required(false);
+                        ->required(false)
+                        ->dehydrated();
                     if (isset($config['default']))
                         $field->default($config['default']);
                     if (!empty($config['reactive']))
