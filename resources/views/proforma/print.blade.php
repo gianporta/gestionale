@@ -80,17 +80,17 @@ $user = auth()->user();
 <div style="margin-top:250px; width:60%; float:left; font-size:13px;">
 
     @if($proforma->data_scadenza)
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom: 40px;border: 1px solid #ccc;padding: 5px;border-radius: 5px;">
         La fattura proforma  deve essere liquidata entro tale data:
         <b>{{ \Carbon\Carbon::parse($proforma->data_scadenza)->format('d/m/Y') }}</b>
     </div>
     @endif
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom: 40px;border: 1px solid #ccc;padding: 5px;border-radius: 5px;">
         “Il presente documento non costituisce fattura valida ai fini del DpR 633 26/10/1972 e successive modifiche. La fattura definitiva verrà emessa all’atto del pagamento del corrispettivo (articolo 6, comma 3, DpR 633/72).”
     </div>
 
     @if($proforma->frase_in_calce)
-    <div>
+    <div style="margin-bottom: 40px;border: 1px solid #ccc;padding: 5px;border-radius: 5px;">
         {{ $proforma->frase_in_calce }}
     </div>
     @endif
