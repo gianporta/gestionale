@@ -61,7 +61,8 @@ class ProformaResource extends Resource
             ->columns($tableColumns)
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
-            ->actions(TableHelper::getTableActions('proforma'))
+            ->actions(TableHelper::getTableActions())
+            ->headerActions(TableHelper::getHeaderActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
@@ -84,11 +85,8 @@ class ProformaResource extends Resource
     {
         $columns = DBHelper::getTableColumns((new Proforma())->getTable());
         $formSchema = FormHelper::getFieldForm($columns);
-
         return $form->schema([
-
             Grid::make(2)->schema([
-
                 Section::make('Documento')
                     ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                         'data_documento',
@@ -96,7 +94,6 @@ class ProformaResource extends Resource
                     ]), ARRAY_FILTER_USE_KEY))
                     ->columns(2)
                     ->columnSpan(1),
-
                 Section::make('Dati Banca')
                     ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                         'banca',
@@ -105,9 +102,7 @@ class ProformaResource extends Resource
                     ]), ARRAY_FILTER_USE_KEY))
                     ->columns(3)
                     ->columnSpan(1),
-
             ]),
-
             Section::make('Cliente')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'cliente',
@@ -118,7 +113,6 @@ class ProformaResource extends Resource
                     'content',
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(1),
-
             Grid::make(2)->schema([
                 Grid::make(1)->schema([
                     Section::make('Pagamento')
@@ -146,9 +140,7 @@ class ProformaResource extends Resource
                         ->columns(1),
 
                 ])->columnSpan(1),
-
                 Grid::make(1)->schema([
-
                     Section::make('Importi')
                         ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                             'imponibile',
@@ -159,9 +151,7 @@ class ProformaResource extends Resource
                         ]), ARRAY_FILTER_USE_KEY))
                         ->columns(1),
                 ])->columnSpan(1),
-
             ]),
-
         ]);
     }
 

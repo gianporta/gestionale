@@ -21,7 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-
+use Symfony\Component\HttpFoundation\StreamedResponse;
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -421,9 +421,41 @@ class TableHelper
                 ->label('')
                 ->button()
                 ->requiresConfirmation(),
-
         ];
         $actions = array_merge($actionsDocument, $actionsInvoice, $actionsGeneric);
         return $actions;
+    }
+    public static function getHeaderActions()
+    {
+        return [
+            Action::make('export')
+                ->label('Export CSV')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->action(function ($livewire) {
+                    return response()->streamDownload(function () use ($livewire) {
+                        $query = $livewire->getFilteredTableQuery();
+                        $columns = $livewire->getTable()->getColumns();
+                        $handle = fopen('php://output', 'w');
+                        $headers = collect($columns)
+                            ->map(fn($col) => $col->getLabel())
+                            ->toArray();
+                        fputcsv($handle, $headers);
+                        foreach ($query->cursor() as $record) {
+                            $row = [];
+                            foreach ($columns as $col) {
+                                $columnName = $col->getName();
+                                $state = data_get($record, $columnName);
+                                $formatted = TableHelper::formatColumnValue($columnName, $state);
+                                $value = $formatted['value'] ?? $state;
+                                if (is_array($value))
+                                    $value = json_encode($value);
+                                $row[] = $value;
+                            }
+                            fputcsv($handle, $row);
+                        }
+                        fclose($handle);
+                    }, 'export.csv');
+                }),
+        ];
     }
 }
