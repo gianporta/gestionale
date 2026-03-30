@@ -42,8 +42,7 @@ class TableHelper
             case 'tipo_acquisto':
                 return ['value' => TipoAcquisto::find($value)?->nome];
             case 'stato_job':
-                $stato = Job::getStatoJob();
-                return ['value' => $stato[$value]];
+                return ['value' => isset(Job::getStatoJob()[$value]) ? Job::getStatoJob()[$value] : $value];
             case 'proforma':
             case 'fatturato':
             case 'saldato':
@@ -59,7 +58,7 @@ class TableHelper
             case 'categoria':
                 return ['value' => Categoria::find($value)?->nome];
             case 'task_id':
-                return ['label'=>'Task','value' => Task::find($value)?->task];
+                return ['label' => 'Task', 'value' => Task::find($value)?->task];
             case 'cms':
                 return ['value' => Cms::find($value)?->nome];
             case 'id_user':
@@ -331,6 +330,7 @@ class TableHelper
                 }),
         ];
     }
+
     public static function applySearchToTable($table)
     {
         return $table->modifyQueryUsing(function ($query) {
@@ -357,6 +357,7 @@ class TableHelper
             });
         });
     }
+
     public static function applyGlobalSearch(Builder $query, string $search): Builder
     {
         $searchMap = [
