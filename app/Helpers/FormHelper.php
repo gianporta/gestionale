@@ -69,14 +69,19 @@ class FormHelper
             ->toArray();
     }
 
-    private static function getClienteOptions(): array
+    private static function getClienteOptions($currentId = null): array
     {
-        return Customer::query()
+        $query = Customer::query()
             ->where('tipo_cliente', 2)
             ->where('attivo', 1)
             ->whereHas('jobs', function ($q) {
                 $q->where('stato_job', '!=', Job::STATO_CHIUSO);
-            })
+            });
+
+        if ($currentId)
+            $query->orWhere('id', $currentId);
+
+        return $query
             ->pluck('ragione_sociale', 'id')
             ->toArray();
     }
@@ -306,7 +311,7 @@ class FormHelper
             case 'cliente':
                 return [
                     'type' => 'select',
-                    'options' => self::getClienteOptions(),
+                    'options' => fn(Get $get) => self::getClienteOptions($get('cliente')),
                     'reactive' => true,
                     'afterStateUpdated' => function ($state, Set $set) {
                         $set('content', [
