@@ -46,7 +46,9 @@
         <div class="mt-3 text-gray-400">Connection command:</div>
         <pre class="text-xs bg-gray-900 p-2 rounded mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono">
 {{ "ssh {$record->ssh_user}@{$record->ssh_host}
-@if ($record->base_dir) cd " . {{ $record->base_dir }} @endif
+@if($record->base_dir)
+cd {{ $record->base_dir }}
+@endif
             </pre>
         @endif
     </div>
