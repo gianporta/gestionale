@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\ProformaController;
 use App\Http\Controllers\InvoiceXmlController;
 Route::get('/', function () {
     return redirect('/admin');
@@ -18,5 +20,5 @@ Route::get('/invoice/{invoice}/xml', [InvoiceXmlController::class, 'generate'])-
 Route::get('/quote/{quote}/print', [QuoteController::class, 'print'])->name('quote.print');
 /*quote*/
 /*proforma*/
-Route::get('/proforma/{proforma}/print', [QuoteController::class, 'print'])->name('proforma.print');
+Route::get('/proforma/{proforma}/print', [ProformaController::class, 'print'])->name('proforma.print');
 /*proforma*/
