@@ -75,7 +75,7 @@ class FormHelper
             ->where('tipo_cliente', CUSTOMER::TYPE_CUSTOMER_CUSTOMER)
             ->where('attivo', 1)
             ->whereHas('jobs', function ($q) {
-                $q->where('stato_job', '!=', Job::STATO_APERTO);
+                $q->where('stato_job', '!=', Job::STATO_CHIUSO);
             });
 
         if ($currentId)
@@ -561,11 +561,22 @@ class FormHelper
                             Select::make('descrizione')
                                 ->label('Attività')
                                 ->columnSpan(4)
-                                ->options(fn(Get $get) => Job::query()
-                                    ->where('cliente', $get('../../cliente'))
-                                    ->selectRaw("id, CONCAT(nome, ' - ', descrizione) as label")
-                                    ->pluck('label', 'id')
-                                )
+                                ->options(function (Get $get) {
+
+                                    $cliente = $get('../../cliente');
+                                    $current = $get('descrizione');
+
+                                    return Job::query()
+                                        ->where('cliente', $cliente)
+                                        ->where(function ($q) use ($current) {
+                                            $q->where('stato_job', '!=', Job::STATO_CHIUSO);
+
+                                            if ($current)
+                                                $q->orWhere('id', $current);
+                                        })
+                                        ->selectRaw("id, CONCAT(nome, ' - ', descrizione) as label")
+                                        ->pluck('label', 'id');
+                                })
                                 ->searchable()
                                 ->live()
                                 ->afterStateUpdated(function ($state, Get $get, Set $set) {
