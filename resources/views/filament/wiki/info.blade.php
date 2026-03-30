@@ -24,17 +24,56 @@
 
 
     @if ($record->comando)
-    <div class="rounded-lg bg-gray-800 p-4">
-        <div class="text-gray-400 mb-2">Comando</div>
-        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all font-mono">{{ $record->comando }}</pre>
+    <div
+        x-data
+        class="rounded-lg bg-gray-800 p-4"
+    >
+        <div class="flex justify-between items-center mb-2">
+            <div class="text-gray-400">Comando</div>
+
+            <button
+                class="text-xs px-2 py-1 bg-gray-700 rounded hover:bg-gray-600"
+                x-on:click="
+                navigator.clipboard.writeText(@js($record->comando));
+                new FilamentNotification()
+                    .title('Copiato negli appunti')
+                    .success()
+                    .send();
+            "
+            >
+                Copia
+            </button>
+        </div>
+
+        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all font-mono">
+{{ $record->comando }}
+    </pre>
     </div>
     @endif
 
 
     @if ($record->sql)
-    <div class="rounded-lg bg-gray-800 p-4">
-        <div class="text-gray-400 mb-2">SQL</div>
-        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all font-mono">{{ $record->sql }}</pre>
+    <div x-data class="rounded-lg bg-gray-800 p-4">
+        <div class="flex justify-between items-center mb-2">
+            <div class="text-gray-400">SQL</div>
+
+            <button
+                class="text-xs px-2 py-1 bg-gray-700 rounded hover:bg-gray-600"
+                x-on:click="
+                navigator.clipboard.writeText(@js($record->sql));
+                new FilamentNotification()
+                    .title('Copiato negli appunti')
+                    .success()
+                    .send();
+            "
+            >
+                Copia
+            </button>
+        </div>
+
+        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all font-mono">
+{{ $record->sql }}
+    </pre>
     </div>
     @endif
 
