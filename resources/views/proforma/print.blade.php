@@ -31,7 +31,7 @@ $user = auth()->user();
             <span style="font-weight:bold;">P.IVA:</span> {{ $user->p_iva }}<br>
             <span style="font-weight:bold;">C.F.:</span> {{ $user->cf }}<br>
             <span style="font-weight:bold;">Indirizzo:</span> {{ $user->indirizzo }}<br>
-            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }}) - $user->nazione }}
+            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }}) - {{ $user->nazione }}
         </td>
 
         {{-- DESTRA --}}
@@ -41,7 +41,7 @@ $user = auth()->user();
             <span style="font-weight:bold;">Partita Iva:</span> {{ $proforma->cliente_partita_iva }}<br>
             <span style="font-weight:bold;">Codice Fiscale:</span> {{ $proforma->cliente_codice_fiscale }}<br>
             <span style="font-weight:bold;">Indirizzo:</span> {{ $proforma->cliente_indirizzo }}<br>
-            {{ $proforma->cliente_cap }} - {{ $proforma->cliente_citta }} ({{ $proforma->cliente_provincia }})
+            {{ $proforma->cliente_cap }} - {{ $proforma->cliente_citta }} ({{ $proforma->cliente_provincia }}) {{ $proforma->cliente_nazione }}
         </td>
 
     </tr>
