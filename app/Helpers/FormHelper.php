@@ -72,10 +72,10 @@ class FormHelper
     private static function getClienteOptions($currentId = null): array
     {
         $query = Customer::query()
-            ->where('tipo_cliente', 2)
+            ->where('tipo_cliente', CUSTOMER::TYPE_CUSTOMER_CUSTOMER)
             ->where('attivo', 1)
             ->whereHas('jobs', function ($q) {
-                $q->where('stato_job', '!=', Job::STATO_CHIUSO);
+                $q->where('stato_job', '!=', Job::STATO_APERTO);
             });
 
         if ($currentId)
