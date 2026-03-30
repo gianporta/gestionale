@@ -15,6 +15,5 @@ Route::get('/invoice/{invoice}/print', [InvoiceController::class, 'print'])->nam
 Route::get('/invoice/{invoice}/xml', [InvoiceXmlController::class, 'generate'])->name('invoice.xml');
 /*invoice*/
 /*quote*/
-Route::get('/quote/{invoice}/print', [InvoiceController::class, 'print'])->name('quote.print');
-Route::get('/quote/{invoice}/xml', [InvoiceXmlController::class, 'generate'])->name('quote.xml');
+Route::get('/quote/{invoice}/print', [QuoteController::class, 'print'])->name('quote.print');
 /*quote*/

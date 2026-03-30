@@ -27,11 +27,6 @@ class Edit extends EditRecord
                 ->color('success')
                 ->url(fn () => route('quote.print', $this->record))
                 ->openUrlInNewTab(),
-            Action::make('xml')
-                ->label('Genera XML')
-                ->icon('heroicon-o-code-bracket')
-                ->color('warning')
-                ->url(fn () => route('quote.xml', $this->record)),
             Action::make('new')
                 ->label('Nuovo')
                 ->icon('heroicon-o-plus')
