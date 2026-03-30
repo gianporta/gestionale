@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Caps;
 use App\Models\Categoria;
+use App\Models\Cms;
 use App\Models\Comuni;
 use App\Models\CondizioniPagamento;
 use App\Models\Countries;
@@ -18,7 +19,6 @@ use App\Models\Site;
 use App\Models\StatePayment;
 use App\Models\StatoTask;
 use App\Models\Stime;
-use App\Models\Cms;
 use App\Models\Task;
 use App\Models\TipoAcquisto;
 use App\Models\User;
@@ -121,7 +121,6 @@ class FormHelper
             case 'pagato':
                 return [
                     'type' => 'text',
-                    'default' => null,
                     'disabled_callback' => fn(Get $get) => empty($get('data_pagamento')),
                 ];
             case 'packages_id':
@@ -252,14 +251,14 @@ class FormHelper
             case 'proforma':
             case 'fatturato':
             case 'saldato':
-            return [
-                'type' => 'select',
-                'options' => [
-                    0 => 'No',
-                    1 => 'Sì',
-                ],
-                'default' => 0,
-            ];
+                return [
+                    'type' => 'select',
+                    'options' => [
+                        0 => 'No',
+                        1 => 'Sì',
+                    ],
+                    'default' => 0,
+                ];
             case 'attivo':
             case 'is_active':
                 return [
@@ -633,22 +632,20 @@ class FormHelper
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->numeric()
                         ->required(false);
-
                     if (isset($config['default']))
                         $field->default($config['default']);
-
                     if (isset($config['disabled_callback']))
                         $field->disabled($config['disabled_callback']);
-
                     break;
                 case 'text':
                 default:
                     $field = TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->required(false);
-
                     if (isset($config['default']))
                         $field->default($config['default']);
+                    if (isset($config['disabled_callback']))
+                        $field->disabled($config['disabled_callback']);
                     break;
             }
             if (!empty($config['disabled']))
