@@ -53,6 +53,7 @@ class HoursResource extends Resource
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions())
+            ->headerActions(TableHelper::getHeaderActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
