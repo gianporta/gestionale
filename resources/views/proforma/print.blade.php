@@ -31,7 +31,7 @@ $user = auth()->user();
             <span style="font-weight:bold;">P.IVA:</span> {{ $user->p_iva }}<br>
             <span style="font-weight:bold;">C.F.:</span> {{ $user->cf }}<br>
             <span style="font-weight:bold;">Indirizzo:</span> {{ $user->indirizzo }}<br>
-            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }}) - $user->country }}
+            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }}) - $user->countries }}
         </td>
 
         {{-- DESTRA --}}
