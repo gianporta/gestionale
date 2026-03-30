@@ -31,7 +31,7 @@ $user = auth()->user();
             <span style="font-weight:bold;">P.IVA:</span> {{ $user->p_iva }}<br>
             <span style="font-weight:bold;">C.F.:</span> {{ $user->cf }}<br>
             <span style="font-weight:bold;">Indirizzo:</span> {{ $user->indirizzo }}<br>
-            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }})
+            {{ $user->cap }} - {{ $user->citta }} ({{ $user->provincia }}) - $user->country }}
         </td>
 
         {{-- DESTRA --}}
@@ -81,10 +81,13 @@ $user = auth()->user();
 
     @if($proforma->data_scadenza)
     <div style="margin-bottom:10px;">
-        La fattura proforma è da saldare entro il
+        La fattura proforma  deve essere liquidata entro tale data:
         <b>{{ \Carbon\Carbon::parse($proforma->data_scadenza)->format('d/m/Y') }}</b>
     </div>
     @endif
+    <div style="margin-bottom:10px;">
+        “Il presente documento non costituisce fattura valida ai fini del DpR 633 26/10/1972 e successive modifiche. La fattura definitiva verrà emessa all’atto del pagamento del corrispettivo (articolo 6, comma 3, DpR 633/72).”
+    </div>
 
     @if($proforma->frase_in_calce)
     <div>
