@@ -242,6 +242,7 @@ class FormHelper
                     'reactive' => true,
                     'afterStateUpdated' => fn(Get $get, Set $set) => self::updateTotali($get, $set),
                 ];
+            case 'cloudflare':
             case 'sucuri':
             case 'varnish':
             case 'opcache':

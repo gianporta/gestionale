@@ -15,7 +15,13 @@
             <div class="flex justify-end gap-2">
                 <x-filament::button
                     color="gray"
-                    x-on:click="navigator.clipboard.writeText(`{{ $htResult }}`)"
+                    x-on:click="
+            navigator.clipboard.writeText(`{{ $htResult }}`);
+            $dispatch('notify', {
+                type: 'success',
+                message: 'Copiato negli appunti'
+            });
+        "
                 >
                     Copia
                 </x-filament::button>
@@ -257,4 +263,14 @@
         </x-filament::section>
 
     </div>
+    <script>
+        window.addEventListener('notify', event => {
+            if (window.FilamentNotification) {
+                new FilamentNotification()
+                    .title(event.detail.message)
+                    .success()
+                    .send();
+            }
+        });
+    </script>
 </x-filament-panels::page>

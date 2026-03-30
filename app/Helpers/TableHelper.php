@@ -158,6 +158,7 @@ class TableHelper
             'db_port',
             'repo',
             'php_version',
+            'cloudflare',
             'sucuri',
             'varnish',
             'opcache',
