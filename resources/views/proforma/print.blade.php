@@ -1,6 +1,6 @@
 @extends('documents.layout')
 
-@section('title', 'Fattura Proforma' . $proforma->numero_documento)
+@section('title', 'Fattura Proforma' . \Carbon\Carbon::parse($proforma->data_documento)->format('Y') .'-' . $proforma->numero_documento)
 
 @section('content')
 
