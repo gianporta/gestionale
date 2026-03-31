@@ -179,7 +179,11 @@
         <div class="text-gray-400 mb-2">Note</div>
 
         @if ($record->note)
-        <div><b>Note:</b> {{ $record->note }}</div>
+        <div><b>Note:</b>
+            <div class="whitespace-pre-line">
+                {{ $record->note }}
+            </div>
+        </div>
         @endif
     </div>
 
