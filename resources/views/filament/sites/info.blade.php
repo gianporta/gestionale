@@ -174,19 +174,17 @@
         <div><b>Clickup:</b> <a href="{{ $record->clickup }}" target="_blank" class="text-primary-400">Apri</a></div>
         @endif
     </div>
-
-    <div class="rounded-lg bg-gray-800 p-4">
-        <div class="text-gray-400 mb-2">Note</div>
-
-        @if ($record->note)
-        <div><b>Note:</b>
-            <div class="whitespace-pre-line">
-                {{ $record->note }}
+    @if ($record->note)
+        <div class="rounded-lg bg-gray-800 p-4">
+            <div class="text-gray-400 mb-2">Note</div>
+            <div><b>Note:</b>
+                <div class="whitespace-pre-line">
+                    {!! nl2br(e($record->note)) !!}
+                </div>
             </div>
-        </div>
-        @endif
-    </div>
 
+        </div>
+    @endif
 </div>
 
 @endif
