@@ -175,15 +175,12 @@
         @endif
     </div>
     @if ($record->note)
-        <div class="rounded-lg bg-gray-800 p-4">
-            <div class="text-gray-400 mb-2">Note</div>
-            <div><b>Note:</b>
-                <div class="whitespace-pre-line">
-                    {!! nl2br(e($record->note)) !!}
-                </div>
-            </div>
-
+    <div class="rounded-lg bg-gray-800 p-4">
+        <div class="text-gray-400 mb-2">Note</div>
+        <div class="whitespace-pre-line">
+            {!! nl2br(e($record->note)) !!}
         </div>
+    </div>
     @endif
 </div>
 
