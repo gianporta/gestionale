@@ -360,6 +360,7 @@ class FormHelper
                 ];
             case 'ssh_key':
             case 'descrizione':
+            case 'comando':
             case 'sql':
             case 'note':
                 return [
