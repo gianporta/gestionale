@@ -41,7 +41,7 @@ class CalendarOre extends Widget
         $userId = auth()->id();
 
         $ore = DB::table('hours')
-            ->selectRaw('DAY(data_lavorazione) as giorno, SUM(CAST(ore_lavorate as DECIMAL(10,2))) as totale')
+            ->selectRaw("DAY(data_lavorazione) as giorno, SUM(CAST(REPLACE(ore_lavorate, ',', '.') as DECIMAL(10,2))) as totale")
             ->whereMonth('data_lavorazione', $this->month)
             ->whereYear('data_lavorazione', $this->year)
             ->where('user', $userId)
