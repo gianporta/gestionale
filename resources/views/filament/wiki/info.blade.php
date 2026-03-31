@@ -18,13 +18,17 @@
     @if ($record->note)
     <div class="rounded-lg bg-gray-800 p-4">
         <div class="text-gray-400 mb-2">Note</div>
-        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all">{{ $record->note }}</pre>
+        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all">
+            {!! nl2br(e($record->note)) !!}
+        </pre>
     </div>
     @endif
     @if ($record->sql)
     <div class="rounded-lg bg-gray-800 p-4">
         <div class="text-gray-400 mb-2">Sql</div>
-        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all">{{ $record->sql }}</pre>
+        <pre class="text-xs bg-gray-900 p-2 rounded overflow-x-auto whitespace-pre-wrap break-all">
+            {!! nl2br(e($record->sql)) !!}
+        </pre>
     </div>
     @endif
 </div>
