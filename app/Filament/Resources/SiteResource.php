@@ -159,6 +159,7 @@ class SiteResource extends Resource
                                 $formSchema['varnish'] ?? null,
                                 $formSchema['opcache'] ?? null,
                                 $formSchema['redis'] ?? null,
+                                $formSchema['cloudflare'] ?? null,
                                 $formSchema['enable_ip'] ?? null,
                                 $formSchema['trello'] ?? null,
                                 $formSchema['clickup'] ?? null,

@@ -142,12 +142,44 @@
     <div class="rounded-lg bg-gray-800 p-4">
         <div class="text-gray-400 mb-2">Integrazioni</div>
 
+        @if (!is_null($record->sucuri))
+        <div><b>Sucuri:</b> {{ $record->sucuri ? 'Sì' : 'No' }}</div>
+        @endif
+
+        @if (!is_null($record->varnish))
+        <div><b>Varnish:</b> {{ $record->varnish ? 'Sì' : 'No' }}</div>
+        @endif
+
+        @if (!is_null($record->opcache))
+        <div><b>Opcache:</b> {{ $record->opcache ? 'Sì' : 'No' }}</div>
+        @endif
+
+        @if (!is_null($record->redis))
+        <div><b>Redis:</b> {{ $record->redis ? 'Sì' : 'No' }}</div>
+        @endif
+
+        @if (!is_null($record->enable_ip))
+        <div><b>Enable IP:</b> {{ $record->enable_ip ? 'Sì' : 'No' }}</div>
+        @endif
+
+        @if (!is_null($record->cloudflare))
+        <div><b>Cloudflare:</b> {{ $record->cloudflare ? 'Sì' : 'No' }}</div>
+        @endif
+
         @if ($record->trello)
         <div><b>Trello:</b> <a href="{{ $record->trello }}" target="_blank" class="text-primary-400">Apri</a></div>
         @endif
 
         @if ($record->clickup)
         <div><b>Clickup:</b> <a href="{{ $record->clickup }}" target="_blank" class="text-primary-400">Apri</a></div>
+        @endif
+    </div>
+
+    <div class="rounded-lg bg-gray-800 p-4">
+        <div class="text-gray-400 mb-2">Note</div>
+
+        @if ($record->note)
+        <div><b>Note:</b> {{ $record->note }}</div>
         @endif
     </div>
 

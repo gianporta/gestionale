@@ -46,6 +46,7 @@ class Site  extends Model
         'varnish',
         'opcache',
         'redis',
+        'cloudflare',
         'enable_ip',
 
         'vpn',
