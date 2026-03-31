@@ -360,6 +360,7 @@ class FormHelper
                 ];
             case 'ssh_key':
             case 'descrizione':
+            case 'sql':
             case 'note':
                 return [
                     'type' => 'textarea',
