@@ -41,7 +41,12 @@
         @if ($record->base_dir)
         <div><b>Base Dir:</b> {{ $record->base_dir }}</div>
         @endif
-
+        @if ($record->db_host && $record->db_user && $record->db_name && $record->ssh_host && $record->ssh_user)
+        <div class="mt-3 text-gray-400">Tunnel SSH:</div>
+        <pre class="text-xs bg-gray-900 p-2 rounded mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono">
+{{ "ssh -v -N -L {$record->local_port}:{$record->db_host}:{$record->db_port} {$record->ssh_user}@{$record->ssh_host}" }}
+    </pre>
+        @endif
         @if ($record->ssh_host && $record->ssh_user)
         <div class="mt-3 text-gray-400">Connection command:</div>
         <pre class="text-xs bg-gray-900 p-2 rounded mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono">
