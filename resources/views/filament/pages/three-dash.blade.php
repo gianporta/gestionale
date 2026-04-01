@@ -10,33 +10,29 @@
                     {{ $package->nome }}
                 </div>
             </div>
-            <div class="mt-4 grid grid-cols-3 gap-4 text-sm">
-                <div class="text-center">
-                    <div class="text-gray-400">Ore</div>
-                    <div class="font-semibold">{{ $package->ore }}</div>
+            <div class="mt-4 text-sm">
+                <div class="grid grid-cols-3 text-gray-400 text-center">
+                    <div>Ore</div>
+                    <div>Usate</div>
+                    <div>Rimaste</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-gray-400">Usate</div>
-                    <div class="font-semibold">{{ $package->ore_usate }}</div>
+                <div class="grid grid-cols-3 text-center font-semibold mt-1">
+                    <div>{{ $package->ore }}</div>
+                    <div>{{ $package->ore_usate }}</div>
+                    <div class="text-amber-400">{{ $package->ore_rimaste }}</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-gray-400">Rimaste</div>
-                    <div class="font-semibold text-amber-400">{{ $package->ore_rimaste }}</div>
+                <div class="border-t border-gray-800 my-4"></div>
+                <div class="grid grid-cols-3 text-gray-400 text-center">
+                    <div>Proforma</div>
+                    <div>Fatturato</div>
+                    <div>Saldato</div>
                 </div>
-            </div>
-            <div class="mt-4 grid grid-cols-3 gap-4 text-sm border-t border-gray-800 pt-4">
-                <div class="text-center">
-                    <div class="text-gray-400">Proforma</div>
-                    <div class="font-semibold">{{ $package->proforma ? 'Sì' : 'No' }}</div>
+                <div class="grid grid-cols-3 text-center font-semibold mt-1">
+                    <div>{{ $package->proforma ? 'Sì' : 'No' }}</div>
+                    <div>{{ $package->fatturato ? 'Sì' : 'No' }}</div>
+                    <div class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</div>
                 </div>
-                <div class="text-center">
-                    <div class="text-gray-400">Fatturato</div>
-                    <div class="font-semibold">{{ $package->fatturato ? 'Sì' : 'No' }}</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-gray-400">Saldato</div>
-                    <div class="font-semibold text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</div>
-                </div>
+
             </div>
         </div>
         @endforeach
