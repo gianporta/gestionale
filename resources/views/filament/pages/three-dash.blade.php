@@ -10,33 +10,41 @@
                     {{ $package->nome }}
                 </div>
             </div>
-            <div class="mt-4 grid grid-cols-3 gap-y-4 text-center">
-                <div>
-                    <span class="text-gray-400 text-sm">Ore</span><br>
-                    <span class="font-semibold text-sm">{{ $package->ore }}</span>
+            <div class="mt-4 grid grid-cols-3 text-xs text-center border-t border-gray-800 pt-4">
+                <div class="text-center">
+                    <span class="text-gray-400">Ore</span><br>
+                    <span class="font-semibold">
+                            {{ $package->ore }}
+                        </span>
                 </div>
-                <div>
-                    <span class="text-gray-400 text-sm">Usate</span><br>
-                    <span class="font-semibold text-sm">{{ $package->ore_usate }}</span>
+                <div class="text-center">
+                    <span class="text-gray-400">Usate</span><br>
+                    <span class="font-semibold">
+                            {{ $package->ore_usate }}
+                        </span>
                 </div>
-                <div>
-                    <span class="text-gray-400 text-sm">Rimaste</span><br>
-                    <span class="font-semibold text-sm text-amber-400">{{ $package->ore_rimaste }}</span>
+                <div class="text-center">
+                    <span class="text-gray-400">Rimaste</span><br>
+                    <span class="font-semibold text-amber-400">
+                            {{ $package->ore_rimaste }}
+                        </span>
                 </div>
-                <div class="border-t border-gray-800 pt-4">
-                    <span class="text-gray-400 text-xs">Proforma</span><br>
+            </div>
+            <div class="mt-4 grid grid-cols-3 text-xs text-center border-t border-gray-800 pt-4">
+                <div class="text-center">
+                    <span class="text-gray-400">Proforma</span><br>
                     <span class="font-semibold {{ $package->proforma ? 'text-green-400' : 'text-red-400' }}">
             {{ $package->proforma ? 'Sì' : 'No' }}
         </span>
                 </div>
-                <div class="border-t border-gray-800 pt-4">
-                    <span class="text-gray-400 text-xs">Fatturato</span><br>
+                <div class="text-center">
+                    <span class="text-gray-400">Fatturato</span><br>
                     <span class="font-semibold {{ $package->fatturato ? 'text-green-400' : 'text-red-400' }}">
             {{ $package->fatturato ? 'Sì' : 'No' }}
         </span>
                 </div>
-                <div class="border-t border-gray-800 pt-4">
-                    <span class="text-gray-400 text-xs">Saldato</span><br>
+                <div class="text-center">
+                    <span class="text-gray-400">Saldato</span><br>
                     <span class="font-semibold {{ $package->saldato ? 'text-green-400' : 'text-red-400' }}">
             {{ $package->saldato ? 'Sì' : 'No' }}
         </span>
