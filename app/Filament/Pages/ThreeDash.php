@@ -36,6 +36,9 @@ class ThreeDash extends Page implements HasTable
                 'packages.id',
                 'packages.nome',
                 'packages.ore',
+                'packages.proforma',
+                'packages.fatturato',
+                'packages.saldato',
                 'customers.ragione_sociale as cliente',
                 DB::raw('COALESCE(packages.totale_ore_lavorate, 0) as ore_usate'),
                 DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste')
