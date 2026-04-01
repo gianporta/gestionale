@@ -102,8 +102,8 @@ class ThreeDash extends Page implements HasTable
                     ->sortable(),
 
                 TextColumn::make('data_lavorazione')
-                    ->label('Data')
-                    ->date()
+                    ->label('Data lavorazione')
+                    ->date('d/m/Y')
                     ->sortable(),
 
                 TextColumn::make('ore_lavorate')
