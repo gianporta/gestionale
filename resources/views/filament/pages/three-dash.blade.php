@@ -30,6 +30,26 @@
                         </span>
                 </div>
             </div>
+            <div class="mt-4 flex justify-between text-sm">
+                <div class="text-center">
+                    <span class="text-gray-400">Proforma</span><br>
+                    <span class="font-semibold">
+                            {{ $package->proforma ? 'Sì' : 'No'  }}
+                        </span>
+                </div>
+                <div class="text-center">
+                    <span class="text-gray-400">Fatturato</span><br>
+                    <span class="font-semibold">
+                            {{ $package->fatturato ? 'Sì' : 'No'  }}
+                        </span>
+                </div>
+                <div class="text-center">
+                    <span class="text-gray-400">Saldato</span><br>
+                    <span class="font-semibold text-amber-400">
+                            {{ $package->saldato ? 'Sì' : 'No'  }}
+                        </span>
+                </div>
+            </div>
         </div>
         @endforeach
 
