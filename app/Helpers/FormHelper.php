@@ -72,16 +72,15 @@ class FormHelper
     private static function getClienteOptions($currentId = null): array
     {
         $query = Customer::query()
-            ->where('tipo_cliente', CUSTOMER::TYPE_CUSTOMER_CUSTOMER)
+            ->where('tipo_cliente', Customer::TYPE_CUSTOMER_CUSTOMER)
             ->where('attivo', 1)
             ->whereHas('jobs', function ($q) {
                 $q->where('stato_job', '!=', Job::STATO_CHIUSO);
             });
-
         if ($currentId)
             $query->orWhere('id', $currentId);
-
         return $query
+            ->orderBy('ragione_sociale')
             ->pluck('ragione_sociale', 'id')
             ->toArray();
     }
