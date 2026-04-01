@@ -155,18 +155,17 @@ class FormHelper
                     'default' => auth()->user()->intestatario_conto_corrente ?? null,
                 ];
             case 'numero_documento':
-                echo "<pre>";print_r(request()->array());die;
                 $numDoc = 0;
                 if(request()->routeIs('filament.admin.resources.quote.create'))
-                    Quote::getNextNumeroDocumento();
+                    $numDoc = Quote::getNextNumeroDocumento();
                 elseif(request()->routeIs('filament.admin.resources.creditmemo.create'))
-                    CreditMemo::getNextNumeroDocumento();
+                    $numDoc = CreditMemo::getNextNumeroDocumento();
                 elseif(request()->routeIs('filament.admin.resources.externalinvoice.create'))
-                    ExternalInvoice::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.proformas.create'))
-                    Proforma::getNextNumeroDocumento();
+                    $numDoc = ExternalInvoice::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.proforma.create'))
+                    $numDoc = Proforma::getNextNumeroDocumento();
                 elseif(request()->routeIs('filament.admin.resources.invoice.create'))
-                    Invoice::getNextNumeroDocumento();
+                    $numDoc = Invoice::getNextNumeroDocumento();
                 return [
                     'type' => 'text',
                     'readonly' => true,
