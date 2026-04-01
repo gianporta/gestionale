@@ -155,6 +155,7 @@ class FormHelper
                     'default' => auth()->user()->intestatario_conto_corrente ?? null,
                 ];
             case 'numero_documento':
+                echo "<pre>";print_r(request());die;
                 $numDoc = 0;
                 if(request()->routeIs('filament.admin.resources.quote.create'))
                     Quote::getNextNumeroDocumento();
