@@ -10,29 +10,32 @@
                     {{ $package->nome }}
                 </div>
             </div>
-            <div class="mt-4 text-sm">
-                <div class="grid grid-cols-3 text-gray-400 text-center">
+            <div class="mt-4 text-sm space-y-2">
+                <div class="grid grid-cols-3 text-gray-400 text-left">
                     <div>Ore</div>
                     <div>Usate</div>
                     <div>Rimaste</div>
                 </div>
-                <div class="grid grid-cols-3 text-center font-semibold mt-1">
+
+                <div class="grid grid-cols-3 text-left font-semibold">
                     <div>{{ $package->ore }}</div>
                     <div>{{ $package->ore_usate }}</div>
                     <div class="text-amber-400">{{ $package->ore_rimaste }}</div>
                 </div>
-                <div class="border-t border-gray-800 my-4"></div>
-                <div class="grid grid-cols-3 text-gray-400 text-center">
+
+                <div class="border-t border-gray-800 my-3"></div>
+
+                <div class="grid grid-cols-3 text-gray-400 text-left">
                     <div>Proforma</div>
                     <div>Fatturato</div>
                     <div>Saldato</div>
                 </div>
-                <div class="grid grid-cols-3 text-center font-semibold mt-1">
+
+                <div class="grid grid-cols-3 text-left font-semibold">
                     <div>{{ $package->proforma ? 'Sì' : 'No' }}</div>
                     <div>{{ $package->fatturato ? 'Sì' : 'No' }}</div>
                     <div class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</div>
                 </div>
-
             </div>
         </div>
         @endforeach
