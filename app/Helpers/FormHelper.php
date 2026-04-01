@@ -172,10 +172,17 @@ class FormHelper
                     'default' => $numDoc
                 ];
             case 'progressivo_sdi':
+                $numSdi = 0;
+                if(request()->routeIs('filament.admin.resources.creditmemos.create'))
+                    $numSdi = CreditMemo::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.externalinvoices.create'))
+                    $numSdi = ExternalInvoice::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.invoices.create'))
+                    $numSdi = Invoice::getNextProgressivoSdi();
                 return [
                     'type' => 'text',
                     'readonly' => true,
-                    'default' => Invoice::getNextProgressivoSdi()
+                    'default' => $numSdi
                 ];
             case 'stima':
                 return [
