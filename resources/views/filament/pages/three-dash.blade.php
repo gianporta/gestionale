@@ -10,32 +10,41 @@
                     {{ $package->nome }}
                 </div>
             </div>
-            <div class="mt-4 text-sm space-y-2">
-                <div class="grid grid-cols-3 text-gray-400 text-left">
-                    <div>Ore</div>
-                    <div>Usate</div>
-                    <div>Rimaste</div>
-                </div>
+            <div class="mt-4 text-sm">
+                <table class="w-full text-left">
+                    <thead class="text-gray-400">
+                    <tr>
+                        <th>Ore</th>
+                        <th>Usate</th>
+                        <th>Rimaste</th>
+                    </tr>
+                    </thead>
+                    <tbody class="font-semibold">
+                    <tr>
+                        <td>{{ $package->ore }}</td>
+                        <td>{{ $package->ore_usate }}</td>
+                        <td class="text-amber-400">{{ $package->ore_rimaste }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="border-t border-gray-800 my-4"></div>
+                <table class="w-full text-left">
+                    <thead class="text-gray-400">
+                    <tr>
+                        <th>Proforma</th>
+                        <th>Fatturato</th>
+                        <th>Saldato</th>
+                    </tr>
+                    </thead>
+                    <tbody class="font-semibold">
+                    <tr>
+                        <td>{{ $package->proforma ? 'Sì' : 'No' }}</td>
+                        <td>{{ $package->fatturato ? 'Sì' : 'No' }}</td>
+                        <td class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
 
-                <div class="grid grid-cols-3 text-left font-semibold">
-                    <div>{{ $package->ore }}</div>
-                    <div>{{ $package->ore_usate }}</div>
-                    <div class="text-amber-400">{{ $package->ore_rimaste }}</div>
-                </div>
-
-                <div class="border-t border-gray-800 my-3"></div>
-
-                <div class="grid grid-cols-3 text-gray-400 text-left">
-                    <div>Proforma</div>
-                    <div>Fatturato</div>
-                    <div>Saldato</div>
-                </div>
-
-                <div class="grid grid-cols-3 text-left font-semibold">
-                    <div>{{ $package->proforma ? 'Sì' : 'No' }}</div>
-                    <div>{{ $package->fatturato ? 'Sì' : 'No' }}</div>
-                    <div class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</div>
-                </div>
             </div>
         </div>
         @endforeach
