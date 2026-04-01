@@ -11,39 +11,39 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-between text-sm">
-                <div class="text-center">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Ore</span><br>
                     <span class="font-semibold">
                             {{ $package->ore }}
                         </span>
                 </div>
-                <div class="text-center">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Usate</span><br>
                     <span class="font-semibold">
                             {{ $package->ore_usate }}
                         </span>
                 </div>
-                <div class="text-center">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Rimaste</span><br>
                     <span class="font-semibold text-amber-400">
                             {{ $package->ore_rimaste }}
                         </span>
                 </div>
             </div>
-            <div class="mt-4 flex justify-between text-sm">
-                <div class="text-center">
+            <div class="mt-4 flex justify-between text-sm border-t border-gray-800">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Proforma</span><br>
                     <span class="font-semibold">
                             {{ $package->proforma ? 'Sì' : 'No'  }}
                         </span>
                 </div>
-                <div class="text-center">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Fatturato</span><br>
                     <span class="font-semibold">
                             {{ $package->fatturato ? 'Sì' : 'No'  }}
                         </span>
                 </div>
-                <div class="text-center">
+                <div class="w-1/3 text-center">
                     <span class="text-gray-400">Saldato</span><br>
                     <span class="font-semibold text-amber-400">
                             {{ $package->saldato ? 'Sì' : 'No'  }}
