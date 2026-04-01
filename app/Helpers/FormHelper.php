@@ -8,11 +8,14 @@ use App\Models\Cms;
 use App\Models\Comuni;
 use App\Models\CondizioniPagamento;
 use App\Models\Countries;
+use App\Models\CreditMemo;
 use App\Models\Customer;
+use App\Models\ExternalInvoice;
 use App\Models\Invoice;
 use App\Models\Job;
 use App\Models\ModalitaPagamento;
 use App\Models\Packages;
+use App\Models\Proforma;
 use App\Models\Provinces;
 use App\Models\Repo;
 use App\Models\Site;
@@ -152,10 +155,21 @@ class FormHelper
                     'default' => auth()->user()->intestatario_conto_corrente ?? null,
                 ];
             case 'numero_documento':
+                $numDoc = 0;
+                if(request()->routeIs('filament.admin.resources.quote.create'))
+                    Quote::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.creditmemo.create'))
+                    CreditMemo::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.externalinvoice.create'))
+                    ExternalInvoice::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.proforma.create'))
+                    Proforma::getNextNumeroDocumento();
+                elseif(request()->routeIs('filament.admin.resources.invoice.create'))
+                    Invoice::getNextNumeroDocumento();
                 return [
                     'type' => 'text',
                     'readonly' => true,
-                    'default' => Invoice::getNextNumeroDocumento()
+                    'default' => $numDoc
                 ];
             case 'progressivo_sdi':
                 return [
