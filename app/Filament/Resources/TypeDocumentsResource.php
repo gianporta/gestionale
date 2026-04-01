@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 class TypeDocumentsResource extends Resource
 {
     protected static ?string $model = TypeDocuments::class;
-    protected static ?string $navigationIcon = 'heroicon-document-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?int $navigationSort = 7;
     protected static ?string $navigationGroup = 'Sistema Documenti';
 
