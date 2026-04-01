@@ -162,7 +162,7 @@ class FormHelper
                     CreditMemo::getNextNumeroDocumento();
                 elseif(request()->routeIs('filament.admin.resources.externalinvoice.create'))
                     ExternalInvoice::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.proforma.create'))
+                elseif(request()->routeIs('filament.admin.resources.proformas.create'))
                     Proforma::getNextNumeroDocumento();
                 elseif(request()->routeIs('filament.admin.resources.invoice.create'))
                     Invoice::getNextNumeroDocumento();
