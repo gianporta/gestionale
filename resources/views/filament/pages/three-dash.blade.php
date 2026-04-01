@@ -10,47 +10,35 @@
                     {{ $package->nome }}
                 </div>
             </div>
-            <div class="mt-4 flex text-xs border-t border-gray-800 pt-4">
-                <div class="w-1/3 text-center">
+            <div class="mt-4 flex justify-between text-sm">
+                <div class="text-center">
                     <span class="text-gray-400">Ore</span><br>
-                    <span class="font-semibold">{{ $package->ore }}</span>
+                    <span class="font-semibold">
+                            {{ $package->ore }}
+                        </span>
                 </div>
-                <div class="w-1/3 text-center">
+                <div class="text-center">
                     <span class="text-gray-400">Usate</span><br>
-                    <span class="font-semibold">{{ $package->ore_usate }}</span>
+                    <span class="font-semibold">
+                            {{ $package->ore_usate }}
+                        </span>
                 </div>
-                <div class="w-1/3 text-center">
+                <div class="text-center">
                     <span class="text-gray-400">Rimaste</span><br>
-                    <span class="font-semibold text-amber-400">{{ $package->ore_rimaste }}</span>
+                    <span class="font-semibold text-amber-400">
+                            {{ $package->ore_rimaste }}
+                        </span>
                 </div>
             </div>
-            <div class="mt-4 flex text-xs border-t border-gray-800 pt-4">
-                <div class="w-1/3 text-center">
-                    <span class="text-gray-400">Proforma</span><br>
-                    <span class="font-semibold {{ $package->proforma ? 'text-green-400' : 'text-red-400' }}">
-            {{ $package->proforma ? 'Sì' : 'No' }}
-        </span>
-                </div>
-                <div class="w-1/3 text-center">
-                    <span class="text-gray-400">Fatturato</span><br>
-                    <span class="font-semibold {{ $package->fatturato ? 'text-green-400' : 'text-red-400' }}">
-            {{ $package->fatturato ? 'Sì' : 'No' }}
-        </span>
-                </div>
-                <div class="w-1/3 text-center">
-                    <span class="text-gray-400">Saldato</span><br>
-                    <span class="font-semibold {{ $package->saldato ? 'text-green-400' : 'text-red-400' }}">
-            {{ $package->saldato ? 'Sì' : 'No' }}
-        </span>
-                </div>
-            </div>
-            @endforeach
         </div>
+        @endforeach
+
     </div>
     <x-filament::section>
         <x-slot name="heading">
             Task in lavorazione
         </x-slot>
+
         {{ $this->table }}
     </x-filament::section>
 </x-filament-panels::page>
