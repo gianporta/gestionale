@@ -24,6 +24,7 @@ use App\Models\StatoTask;
 use App\Models\Stime;
 use App\Models\Task;
 use App\Models\TipoAcquisto;
+use App\Models\TypeDocument;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -419,6 +420,12 @@ class FormHelper
                     'type' => 'select',
                     'options' => Repo::pluck('packages', 'id')->toArray()
                 ];
+            case 'tipo_doc_fatt_el':
+                return [
+                    'type' => 'select',
+                    'options' => TypeDocument::pluck('nome', 'id')->toArray(),
+                    'default' => 1,
+                ];
             case 'id_user':
             case 'user':
                 return [
@@ -703,7 +710,7 @@ class FormHelper
         $listExclude['quote'] = array('condizioni_pagamento', 'modalita_pagamento', 'stato_documento', 'data_pagamento', 'anticipo', 'pagato');
         $listExclude['creditMemo'] = array();
         $listExclude['proforma'] = array('anticipo');
-        $listExclude['invoice'] = array('anticipo', 'descrizione', 'tipo_documento', 'codice_fattura', 'tipo_doc_fatt_el', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
+        $listExclude['invoice'] = array('anticipo', 'descrizione', 'tipo_documento', 'codice_fattura', 'template', 'file', 'filexml', 'ricevuta', 'filexmlname', 'ricevutaname', 'user', 'attivo', 'creato_da');
         $listExclude['externalInvoice'] = array();
         return $listExclude;
     }

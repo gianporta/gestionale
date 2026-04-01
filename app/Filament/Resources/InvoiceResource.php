@@ -127,6 +127,7 @@ class InvoiceResource extends Resource
                         ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                             'stato_documento',
                             'document_to_state',
+                            'tipo_doc_fatt_el',
                             'condizioni_pagamento',
                             'modalita_pagamento',
                             'pagato',
