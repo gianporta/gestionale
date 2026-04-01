@@ -11,40 +11,39 @@
                 </div>
             </div>
             <div class="mt-4 text-sm">
-                <table class="w-full text-left">
-                    <thead class="text-gray-400">
-                    <tr>
-                        <th>Ore</th>
-                        <th>Usate</th>
-                        <th>Rimaste</th>
+                <table class="w-full text-sm">
+                    <tbody>
+                    <tr class="text-gray-400">
+                        <td>Ore</td>
+                        <td>Usate</td>
+                        <td>Rimaste</td>
                     </tr>
-                    </thead>
-                    <tbody class="font-semibold">
-                    <tr>
+
+                    <tr class="font-semibold">
                         <td>{{ $package->ore }}</td>
                         <td>{{ $package->ore_usate }}</td>
                         <td class="text-amber-400">{{ $package->ore_rimaste }}</td>
                     </tr>
-                    </tbody>
-                </table>
-                <div class="border-t border-gray-800 my-4"></div>
-                <table class="w-full text-left">
-                    <thead class="text-gray-400">
+
                     <tr>
-                        <th>Proforma</th>
-                        <th>Fatturato</th>
-                        <th>Saldato</th>
+                        <td colspan="3" class="py-3">
+                            <div class="border-t border-gray-800"></div>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody class="font-semibold">
-                    <tr>
+
+                    <tr class="text-gray-400">
+                        <td>Proforma</td>
+                        <td>Fatturato</td>
+                        <td>Saldato</td>
+                    </tr>
+
+                    <tr class="font-semibold">
                         <td>{{ $package->proforma ? 'Sì' : 'No' }}</td>
                         <td>{{ $package->fatturato ? 'Sì' : 'No' }}</td>
                         <td class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</td>
                     </tr>
                     </tbody>
                 </table>
-
             </div>
         </div>
         @endforeach
