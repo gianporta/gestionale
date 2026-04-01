@@ -102,21 +102,41 @@ $user = auth()->user();
         <td style="font-weight:bold;">IMPONIBILE</td>
         <td style="text-align:right;">€ {{ number_format($proforma->imponibile, 2, ',', '.') }}</td>
     </tr>
+
     <tr style="border-bottom:1px solid #ccc;height:30px;">
         <td style="font-weight:bold;">Rivalsa Inps ({{ $user->percentuale_inps }}%)</td>
         <td style="text-align:right;">€ {{ number_format($proforma->contributo_inps, 2, ',', '.') }}</td>
     </tr>
+
+    <tr style="border-bottom:1px solid #ccc;height:30px;">
+        <td style="font-weight:bold;">Totale Parziale</td>
+        <td style="text-align:right;">
+            € {{ number_format($proforma->imponibile + $proforma->contributo_inps, 2, ',', '.') }}
+        </td>
+    </tr>
+
     <tr style="border-bottom:1px solid #ccc;height:30px;">
         <td style="font-weight:bold;">Iva ({{ $user->percentuale_iva }}%)</td>
         <td style="text-align:right;">€ {{ number_format($proforma->iva, 2, ',', '.') }}</td>
     </tr>
+
+    <tr style="border-bottom:1px solid #ccc;height:30px;">
+        <td style="font-weight:bold;">Totale Fattura Proforma</td>
+        <td style="text-align:right;">
+            € {{ number_format(($proforma->imponibile + $proforma->contributo_inps) + $proforma->iva, 2, ',', '.') }}
+        </td>
+    </tr>
+
     <tr style="border-bottom:1px solid #ccc;height:30px;">
         <td style="font-weight:bold;">Ritenuta d'acconto ({{ $user->percentuale_ritenuta_di_acconto }}%)</td>
         <td style="text-align:right;">€ {{ number_format($proforma->ritenuta_di_acconto, 2, ',', '.') }}</td>
     </tr>
+
     <tr style="border-top:2px solid #000;height:30px;">
         <td style="font-weight:bold;">NETTO A PAGARE</td>
-        <td style="text-align:right; font-weight:bold;">€ {{ number_format($proforma->netto_a_pagare, 2, ',', '.') }}</td>
+        <td style="text-align:right; font-weight:bold;">
+            € {{ number_format($proforma->netto_a_pagare, 2, ',', '.') }}
+        </td>
     </tr>
 </table>
 
