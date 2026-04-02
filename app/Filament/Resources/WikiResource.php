@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\View;
+
 class WikiResource extends Resource
 {
     protected static ?string $model = Wiki::class;
@@ -48,7 +49,7 @@ class WikiResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Wiki())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns, 'wiki');
 
         return $table
             ->columns($tableColumns)
@@ -60,13 +61,10 @@ class WikiResource extends Resource
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
-
                             foreach ($records as $record) {
                                 $new = $record->replicate();
-
                                 if (isset($new->email))
                                     $new->email = $record->email . '.copy';
-
                                 $new->save();
                             }
                         }),
@@ -124,7 +122,7 @@ class WikiResource extends Resource
                         Section::make('Info')
                             ->schema([
                                 View::make('filament.wiki.info')
-                                    ->viewData(fn ($record) => [
+                                    ->viewData(fn($record) => [
                                         'record' => $record,
                                     ]),
                             ]),
