@@ -44,7 +44,7 @@
         @if ($record->ssh_host && $record->ssh_user)
         <div class="mt-3 text-gray-400">Connection command:</div>
         <pre class="text-xs bg-gray-900 p-2 rounded mt-1 overflow-x-auto whitespace-pre-wrap break-all font-mono">
-{{ "ssh {$record->ssh_user}@{$record->ssh_host}" . ($record->base_dir ? "\ncd {$record->base_dir}" : '') }}
+{{ "ssh {$record->ssh_user}@{$record->ssh_host}\n{$record->ssh_psw}" . ($record->base_dir ? "\ncd {$record->base_dir}" : '') }}
             </pre>
         @endif
     </div>
