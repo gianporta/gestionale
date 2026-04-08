@@ -31,18 +31,13 @@ class ThreeDash extends Page implements HasTable
                 'hours.packages_id',
                 DB::raw("CONCAT(users.name, ': ', ROUND(SUM(hours.ore_lavorate),2)) as label")
             )
-            ->groupBy('hours.packages_id', 'hours.user');
+            ->groupBy('hours.packages_id', 'hours.user', 'users.name');
 
         return Packages::query()
             ->join('customers', 'customers.id', '=', 'packages.cliente_id')
-            ->leftJoinSub(
-                DB::table(DB::raw("({$hoursPerUser->toSql()}) as hpu"))
-                    ->mergeBindings($hoursPerUser),
-                'hpu',
-                'hpu.packages_id',
-                '=',
-                'packages.id'
-            )
+            ->leftJoinSub($hoursPerUser, 'hpu', function ($join) {
+                $join->on('hpu.packages_id', '=', 'packages.id');
+            })
             ->where('packages.attivo', 1)
             ->where(function ($q) {
                 $q->whereColumn('packages.ore', '!=', 'packages.totale_ore_lavorate')
@@ -61,7 +56,17 @@ class ThreeDash extends Page implements HasTable
                 DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste'),
                 DB::raw('GROUP_CONCAT(hpu.label SEPARATOR " | ") as ore_per_user')
             )
-            ->groupBy('packages.id')
+            ->groupBy(
+                'packages.id',
+                'packages.nome',
+                'packages.ore',
+                'packages.costo_orario',
+                'packages.proforma',
+                'packages.fatturato',
+                'packages.saldato',
+                'customers.ragione_sociale',
+                'packages.totale_ore_lavorate'
+            )
             ->orderBy('customers.ragione_sociale')
             ->get();
     }
