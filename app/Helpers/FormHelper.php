@@ -84,20 +84,20 @@ class FormHelper
     private static function getTaskOptions(): array
     {
         return Task::query()
-            ->where('attivo', 1)
-            ->whereNotIn('id', function ($q) {
-                $q->select('task_id')
+            ->where('tasks.attivo', 1)
+            ->whereNotIn('tasks.id', function ($q) {
+                $q->select('hmax.task_id')
                     ->fromSub(
                         \DB::table('hours')
-                            ->selectRaw('MAX(id) as id, task_id')
-                            ->groupBy('task_id'),
+                            ->selectRaw('MAX(hours.id) as id, hours.task_id')
+                            ->groupBy('hours.task_id'),
                         'hmax'
                     )
                     ->join('hours', 'hours.id', '=', 'hmax.id')
                     ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                     ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
             })
-            ->pluck('task', 'id')
+            ->pluck('tasks.task', 'tasks.id')
             ->toArray();
     }
 
