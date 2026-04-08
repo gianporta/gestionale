@@ -21,7 +21,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -267,7 +266,14 @@ class TableHelper
             'user' => ['table' => 'users', 'field' => 'name'],
             'id_repo' => ['table' => 'repos', 'field' => 'packages'],
             'task_id' => ['table' => 'tasks', 'field' => 'task'],
-            'packages_id' => ['table' => 'packages', 'field' => 'nome'],
+            'packages_id' => [
+                'custom' => function ($search) {
+                    return DB::table('packages')
+                        ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+                        ->where('customers.ragione_sociale', 'like', "%{$search}%")
+                        ->select('packages.id');
+                }
+            ],
         ];
 
         foreach ($columns as $column) {
@@ -290,12 +296,15 @@ class TableHelper
 
             if (isset($searchMap[$column]))
                 $col->searchable(
-                    query: function (\Illuminate\Database\Eloquent\Builder $query, string $search) use ($column, $searchMap) {
+                    query: function (Builder $query, string $search) use ($column, $searchMap) {
+                        $config = $searchMap[$column];
+                        if (isset($config['custom']))
+                            return $query->whereIn($column, $config['custom']($search));
                         return $query->whereIn(
                             $column,
-                            DB::table($searchMap[$column]['table'])
+                            DB::table($config['table'])
                                 ->select('id')
-                                ->where($searchMap[$column]['field'], 'like', "%{$search}%")
+                                ->where($config['field'], 'like', "%{$search}%")
                         );
                     }
                 );
