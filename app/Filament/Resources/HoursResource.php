@@ -47,7 +47,7 @@ class HoursResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Hours())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns,'hours');
 
         return $table
             ->columns($tableColumns)
