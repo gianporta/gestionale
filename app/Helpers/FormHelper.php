@@ -65,14 +65,6 @@ class FormHelper
         ];
     }
 
-    private static function getUserOptions(): array
-    {
-        return User::query()
-            ->orderBy('name')
-            ->pluck('name', 'id')
-            ->toArray();
-    }
-
     private static function getClienteOptions($currentId = null): array
     {
         $query = Customer::query()
@@ -93,6 +85,18 @@ class FormHelper
     {
         return Task::query()
             ->where('attivo', 1)
+            ->whereNotIn('id', function ($q) {
+                $q->select('task_id')
+                    ->fromSub(
+                        \DB::table('hours')
+                            ->selectRaw('MAX(id) as id, task_id')
+                            ->groupBy('task_id'),
+                        'hmax'
+                    )
+                    ->join('hours', 'hours.id', '=', 'hmax.id')
+                    ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
+                    ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
+            })
             ->pluck('task', 'id')
             ->toArray();
     }
@@ -157,15 +161,15 @@ class FormHelper
                 ];
             case 'numero_documento':
                 $numDoc = 0;
-                if(request()->routeIs('filament.admin.resources.quotes.create'))
+                if (request()->routeIs('filament.admin.resources.quotes.create'))
                     $numDoc = Quote::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.creditmemos.create'))
+                elseif (request()->routeIs('filament.admin.resources.creditmemos.create'))
                     $numDoc = CreditMemo::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.externalinvoices.create'))
+                elseif (request()->routeIs('filament.admin.resources.externalinvoices.create'))
                     $numDoc = ExternalInvoice::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.proformas.create'))
+                elseif (request()->routeIs('filament.admin.resources.proformas.create'))
                     $numDoc = Proforma::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.invoices.create'))
+                elseif (request()->routeIs('filament.admin.resources.invoices.create'))
                     $numDoc = Invoice::getNextNumeroDocumento();
                 return [
                     'type' => 'text',
@@ -174,11 +178,11 @@ class FormHelper
                 ];
             case 'progressivo_sdi':
                 $numSdi = 0;
-                if(request()->routeIs('filament.admin.resources.creditmemos.create'))
+                if (request()->routeIs('filament.admin.resources.creditmemos.create'))
                     $numSdi = CreditMemo::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.externalinvoices.create'))
+                elseif (request()->routeIs('filament.admin.resources.externalinvoices.create'))
                     $numSdi = ExternalInvoice::getNextNumeroDocumento();
-                elseif(request()->routeIs('filament.admin.resources.invoices.create'))
+                elseif (request()->routeIs('filament.admin.resources.invoices.create'))
                     $numSdi = Invoice::getNextProgressivoSdi();
                 return [
                     'type' => 'text',
@@ -394,7 +398,10 @@ class FormHelper
             case 'user_id':
                 return [
                     'type' => 'multiselect',
-                    'options' => self::getUserOptions(),
+                    'options' => return User::query()
+                ->orderBy('name')
+                ->pluck('name', 'id')
+                ->toArray(),
                     'default' => auth()->id(),
                 ];
             case 'condizioni_pagamento':
