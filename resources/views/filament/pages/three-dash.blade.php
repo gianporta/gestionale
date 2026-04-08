@@ -49,7 +49,7 @@
                     <div class="text-gray-400 mb-2">Ore per utente</div>
 
                     <div class="flex flex-wrap gap-2">
-                        @foreach(explode(' | ', $package->ore_per_user) as $userOre)
+                        @foreach($package->ore_per_user as $userOre)
                         <span class="px-2 py-1 bg-gray-800 rounded text-gray-200">
                 {{ $userOre }}
             </span>
