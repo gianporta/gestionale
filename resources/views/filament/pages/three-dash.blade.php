@@ -45,9 +45,8 @@
                     </tbody>
                 </table>
                 @if(!empty($package->ore_per_user))
-                <div class="mt-4 text-xs border-t border-gray-800 pt-3 text-center">
+                <div class="mt-4 pt-4 text-xs border-t border-gray-800 pt-3 text-center">
                     <div class="text-gray-400 mb-2">Ore per utente</div>
-
                     <div class="flex flex-wrap justify-center gap-2">
                         @foreach($package->ore_per_user as $userOre)
                         <span class="px-2 py-1 bg-gray-800 rounded text-gray-200">
