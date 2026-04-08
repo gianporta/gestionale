@@ -87,15 +87,10 @@ class FormHelper
             ->where('tasks.attivo', 1)
             ->whereNotExists(function ($q) {
                 $q->select(\DB::raw(1))
-                    ->from('hours as h1')
-                    ->join('stato_tasks as st', 'st.id', '=', 'h1.stato')
-                    ->whereColumn('h1.task_id', 'tasks.id')
-                    ->whereIn('st.nome', ['Finito', 'Rilascio'])
-                    ->whereRaw('h1.id = (
-                    SELECT MAX(h2.id)
-                    FROM hours h2
-                    WHERE h2.task_id = h1.task_id
-                )');
+                    ->from('hours')
+                    ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
+                    ->whereColumn('hours.task_id', 'tasks.id')
+                    ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
             })
             ->pluck('tasks.task', 'tasks.id')
             ->toArray();
