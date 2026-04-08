@@ -20,7 +20,7 @@
                     </tr>
 
                     <tr class="font-semibold">
-                        <td>{{ $package->ore }} / €{{ $package->costo }}</td>
+                        <td>{{ $package->ore }} / €{{ $package->costo_orario }}</td>
                         <td>{{ $package->ore_usate }}</td>
                         <td class="text-amber-400">{{ $package->ore_rimaste }}</td>
                     </tr>

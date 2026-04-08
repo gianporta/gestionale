@@ -36,6 +36,7 @@ class ThreeDash extends Page implements HasTable
                 'packages.id',
                 'packages.nome',
                 'packages.ore',
+                'packages.costo_orario',
                 'packages.proforma',
                 'packages.fatturato',
                 'packages.saldato',
