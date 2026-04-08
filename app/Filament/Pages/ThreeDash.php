@@ -25,8 +25,24 @@ class ThreeDash extends Page implements HasTable
     }
     public function getOpenPackages()
     {
+        $hoursPerUser = DB::table('hours')
+            ->join('users', 'users.id', '=', 'hours.user')
+            ->select(
+                'hours.packages_id',
+                DB::raw("CONCAT(users.name, ': ', ROUND(SUM(hours.ore_lavorate),2)) as label")
+            )
+            ->groupBy('hours.packages_id', 'hours.user');
+
         return Packages::query()
             ->join('customers', 'customers.id', '=', 'packages.cliente_id')
+            ->leftJoinSub(
+                DB::table(DB::raw("({$hoursPerUser->toSql()}) as hpu"))
+                    ->mergeBindings($hoursPerUser),
+                'hpu',
+                'hpu.packages_id',
+                '=',
+                'packages.id'
+            )
             ->where('packages.attivo', 1)
             ->where(function ($q) {
                 $q->whereColumn('packages.ore', '!=', 'packages.totale_ore_lavorate')
@@ -42,8 +58,10 @@ class ThreeDash extends Page implements HasTable
                 'packages.saldato',
                 'customers.ragione_sociale as cliente',
                 DB::raw('COALESCE(packages.totale_ore_lavorate, 0) as ore_usate'),
-                DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste')
+                DB::raw('(packages.ore - COALESCE(packages.totale_ore_lavorate, 0)) as ore_rimaste'),
+                DB::raw('GROUP_CONCAT(hpu.label SEPARATOR " | ") as ore_per_user')
             )
+            ->groupBy('packages.id')
             ->orderBy('customers.ragione_sociale')
             ->get();
     }

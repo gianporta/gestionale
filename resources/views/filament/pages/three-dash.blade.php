@@ -44,6 +44,19 @@
                     </tr>
                     </tbody>
                 </table>
+                @if(!empty($package->ore_per_user))
+                <div class="mt-4 text-xs border-t border-gray-800 pt-3">
+                    <div class="text-gray-400 mb-2">Ore per utente</div>
+
+                    <div class="flex flex-wrap gap-2">
+                        @foreach(explode(' | ', $package->ore_per_user) as $userOre)
+                        <span class="px-2 py-1 bg-gray-800 rounded text-gray-200">
+                {{ $userOre }}
+            </span>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
         @endforeach
