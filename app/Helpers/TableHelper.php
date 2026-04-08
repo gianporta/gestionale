@@ -34,7 +34,7 @@ class TableHelper
         switch ($column) {
 
             case 'user':
-                return ['value' => User::find($value)?->nome];
+                return ['value' => User::find($value)?->name];
             case 'costo':
             case 'netto_a_pagare':
                 return ['value' => number_format((float)$value, 2, ',', '.') . ' €'];
