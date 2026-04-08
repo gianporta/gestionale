@@ -13,7 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 
@@ -47,7 +46,7 @@ class HoursResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Hours())->getTable());
-        $tableColumns = TableHelper::getColumns($columns,'hours');
+        $tableColumns = TableHelper::getColumns($columns, 'hours');
 
         return $table
             ->columns($tableColumns)
@@ -78,7 +77,7 @@ class HoursResource extends Resource
     public static function form(Form $form): Form
     {
         $columns = DBHelper::getTableColumns((new Hours())->getTable());
-        $formSchema = FormHelper::getFieldForm($columns);
+        $formSchema = FormHelper::getFieldForm($columns, 'hours');
         return $form->schema($formSchema);
     }
 
