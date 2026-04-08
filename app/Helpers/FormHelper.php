@@ -398,10 +398,10 @@ class FormHelper
             case 'user_id':
                 return [
                     'type' => 'multiselect',
-                    'options' => return User::query()
-                ->orderBy('name')
-                ->pluck('name', 'id')
-                ->toArray(),
+                    'options' => User::query()
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->toArray(),
                     'default' => auth()->id(),
                 ];
             case 'condizioni_pagamento':
