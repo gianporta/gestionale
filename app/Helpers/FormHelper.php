@@ -732,30 +732,21 @@ class FormHelper
     private static function updateTotali(Get $get, Set $set): void
     {
         $rows = collect($get('../../content') ?? []);
-
         $imponibile = $rows->sum(fn($row) => (float)($row['imponibile'] ?? 0));
         $set('../../imponibile', round($imponibile, 2));
-
         $user = auth()->user();
-
         $inpsPerc = (float)($user->percentuale_inps ?? 0);
         $ritenutaPerc = (float)($user->percentuale_ritenuta_di_acconto ?? 0);
         $ivaPerc = (float)($user->percentuale_iva ?? 22);
-
         $mostraInps = (int)($get('../../mostra_inps') ?? 0);
         $mostraRitenuta = (int)($get('../../mostra_ritenuta') ?? 0);
-
         $inps = $mostraInps ? ($imponibile * $inpsPerc / 100) : 0;
         $set('../../contributo_inps', round($inps, 2));
-
         $baseContributiva = $imponibile + $inps;
-
         $iva = $baseContributiva * $ivaPerc / 100;
         $set('../../iva', round($iva, 2));
-
         $ritenuta = $mostraRitenuta ? ($baseContributiva * $ritenutaPerc / 100) : 0;
         $set('../../ritenuta_di_acconto', round($ritenuta, 2));
-
         $netto = $imponibile + $inps + $iva - $ritenuta;
         $set('../../netto_a_pagare', round($netto, 2));
     }

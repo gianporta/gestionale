@@ -428,6 +428,15 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
+            Action::make('duplicate')
+                ->icon('heroicon-o-document-duplicate')
+                ->color('info')
+                ->label('')
+                ->button()
+                ->action(function ($record) {
+                    $new = $record->replicate();
+                    $new->save();
+                }),
             EditAction::make()
                 ->color('warning')
                 ->label('')
