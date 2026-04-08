@@ -14,7 +14,7 @@
                 <table class="w-full text-sm">
                     <tbody>
                     <tr class="text-gray-400">
-                        <td>Ore/Costo</td>
+                        <td>Ore / Costo</td>
                         <td>Usate</td>
                         <td>Rimaste</td>
                     </tr>
