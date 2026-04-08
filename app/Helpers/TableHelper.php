@@ -32,6 +32,7 @@ class TableHelper
     public static function formatColumnValue(string $column, mixed $value): mixed
     {
         switch ($column) {
+
             case 'costo':
             case 'netto_a_pagare':
                 return ['value' => number_format((float)$value, 2, ',', '.') . ' €'];
@@ -68,6 +69,7 @@ class TableHelper
             case 'cliente':
             case 'cliente_id':
                 return ['label' => 'Cliente', 'value' => Customer::find($value)?->ragione_sociale];
+            case 'packages_id':
             case 'pacchetto_id':
                 $package = Packages::query()
                     ->join('customers', 'customers.id', '=', 'packages.cliente_id')
@@ -233,7 +235,6 @@ class TableHelper
             'site',
             'cf',
             'p_iva',
-            'packages_id',
             'cms_version',
         );
         $listExclude['user'] = array('ragione_sociale');
