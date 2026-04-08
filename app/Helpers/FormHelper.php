@@ -86,7 +86,7 @@ class FormHelper
         return Task::query()
             ->where('tasks.attivo', 1)
             ->whereNotExists(function ($q) {
-                $q->select(DB::raw(1))
+                $q->select(\DB::raw(1))
                     ->from('hours as h1')
                     ->join('stato_tasks as st', 'st.id', '=', 'h1.stato')
                     ->whereColumn('h1.task_id', 'tasks.id')
