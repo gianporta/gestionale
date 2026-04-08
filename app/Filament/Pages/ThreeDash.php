@@ -52,7 +52,7 @@ class ThreeDash extends Page implements HasTable
             ->select(
                 'hours.packages_id',
                 'users.name',
-                DB::raw('SUM(CAST(hours.ore_lavorate as DECIMAL(10,2))) as ore')
+                DB::raw('SUM(hours.ore_lavorate) as ore')
             )
             ->groupBy('hours.packages_id', 'users.id', 'users.name')
             ->get()
