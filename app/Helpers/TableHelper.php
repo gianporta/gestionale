@@ -137,7 +137,6 @@ class TableHelper
             'cellulare',
             'sito_web',
             'tipo_cliente',
-            'user',
             'user_id',
             'admin_url',
             'http_user',
@@ -263,8 +262,10 @@ class TableHelper
             'cliente' => ['table' => 'customers', 'field' => 'ragione_sociale'],
             'cms' => ['table' => 'cms', 'field' => 'nome'],
             'id_user' => ['table' => 'users', 'field' => 'name'],
+            'user' => ['table' => 'users', 'field' => 'name'],
             'id_repo' => ['table' => 'repos', 'field' => 'packages'],
             'task_id' => ['table' => 'tasks', 'field' => 'task'],
+            'packages_id' => ['table' => 'packages', 'field' => 'nome'],
         ];
 
         foreach ($columns as $column) {
