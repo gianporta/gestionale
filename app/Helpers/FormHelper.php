@@ -85,17 +85,17 @@ class FormHelper
     {
         return Task::query()
             ->where('tasks.attivo', 1)
-            ->whereNotIn('tasks.id', function ($q) {
-                $q->select('hmax.task_id')
-                    ->fromSub(
-                        \DB::table('hours')
-                            ->selectRaw('MAX(hours.id) as id, hours.task_id')
-                            ->groupBy('hours.task_id'),
-                        'hmax'
-                    )
-                    ->join('hours', 'hours.id', '=', 'hmax.id')
-                    ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
-                    ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
+            ->whereNotExists(function ($q) {
+                $q->select(DB::raw(1))
+                    ->from('hours as h1')
+                    ->join('stato_tasks as st', 'st.id', '=', 'h1.stato')
+                    ->whereColumn('h1.task_id', 'tasks.id')
+                    ->whereIn('st.nome', ['Finito', 'Rilascio'])
+                    ->whereRaw('h1.id = (
+                    SELECT MAX(h2.id)
+                    FROM hours h2
+                    WHERE h2.task_id = h1.task_id
+                )');
             })
             ->pluck('tasks.task', 'tasks.id')
             ->toArray();
