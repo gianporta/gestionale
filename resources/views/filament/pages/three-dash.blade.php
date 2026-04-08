@@ -14,13 +14,13 @@
                 <table class="w-full text-sm">
                     <tbody>
                     <tr class="text-gray-400">
-                        <td>Ore</td>
+                        <td>Ore/Costo</td>
                         <td>Usate</td>
                         <td>Rimaste</td>
                     </tr>
 
                     <tr class="font-semibold">
-                        <td>{{ $package->ore }}</td>
+                        <td>{{ $package->ore }} / €{{ $package->costo }}</td>
                         <td>{{ $package->ore_usate }}</td>
                         <td class="text-amber-400">{{ $package->ore_rimaste }}</td>
                     </tr>

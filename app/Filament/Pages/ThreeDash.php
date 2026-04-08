@@ -59,22 +59,19 @@ class ThreeDash extends Page implements HasTable
         return $table
             ->query(
                 Task::query()
-                    ->joinSub(
-                        DB::table('hours')
-                            ->selectRaw('MAX(id) as id, task_id')
-                            ->where('stato', '!=', 3)
-                            ->groupBy('task_id'),
-                        'hmax',
-                        'hmax.task_id',
-                        '=',
-                        'tasks.id'
-                    )
-                    ->join('hours', 'hours.id', '=', 'hmax.id')
-                    ->join('packages', 'packages.id', '=', 'hours.packages_id')
                     ->join('customers', 'customers.id', '=', 'tasks.cliente_id')
+                    ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
+                    ->leftJoin('packages', 'packages.id', '=', 'hours.packages_id')
                     ->leftJoin('users', 'users.id', '=', 'hours.user')
                     ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                     ->where('tasks.attivo', 1)
+                    ->whereNotExists(function ($q) {
+                        $q->select(DB::raw(1))
+                            ->from('hours as h2')
+                            ->join('stato_tasks as st2', 'st2.id', '=', 'h2.stato')
+                            ->whereColumn('h2.task_id', 'tasks.id')
+                            ->whereIn('st2.nome', ['Finito', 'Rilascio']);
+                    })
                     ->select(
                         'tasks.id',
                         'tasks.task',
