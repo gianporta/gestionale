@@ -437,7 +437,10 @@ class FormHelper
             case 'user':
                 return [
                     'type' => 'select',
-                    'options' => self::getUserOptions(),
+                    'options' => User::query()
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->toArray(),
                     'default' => auth()->id(),
                 ];
             case 'country_code':
