@@ -114,7 +114,6 @@ class TableHelper
                     ->formatStateUsing(fn($state) => StatoDocumento::find($state)?->nome ?? $state)
                     ->color(function ($state) {
                         $nome = strtolower(StatoDocumento::find($state)?->nome ?? '');
-                        die('testgian' . $nome);
                         if ($nome == 'pagato')
                             return 'success';
                         elseif ($nome == 'parzialmente pagato')
