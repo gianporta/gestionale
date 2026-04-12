@@ -108,6 +108,25 @@ class TableHelper
                 $col->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger');
                 break;
+            case 'stato_documento':
+                $col->badge()
+                    ->formatStateUsing(fn($state) => StatoDocumento::find($state)?->nome ?? $state)
+                    ->color(function ($state) {
+
+                        $nome = strtolower(StatoDocumento::find($state)?->nome ?? '');
+
+                        if (str_contains($nome, 'pagato') && !str_contains($nome, 'parziale'))
+                            return 'success';
+
+                        if (str_contains($nome, 'parziale'))
+                            return 'warning';
+
+                        if (str_contains($nome, 'pagare'))
+                            return 'danger';
+
+                        return 'gray';
+                    });
+                break;
         }
     }
 
@@ -428,15 +447,18 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
-//            Action::make('duplicate')
-//                ->icon('heroicon-o-document-duplicate')
-//                ->color('info')
-//                ->label('')
-//                ->button()
-//                ->action(function ($record) {
-//                    $new = $record->replicate();
-//                    $new->save();
-//                }),
+            Action::make('duplicate')
+                ->icon('heroicon-o-document-duplicate')
+                ->color('info')
+                ->label('')
+                ->button()
+                ->action(function ($record, $livewire) {
+                    $livewire->mountAction('create', [
+                        'data' => collect($record->toArray())
+                            ->except(['id', 'created_at', 'updated_at'])
+                            ->toArray()
+                    ]);
+                }),
             EditAction::make()
                 ->color('warning')
                 ->label('')
