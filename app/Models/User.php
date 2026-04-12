@@ -31,7 +31,8 @@ class User extends Authenticatable
         'citta',
         'cap',
         'indirizzo',
-        'telefono'
+        'telefono',
+        'valuta_codice'
     ];
     protected $hidden = [
         'password',
