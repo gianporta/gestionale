@@ -443,18 +443,6 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
-            /*Action::make('duplicate')
-                ->icon('heroicon-o-document-duplicate')
-                ->color('info')
-                ->label('')
-                ->button()
-                ->action(function ($record, $livewire) {
-                    $livewire->mountAction('create', [
-                        'data' => collect($record->toArray())
-                            ->except(['id', 'created_at', 'updated_at'])
-                            ->toArray()
-                    ]);
-                }),*/
             EditAction::make()
                 ->color('warning')
                 ->label('')
