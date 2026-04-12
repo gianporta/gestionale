@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProformaResource\Pages;
 
 use App\Filament\Resources\ProformaResource;
 use App\Models\Customer;
+use App\Models\Invoice;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -16,22 +17,65 @@ class Edit extends EditRecord
     {
         return [
             DeleteAction::make(),
+
             Action::make('back')
                 ->label('Indietro')
                 ->icon('heroicon-o-arrow-left')
                 ->color('gray')
                 ->url(fn () => static::getResource()::getUrl('index')),
+
             Action::make('stampa')
                 ->label('Stampa PDF')
                 ->icon('heroicon-o-printer')
                 ->color('success')
                 ->url(fn () => route('proforma.print', $this->record))
                 ->openUrlInNewTab(),
+
+            Action::make('crea_fattura')
+                ->label('Crea fattura')
+                ->icon('heroicon-o-document-text')
+                ->color('success')
+                ->requiresConfirmation()
+                ->action(function () {
+
+                    $proforma = $this->record;
+
+                    $invoice = new Invoice();
+
+                    $data = collect($proforma->toArray())
+                        ->except([
+                            'id',
+                            'numero_documento',
+                            'progressivo_sdi',
+                            'created_at',
+                            'updated_at',
+                        ])
+                        ->toArray();
+
+                    $invoice->fill($data);
+
+                    $invoice->numero_documento = Invoice::getNextNumeroDocumento();
+                    $invoice->progressivo_sdi = Invoice::getNextProgressivoSdi();
+                    $invoice->tipo_documento = Invoice::TYPE_DOC;
+
+                    $invoice->pagato = 0;
+                    $invoice->data_pagamento = null;
+
+                    $invoice->save();
+
+                    // segna proforma come fatturata
+                    $proforma->fatturato = 1;
+                    $proforma->save();
+
+                    return redirect()->route('filament.admin.resources.invoices.edit', $invoice);
+                }),
+
             Action::make('new')
                 ->label('Nuovo')
                 ->icon('heroicon-o-plus')
                 ->color('success')
                 ->url(fn () => static::getResource()::getUrl('create')),
+
             Action::make('save_top')
                 ->label('Salva')
                 ->color('primary')
@@ -40,6 +84,7 @@ class Edit extends EditRecord
                 }),
         ];
     }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (!empty($data['cliente'])) {

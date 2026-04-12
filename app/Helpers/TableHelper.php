@@ -443,7 +443,7 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
-            Action::make('duplicate')
+            /*Action::make('duplicate')
                 ->icon('heroicon-o-document-duplicate')
                 ->color('info')
                 ->label('')
@@ -454,7 +454,7 @@ class TableHelper
                             ->except(['id', 'created_at', 'updated_at'])
                             ->toArray()
                     ]);
-                }),
+                }),*/
             EditAction::make()
                 ->color('warning')
                 ->label('')
