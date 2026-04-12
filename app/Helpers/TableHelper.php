@@ -21,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -112,16 +113,13 @@ class TableHelper
                 $col->badge()
                     ->formatStateUsing(fn($state) => StatoDocumento::find($state)?->nome ?? $state)
                     ->color(function ($state) {
-
                         $nome = strtolower(StatoDocumento::find($state)?->nome ?? '');
-
-                        if (str_contains($nome, 'pagato') && !str_contains($nome, 'parziale'))
+                        if ($nome == 'Pagato')
                             return 'success';
-
-                        if (str_contains($nome, 'parziale'))
+                        if ($nome == 'Parzialmente Pagato')
                             return 'warning';
 
-                        if (str_contains($nome, 'da_pagare'))
+                        if ($nome == 'Da Pagare')
                             return 'danger';
 
                         return 'gray';
@@ -472,6 +470,7 @@ class TableHelper
         $actions = array_merge($actionsDocument, $actionsInvoice, $actionsGeneric);
         return $actions;
     }
+
     public static function getHeaderActions()
     {
         return [
