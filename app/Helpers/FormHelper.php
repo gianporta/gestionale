@@ -322,6 +322,21 @@ class FormHelper
                     'options' => fn(Get $get) => self::getClienteOptions($get('cliente')),
                     'reactive' => true,
                     'afterStateUpdated' => function ($state, Set $set) {
+
+                        $cliente = Customer::find($state);
+
+                        if (!$cliente)
+                            return;
+
+                        $set('cliente_ragione_sociale', $cliente->ragione_sociale);
+                        $set('cliente_indirizzo', $cliente->indirizzo);
+                        $set('cliente_citta', $cliente->citta);
+                        $set('cliente_cap', $cliente->cap);
+                        $set('cliente_provincia', $cliente->provincia);
+                        $set('cliente_nazione', $cliente->nazione);
+                        $set('cliente_partita_iva', $cliente->partita_iva);
+                        $set('cliente_codice_fiscale', $cliente->codice_fiscale);
+
                         $set('content', [
                             [
                                 'descrizione' => null,
