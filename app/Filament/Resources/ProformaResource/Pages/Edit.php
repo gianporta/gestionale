@@ -51,20 +51,14 @@ class Edit extends EditRecord
                             'updated_at',
                         ])
                         ->toArray();
-
                     $invoice->fill($data);
-
                     $invoice->numero_documento = Invoice::getNextNumeroDocumento();
                     $invoice->progressivo_sdi = Invoice::getNextProgressivoSdi();
                     $invoice->tipo_documento = Invoice::TYPE_DOC;
-
-                    $invoice->pagato = 0;
                     $invoice->data_pagamento = null;
-
+                    $invoice->creato_da = 'proforma_'.$proforma->id;
                     $invoice->save();
-
-                    // segna proforma come fatturata
-                    $proforma->fatturato = 1;
+                    $proforma->fattura = $invoice->id;
                     $proforma->save();
 
                     return redirect()->route('filament.admin.resources.invoices.edit', $invoice);

@@ -264,7 +264,7 @@ class TableHelper
         $listExclude['acquisti'] = array('progressivo_sdi', 'numero_documento', 'attivo', 'pagato', 'descrizione');
         $listExclude['quote'] = array('progressivo_sdi', 'attivo', 'stato_documento', 'codice_fattura', 'pagato', 'descrizione');
         $listExclude['creditMemo'] = array('codice_fattura', 'attivo', 'pagato', 'descrizione');
-        $listExclude['proforma'] = array('progressivo_sdi', 'codice_fattura', 'attivo', 'pagato', 'descrizione');
+        $listExclude['proforma'] = array('progressivo_sdi', 'codice_fattura', 'attivo', 'pagato', 'descrizione', 'user');
         $listExclude['invoice'] = array('codice_fattura', 'attivo', 'pagato', 'descrizione');
         $listExclude['external_invoice'] = array('codice_fattura', 'iva', 'attivo', 'pagato', 'descrizione');
         return $listExclude;
@@ -333,22 +333,27 @@ class TableHelper
         return $tableColumns;
     }
 
-    public static function getTableFilter()
+    public static function getTableFilter(): array
     {
         return [
             SelectFilter::make('anno')
                 ->label('Anno')
                 ->multiple()
                 ->default([date('Y')])
-                ->options(
-                    DB::table('documenti')
+                ->options(function ($livewire) {
+
+                    $model = $livewire->getModel();
+
+                    return $model::query()
                         ->whereNotNull('data_documento')
                         ->selectRaw('YEAR(data_documento) as anno')
                         ->distinct()
                         ->orderByDesc('anno')
+                        ->get()
                         ->pluck('anno', 'anno')
-                        ->toArray()
-                )
+                        ->filter(fn ($v) => !is_null($v))
+                        ->toArray();
+                })
                 ->query(function ($query, $data) {
 
                     if (empty($data['values']))
@@ -443,6 +448,18 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
+            /*Action::make('duplicate')
+                ->icon('heroicon-o-document-duplicate')
+                ->color('info')
+                ->label('')
+                ->button()
+                ->action(function ($record, $livewire) {
+                    $livewire->mountAction('create', [
+                        'data' => collect($record->toArray())
+                            ->except(['id', 'created_at', 'updated_at'])
+                            ->toArray()
+                    ]);
+                }),*/
             EditAction::make()
                 ->color('warning')
                 ->label('')

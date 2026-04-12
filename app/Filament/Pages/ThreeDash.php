@@ -138,7 +138,7 @@ class ThreeDash extends Page implements HasTable
                     ->options(
                         DB::table('stato_tasks')
                             ->pluck('nome', 'id')
-                            ->toArray()
+                            ->toArray() ?? []
                     )
                     ->query(function ($query, $data) {
                         if (empty($data['value']))
