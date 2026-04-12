@@ -121,7 +121,7 @@ class TableHelper
                         if (str_contains($nome, 'parziale'))
                             return 'warning';
 
-                        if (str_contains($nome, 'pagare'))
+                        if (str_contains($nome, 'da_pagare'))
                             return 'danger';
 
                         return 'gray';
