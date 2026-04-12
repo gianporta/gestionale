@@ -97,7 +97,7 @@ class Invoice extends Model
     }
     public function getTipoDocumento(): string
     {
-        return \DB::table('type_document')
+        return \DB::table('type_documents')
             ->where('id', $this->tipo_doc_fatt_el)
             ->value('codice') ?? 'TD01';
     }
