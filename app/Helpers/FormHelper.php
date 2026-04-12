@@ -667,7 +667,10 @@ class FormHelper
                     $field = TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->numeric()
-                        ->required(false);
+                        ->required(false)
+                        ->step(0.50)
+                        ->formatStateUsing(fn ($state) => str_replace(',', '.', $state))
+                        ->dehydrateStateUsing(fn ($state) => str_replace(',', '.', $state));
                     if (isset($config['default']))
                         $field->default($config['default']);
                     if (isset($config['disabled_callback']))
