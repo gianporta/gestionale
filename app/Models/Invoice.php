@@ -49,6 +49,7 @@ class Invoice extends Model
         'descrizione',
         'frase_in_calce',
         'content',
+        'tipo_doc_fatt_el',
     ];
 
     protected $casts = [
