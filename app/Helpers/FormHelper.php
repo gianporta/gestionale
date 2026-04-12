@@ -81,21 +81,6 @@ class FormHelper
             ->toArray();
     }
 
-    private static function getTaskOptions(): array
-    {
-        return Task::query()
-            ->where('tasks.attivo', 1)
-            ->whereNotExists(function ($q) {
-                $q->select(\DB::raw(1))
-                    ->from('hours')
-                    ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
-                    ->whereColumn('hours.task_id', 'tasks.id')
-                    ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
-            })
-            ->pluck('tasks.task', 'tasks.id')
-            ->toArray();
-    }
-
     private static function getPackagesActive(): array
     {
         return Packages::query()
@@ -356,7 +341,23 @@ class FormHelper
             case 'task_id':
                 return [
                     'type' => 'select',
-                    'options' => self::getTaskOptions(),
+                    'options' => fn(Get $get) =>
+                    Task::query()
+                        ->where(function ($q) use ($get) {
+                            $q->where('tasks.attivo', 1)
+                                ->whereNotExists(function ($q2) {
+                                    $q2->select(\DB::raw(1))
+                                        ->from('hours')
+                                        ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
+                                        ->whereColumn('hours.task_id', 'tasks.id')
+                                        ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
+                                });
+
+                            if ($get('task_id'))
+                                $q->orWhere('tasks.id', $get('task_id'));
+                        })
+                        ->pluck('tasks.task', 'tasks.id')
+                        ->toArray(),
                 ];
             case 'expiration':
                 return [
