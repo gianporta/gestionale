@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Job;
 use App\Models\Packages;
 use App\Models\Repo;
+use App\Models\Hours;
 use App\Models\StatoDocumento;
 use App\Models\StatoTask;
 use App\Models\Stime;
@@ -21,7 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-
+use Filament\Forms\Form;
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -461,18 +462,34 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
-//            Action::make('duplicate')
-//                ->icon('heroicon-o-document-duplicate')
-//                ->color('info')
-//                ->label('')
-//                ->button()
-//                ->action(function ($record, $livewire) {
-//                    session()->put('duplicate_data', collect($record->toArray())
-//                        ->except(['id', 'created_at', 'updated_at'])
-//                        ->toArray()
-//                    );
-//                    $livewire->mountAction('create');
-//                }),
+            Action::make('duplicate')
+                ->icon('heroicon-o-document-duplicate')
+                ->color('info')
+                ->label('')
+                ->button()
+                ->form(function (Form $form) {
+
+                    $columns = DBHelper::getTableColumns((new Hours())->getTable());
+
+                    return $form->schema(
+                        FormHelper::getFieldForm($columns, 'hours')
+                    );
+                })
+                ->fillForm(function ($record) {
+                    return [
+                        'user' => $record->user,
+                        'task_id' => $record->task_id,
+                        'data_lavorazione' => $record->data_lavorazione,
+                        'ore_lavorate' => $record->ore_lavorate,
+                        'descrizione' => $record->descrizione,
+                        'note' => $record->note,
+                        'stato' => $record->stato,
+                        'attivo' => $record->attivo,
+                    ];
+                })
+                ->action(function (array $data) {
+                    Hours::create($data);
+                }),
             EditAction::make()
                 ->color('warning')
                 ->label('')
