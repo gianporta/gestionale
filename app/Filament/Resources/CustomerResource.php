@@ -128,6 +128,7 @@ class CustomerResource extends Resource
             Section::make('Sistema')
                 ->schema(array_filter($formSchema, fn($k) => in_array($k, [
                     'attivo',
+                    'label_colore',
                 ]), ARRAY_FILTER_USE_KEY))
                 ->columns(2),
         ]);

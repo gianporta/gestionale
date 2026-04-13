@@ -34,6 +34,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Forms\Components\ColorPicker;
 
 class FormHelper
 {
@@ -105,6 +106,11 @@ class FormHelper
     public static function getFormFieldConfig(string $column): array
     {
         switch ($column) {
+            case 'label_colore':
+                return [
+                    'type' => 'color',
+                    'default' => '#000000',
+                ];
             case 'pagato':
                 return [
                     'type' => 'text',
@@ -356,8 +362,7 @@ class FormHelper
             case 'task_id':
                 return [
                     'type' => 'select',
-                    'options' => fn(Get $get) =>
-                    Task::query()
+                    'options' => fn(Get $get) => Task::query()
                         ->where(function ($q) use ($get) {
                             $q->where('tasks.attivo', 1)
                                 ->whereNotExists(function ($q2) {
@@ -587,6 +592,14 @@ class FormHelper
                         ->password()
                         ->required(false);
                     break;
+                case 'color':
+                    $field = ColorPicker::make($column)
+                        ->label(ucfirst(str_replace('_', ' ', $column)))
+                        ->required(false);
+
+                    if (isset($config['default']))
+                        $field->default($config['default']);
+                    break;
                 case 'textarea':
                     $field = Textarea::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
@@ -685,8 +698,8 @@ class FormHelper
                         ->numeric()
                         ->required(false)
                         ->step(0.01)
-                        ->formatStateUsing(fn ($state) => str_replace(',', '.', $state))
-                        ->dehydrateStateUsing(fn ($state) => str_replace(',', '.', $state));
+                        ->formatStateUsing(fn($state) => str_replace(',', '.', $state))
+                        ->dehydrateStateUsing(fn($state) => str_replace(',', '.', $state));
                     if (isset($config['default']))
                         $field->default($config['default']);
                     if (isset($config['disabled_callback']))

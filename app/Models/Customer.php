@@ -33,6 +33,7 @@ class Customer  extends Model
         'sito_web',
 
         'attivo',
+        'label_colore',
     ];
     protected static function booted()
     {

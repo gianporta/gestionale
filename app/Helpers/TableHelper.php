@@ -468,9 +468,7 @@ class TableHelper
                 ->label('')
                 ->button()
                 ->form(function (Form $form) {
-
                     $columns = DBHelper::getTableColumns((new Hours())->getTable());
-
                     return $form->schema(
                         FormHelper::getFieldForm($columns, 'hours')
                     );
@@ -479,10 +477,10 @@ class TableHelper
                     return [
                         'user' => $record->user,
                         'task_id' => $record->task_id,
-                        'data_lavorazione' => $record->data_lavorazione,
+                        'data_lavorazione' => now()->toDateString(),
                         'ore_lavorate' => $record->ore_lavorate,
-                        'descrizione' => $record->descrizione,
-                        'note' => $record->note,
+                        'descrizione' => '',
+                        'note' => '',
                         'stato' => $record->stato,
                         'attivo' => $record->attivo,
                     ];
