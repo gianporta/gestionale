@@ -684,7 +684,7 @@ class FormHelper
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->numeric()
                         ->required(false)
-                        ->step(0.50)
+                        ->step(0.01)
                         ->formatStateUsing(fn ($state) => str_replace(',', '.', $state))
                         ->dehydrateStateUsing(fn ($state) => str_replace(',', '.', $state));
                     if (isset($config['default']))

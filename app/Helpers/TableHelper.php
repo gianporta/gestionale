@@ -421,6 +421,19 @@ class TableHelper
 
         });
     }
+    public static function getCreateActionWithDuplicate(): Action
+    {
+        return Action::make('create')
+            ->label('Nuovo')
+            ->icon('heroicon-o-plus')
+            ->color('success')
+            ->action(function ($livewire) {
+                $livewire->mountAction('create');
+            })
+            ->fillForm(function () {
+                return session()->pull('duplicate_data', []);
+            });
+    }
 
     public static function getTableActions($type = '')
     {
@@ -448,18 +461,18 @@ class TableHelper
             ];
         }
         $actionsGeneric = [
-            /*Action::make('duplicate')
-                ->icon('heroicon-o-document-duplicate')
-                ->color('info')
-                ->label('')
-                ->button()
-                ->action(function ($record, $livewire) {
-                    $livewire->mountAction('create', [
-                        'data' => collect($record->toArray())
-                            ->except(['id', 'created_at', 'updated_at'])
-                            ->toArray()
-                    ]);
-                }),*/
+//            Action::make('duplicate')
+//                ->icon('heroicon-o-document-duplicate')
+//                ->color('info')
+//                ->label('')
+//                ->button()
+//                ->action(function ($record, $livewire) {
+//                    session()->put('duplicate_data', collect($record->toArray())
+//                        ->except(['id', 'created_at', 'updated_at'])
+//                        ->toArray()
+//                    );
+//                    $livewire->mountAction('create');
+//                }),
             EditAction::make()
                 ->color('warning')
                 ->label('')
