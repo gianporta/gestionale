@@ -553,12 +553,7 @@ class TableHelper
             EditAction::make()
                 ->color('warning')
                 ->label('')
-                ->button()
-                ->mountUsing(function ($livewire, $record, $action) {
-                    $livewire->resetMountedActionForm();
-                    $action->fillForm($record->toArray());
-                }),
-
+                ->button(),
             DeleteAction::make()
                 ->color('danger')
                 ->label('')
