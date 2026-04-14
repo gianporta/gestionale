@@ -32,7 +32,8 @@ class User extends Authenticatable
         'cap',
         'indirizzo',
         'telefono',
-        'valuta_codice'
+        'valuta_codice',
+        'label_colore',
     ];
     protected $hidden = [
         'password',

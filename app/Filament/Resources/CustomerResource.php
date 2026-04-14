@@ -60,25 +60,23 @@ class CustomerResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new Customer())->getTable());
-        $tableColumns = TableHelper::getColumns($columns);
+        $tableColumns = TableHelper::getColumns($columns,'customer');
 
         return $table
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions())
+            ->defaultSort('ragione_sociale', 'asc')
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
-
                             foreach ($records as $record) {
                                 $new = $record->replicate();
-
                                 if (isset($new->email))
                                     $new->email = $record->email . '.copy';
-
                                 $new->save();
                             }
                         }),

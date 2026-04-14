@@ -5,16 +5,17 @@ namespace App\Helpers;
 use App\Models\Categoria;
 use App\Models\Cms;
 use App\Models\Customer;
+use App\Models\Hours;
 use App\Models\Job;
 use App\Models\Packages;
 use App\Models\Repo;
-use App\Models\Hours;
 use App\Models\StatoDocumento;
 use App\Models\StatoTask;
 use App\Models\Stime;
 use App\Models\Task;
 use App\Models\TipoAcquisto;
 use App\Models\User;
+use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -22,7 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Filament\Forms\Form;
+
 class TableHelper
 {
     public static function getNumberRecordTable(): array
@@ -98,6 +99,59 @@ class TableHelper
                         0 => 'danger',
                         1 => 'success',
                         default => 'gray',
+                    });
+                break;
+            case 'task_id':
+                $col->html()
+                    ->formatStateUsing(function ($state) {
+                        $task = Task::find($state);
+                        if (!$task)
+                            return $state;
+                        $color = $task->label_colore ?: '#6b7280';
+                        $cliente = Customer::find($task->cliente_id)?->ragione_sociale ?? '';
+                        $tooltip = trim(
+                            'Cliente: ' . $cliente .
+                            ($task->progetto ? "\nProgetto: " . $task->progetto : '') .
+                            ($task->descrizione ? "\nDescrizione: " . $task->descrizione : '')
+                        );
+                        return '<span
+                title="' . e($tooltip) . '"
+                style="
+                    display:inline-flex;
+                    align-items:center;
+                    padding: 2px 12px;
+                    border:1px solid ' . $color . ';
+                    border-radius:0.5rem;
+                    color:' . $color . ';
+                    background-color:transparent;
+                    font-size: 13px;
+                    line-height:1.25rem;
+                    font-weight:bold;
+                    cursor:help;
+                "
+            >' . e($task->task) . '</span>';
+                    });
+                break;
+            case 'user':
+            case 'user_id':
+                $col->html()
+                    ->formatStateUsing(function ($state) {
+                        $user = User::find($state);
+                        if (!$user)
+                            return $state;
+                        $color = $user->label_colore ?: '#6b7280';
+                        return '<span style="
+                display:inline-flex;
+                align-items:center;
+                padding: 2px 12px;
+                border:1px solid ' . $color . ';
+                border-radius:0.5rem;
+                color:' . $color . ';
+                background-color:transparent;
+                font-size: 13px;
+                line-height:1.25rem;
+                font-weight:bold;
+            ">' . e($user->name) . '</span>';
                     });
                 break;
             case 'stato':
@@ -252,6 +306,7 @@ class TableHelper
             'cf',
             'p_iva',
             'cms_version',
+            'label_colore',
         );
         $listExclude['user'] = array('ragione_sociale');
         $listExclude['job_suppliers'] = array('costo_orario', 'descrizione');
@@ -259,6 +314,7 @@ class TableHelper
         $listExclude['siti'] = array('attivo');
         $listExclude['task'] = array('attivo');
         $listExclude['package'] = array('attivo');
+        $listExclude['customer'] = array('attivo');
         $listExclude['wiki'] = array('attivo');
         $listExclude['hours'] = array('attivo');
         $listExclude['pack_vs_hours'] = array('descrizione', 'stato', 'attivo');
@@ -352,7 +408,7 @@ class TableHelper
                         ->orderByDesc('anno')
                         ->get()
                         ->pluck('anno', 'anno')
-                        ->filter(fn ($v) => !is_null($v))
+                        ->filter(fn($v) => !is_null($v))
                         ->toArray();
                 })
                 ->query(function ($query, $data) {
@@ -422,6 +478,7 @@ class TableHelper
 
         });
     }
+
     public static function getCreateActionWithDuplicate(): Action
     {
         return Action::make('create')
@@ -461,33 +518,38 @@ class TableHelper
                     ->action(fn($record) => redirect()->route('invoice.xml', $record)),
             ];
         }
+        $actionsHours = [];
+        if ($type == 'hours') {
+            $actionsHours = [
+                Action::make('duplicate')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('info')
+                    ->label('')
+                    ->button()
+                    ->form(function (Form $form) {
+                        $columns = DBHelper::getTableColumns((new Hours())->getTable());
+                        return $form->schema(
+                            FormHelper::getFieldForm($columns, 'hours')
+                        );
+                    })
+                    ->fillForm(function ($record) {
+                        return [
+                            'user' => $record->user,
+                            'task_id' => $record->task_id,
+                            'data_lavorazione' => now()->toDateString(),
+                            'ore_lavorate' => $record->ore_lavorate,
+                            'descrizione' => '',
+                            'note' => '',
+                            'stato' => $record->stato,
+                            'attivo' => $record->attivo,
+                        ];
+                    })
+                    ->action(function (array $data) {
+                        Hours::create($data);
+                    }),
+            ];
+        }
         $actionsGeneric = [
-            Action::make('duplicate')
-                ->icon('heroicon-o-document-duplicate')
-                ->color('info')
-                ->label('')
-                ->button()
-                ->form(function (Form $form) {
-                    $columns = DBHelper::getTableColumns((new Hours())->getTable());
-                    return $form->schema(
-                        FormHelper::getFieldForm($columns, 'hours')
-                    );
-                })
-                ->fillForm(function ($record) {
-                    return [
-                        'user' => $record->user,
-                        'task_id' => $record->task_id,
-                        'data_lavorazione' => now()->toDateString(),
-                        'ore_lavorate' => $record->ore_lavorate,
-                        'descrizione' => '',
-                        'note' => '',
-                        'stato' => $record->stato,
-                        'attivo' => $record->attivo,
-                    ];
-                })
-                ->action(function (array $data) {
-                    Hours::create($data);
-                }),
             EditAction::make()
                 ->color('warning')
                 ->label('')
@@ -498,7 +560,7 @@ class TableHelper
                 ->button()
                 ->requiresConfirmation(),
         ];
-        $actions = array_merge($actionsDocument, $actionsInvoice, $actionsGeneric);
+        $actions = array_merge($actionsDocument, $actionsInvoice, $actionsHours, $actionsGeneric);
         return $actions;
     }
 

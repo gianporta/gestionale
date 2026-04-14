@@ -13,5 +13,7 @@ class Task extends Model
         'stima',
         'task_ore',
         'attivo',
+        'label_colore',
+        'progetto',
     ];
 }
