@@ -554,8 +554,9 @@ class TableHelper
                 ->color('warning')
                 ->label('')
                 ->button()
-                ->before(function ($livewire) {
+                ->mountUsing(function ($livewire, $record, $action) {
                     $livewire->resetMountedActionForm();
+                    $action->fillForm($record->toArray());
                 }),
 
             DeleteAction::make()
