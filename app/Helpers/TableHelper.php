@@ -553,7 +553,11 @@ class TableHelper
             EditAction::make()
                 ->color('warning')
                 ->label('')
-                ->button(),
+                ->button()
+                ->before(function ($livewire) {
+                    $livewire->resetMountedActionForm();
+                }),
+
             DeleteAction::make()
                 ->color('danger')
                 ->label('')
