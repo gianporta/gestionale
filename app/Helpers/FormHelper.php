@@ -590,7 +590,8 @@ class FormHelper
                     $field = TextInput::make($column)
                         ->label(ucfirst(str_replace('_', ' ', $column)))
                         ->password()
-                        ->required(false);
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->required(fn (string $context) => $context === 'create');
                     break;
                 case 'color':
                     $field = ColorPicker::make($column)
