@@ -553,7 +553,14 @@ class TableHelper
             EditAction::make()
                 ->color('warning')
                 ->label('')
-                ->button(),
+                ->button()
+                ->fillForm(fn($record) => $record->attributesToArray())
+                ->mutateFormDataUsing(function (array $data): array {
+                    if (empty($data['password']))
+                        unset($data['password']);
+
+                    return $data;
+                }),
             DeleteAction::make()
                 ->color('danger')
                 ->label('')
