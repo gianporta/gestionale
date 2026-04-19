@@ -515,7 +515,7 @@ class TableHelper
                     ->color('warning')
                     ->label('')
                     ->button()
-                    ->action(fn($record) => redirect()->route('invoice.xml', $record)),
+                    ->url(fn ($record) => route('invoice.xml', ['invoice' => $record->id]))
             ];
         }
         $actionsHours = [];
