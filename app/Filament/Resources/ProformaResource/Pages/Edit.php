@@ -55,7 +55,7 @@ class Edit extends EditRecord
                     $invoice->numero_documento = Invoice::getNextNumeroDocumento();
                     $invoice->progressivo_sdi = Invoice::getNextProgressivoSdi();
                     $invoice->tipo_documento = Invoice::TYPE_DOC;
-                    $invoice->data_pagamento = null;
+                    $invoice->data_documento = now()->toDateString();
                     $invoice->creato_da = 'proforma_'.$proforma->id;
                     $invoice->save();
                     $proforma->fattura = $invoice->id;
