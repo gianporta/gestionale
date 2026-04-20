@@ -19,9 +19,7 @@ class DashboardKpi extends BaseWidget
         $fatturato = DB::table('documenti')
             ->whereYear('data_documento', $year)
             ->where('tipo_documento', Invoice::TYPE_DOC)
-            ->sum(DB::raw("
-            CAST(REPLACE(REPLACE(COALESCE(netto_a_pagare, 0), '.', ''), ',', '.') AS DECIMAL(12,2))
-        "));
+            ->sum('netto_a_pagare');
 
         $incassato = DB::table('documenti')
             ->where('tipo_documento', Invoice::TYPE_DOC)
