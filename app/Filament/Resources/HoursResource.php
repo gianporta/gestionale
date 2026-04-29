@@ -59,13 +59,10 @@ class HoursResource extends Resource
                         ->label('Duplica selezionati')
                         ->icon('heroicon-o-document-duplicate')
                         ->action(function (Collection $records) {
-
                             foreach ($records as $record) {
                                 $new = $record->replicate();
-
                                 if (isset($new->email))
                                     $new->email = $record->email . '.copy';
-
                                 $new->save();
                             }
                         }),
