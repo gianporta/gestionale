@@ -52,10 +52,7 @@ class HoursResource extends Resource
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions('hours'))
-            ->headerActions([
-                TableHelper::getCreateActionWithDuplicate(),
-                ...TableHelper::getHeaderActions(),
-            ])
+            ->headerActions(TableHelper::getHeaderActions())
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('duplicate')
