@@ -18,7 +18,6 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
 class ProformaResource extends Resource
 {
     protected static ?string $model = Proforma::class;
