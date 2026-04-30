@@ -15,5 +15,6 @@ class Packages extends Model
         'proforma',
         'fatturato',
         'saldato',
+        'totale_ore_lavorate',
     ];
 }
