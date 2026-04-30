@@ -77,12 +77,16 @@ class ThreeDash extends Page implements HasTable
 
     public function table(Table $table): Table
     {
+        $latestHours = DB::table('hours')
+            ->select('task_id', DB::raw('MAX(id) as last_id'))
+            ->groupBy('task_id');
+
         return $table
             ->query(
                 Task::query()
                     ->join('customers', 'customers.id', '=', 'tasks.cliente_id')
-                    ->leftJoin('hours', 'hours.task_id', '=', 'tasks.id')
-                    ->leftJoin('packages', 'packages.id', '=', 'hours.packages_id')
+                    ->leftJoinSub($latestHours, 'latest_hours', 'latest_hours.task_id', '=', 'tasks.id')
+                    ->leftJoin('hours', 'hours.id', '=', 'latest_hours.last_id')
                     ->leftJoin('users', 'users.id', '=', 'hours.user')
                     ->leftJoin('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                     ->where('tasks.attivo', 1)
