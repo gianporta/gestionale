@@ -35,6 +35,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Grid;
 
 class FormHelper
 {
@@ -366,6 +367,8 @@ class FormHelper
                     'afterStateUpdated' => function ($state, Set $set) {
                         $task = Task::find($state);
                         $set('ore_task', $task?->totale_ore_lavorate ?? null);
+                        $stima = $task ? Stime::find($task->stima) : null;
+                        $set('stima_task', $stima?->nome ?? null);
                     },
                     'options' => fn(Get $get) => Task::query()
                         ->where(function ($q) use ($get) {
@@ -728,10 +731,17 @@ class FormHelper
                 $field->readOnly();
             $formSchema[$column] = $field;
             if ($column === 'task_id') {
-                $formSchema['ore_task'] = TextInput::make('ore_task')
-                    ->label('Ore lavorate sul task')
-                    ->readOnly()
-                    ->dehydrated(false);
+                $formSchema['task_info'] = Grid::make(2)
+                    ->schema([
+                        TextInput::make('ore_task')
+                            ->label('Ore lavorate sul task')
+                            ->readOnly()
+                            ->dehydrated(false),
+                        TextInput::make('stima_task')
+                            ->label('Stima task')
+                            ->readOnly()
+                            ->dehydrated(false),
+                    ]);
             }
         }
         return $formSchema;
