@@ -13,7 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 

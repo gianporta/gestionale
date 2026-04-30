@@ -17,6 +17,7 @@ use Illuminate\Support\Collection;
 use App\Models\Packages;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
 class PackVsHoursResource extends Resource
 {
     protected static ?string $model = PackVsHours::class;

@@ -15,7 +15,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-
+use Illuminate\Database\Eloquent\Builder;
 class CondizioniPagamentoResource extends Resource
 {
     protected static ?string $model = CondizioniPagamento::class;

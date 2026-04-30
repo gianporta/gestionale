@@ -13,10 +13,9 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-
+use Illuminate\Database\Eloquent\Builder;
 class ExternalInvoiceResource extends Resource
 {
     protected static ?string $model = ExternalInvoice::class;
@@ -47,10 +46,10 @@ class ExternalInvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         $columns = DBHelper::getTableColumns((new ExternalInvoice())->getTable());
-        $tableColumns = TableHelper::getColumns($columns,'external_invoice');
+        $tableColumns = TableHelper::getColumns($columns, 'external_invoice');
 
         return $table
-->modifyQueryUsing(function (Builder $query, $livewire) {
+            ->modifyQueryUsing(function (Builder $query, $livewire) {
                 TableHelper::setFullSearch($livewire->tableSearch ?? null);
                 return $query;
             })
