@@ -729,20 +729,23 @@ class FormHelper
                 $field->disabled();
             if (!empty($config['readonly']))
                 $field->readOnly();
-            $formSchema[$column] = $field;
             if ($column === 'task_id') {
-                $formSchema['task_info'] = Grid::make(2)
+                $formSchema['task_row'] = Grid::make(4)
                     ->schema([
+                        $field->columnSpan(2),
                         TextInput::make('ore_task')
                             ->label('Ore lavorate sul task')
                             ->readOnly()
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->columnSpan(1),
                         TextInput::make('stima_task')
                             ->label('Stima task')
                             ->readOnly()
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->columnSpan(1),
                     ]);
-            }
+            } else
+                $formSchema[$column] = $field;
         }
         return $formSchema;
     }
