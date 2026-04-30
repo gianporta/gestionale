@@ -362,6 +362,11 @@ class FormHelper
             case 'task_id':
                 return [
                     'type' => 'select',
+                    'reactive' => true,
+                    'afterStateUpdated' => function ($state, Set $set) {
+                        $task = Task::find($state);
+                        $set('ore_task', $task?->totale_ore_lavorate ?? null);
+                    },
                     'options' => fn(Get $get) => Task::query()
                         ->where(function ($q) use ($get) {
                             $q->where('tasks.attivo', 1)
@@ -372,11 +377,11 @@ class FormHelper
                                         ->whereColumn('hours.task_id', 'tasks.id')
                                         ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
                                 });
-
                             if ($get('task_id'))
                                 $q->orWhere('tasks.id', $get('task_id'));
                         })
-                        ->pluck('tasks.task', 'tasks.id')
+                        ->selectRaw("tasks.id, IF(tasks.descrizione IS NOT NULL AND tasks.descrizione != '', CONCAT(tasks.task, ' (', tasks.descrizione,')'), tasks.task) as label")
+                        ->pluck('label', 'tasks.id')
                         ->toArray(),
                 ];
             case 'expiration':
@@ -719,10 +724,15 @@ class FormHelper
             }
             if (!empty($config['disabled']))
                 $field->disabled();
-            if (!empty($config['readonly'])) {
+            if (!empty($config['readonly']))
                 $field->readOnly();
-            }
             $formSchema[$column] = $field;
+            if ($column === 'task_id') {
+                $formSchema['ore_task'] = TextInput::make('ore_task')
+                    ->label('Ore lavorate sul task')
+                    ->readOnly()
+                    ->dehydrated(false);
+            }
         }
         return $formSchema;
     }
