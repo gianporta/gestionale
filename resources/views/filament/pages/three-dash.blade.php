@@ -1,7 +1,15 @@
 <x-filament-panels::page>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @foreach($packages as $package)
-        <div class="rounded-xl bg-gray-900 border border-gray-800 p-6">
+        @php
+        if ($package->ore_rimaste > 0)
+        $cardClass = 'rounded-xl bg-gray-900 border-2 border-green-600 p-6';
+        elseif (!$package->saldato)
+        $cardClass = 'rounded-xl bg-red-950 border border-red-800 p-6';
+        else
+        $cardClass = 'rounded-xl bg-gray-900 border border-gray-800 p-6';
+        @endphp
+        <div class="{{ $cardClass }}">
             <div class="text-center mb-4">
                 <div class="text-sm text-gray-400">
                     {{ $package->cliente }}
@@ -22,7 +30,7 @@
                     <tr class="font-semibold">
                         <td>{{ $package->ore }} / €{{ $package->costo_orario }}</td>
                         <td>{{ $package->ore_usate }}</td>
-                        <td class="text-amber-400">{{ $package->ore_rimaste }}</td>
+                        <td class="{{ $package->ore_rimaste > 0 ? 'text-green-400' : 'text-amber-400' }}">{{ $package->ore_rimaste }}</td>
                     </tr>
 
                     <tr>
@@ -40,7 +48,7 @@
                     <tr class="font-semibold">
                         <td>{{ $package->proforma ? 'Sì' : 'No' }}</td>
                         <td>{{ $package->fatturato ? 'Sì' : 'No' }}</td>
-                        <td class="text-amber-400">{{ $package->saldato ? 'Sì' : 'No' }}</td>
+                        <td class="{{ $package->saldato ? 'text-green-400' : 'text-amber-400' }}">{{ $package->saldato ? 'Sì' : 'No' }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -50,8 +58,8 @@
                     <div class="flex flex-wrap justify-center gap-2">
                         @foreach($package->ore_per_user as $userOre)
                         <span class="px-2 py-1 bg-gray-800 rounded text-gray-200">
-            {{ $userOre }}
-        </span>
+                            {{ $userOre }}
+                        </span>
                         @endforeach
                     </div>
                 </div>
