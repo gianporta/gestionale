@@ -18,7 +18,6 @@ use App\Filament\Resources\SuppliersResource\RelationManagers\JobsRelationManage
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
 
 class SuppliersResource extends Resource
 {
