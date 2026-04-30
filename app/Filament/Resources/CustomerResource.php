@@ -63,6 +63,10 @@ class CustomerResource extends Resource
         $tableColumns = TableHelper::getColumns($columns,'customer');
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions())

@@ -49,6 +49,10 @@ class TaskResource extends Resource
         $tableColumns = TableHelper::getColumns($columns,'task');
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions())

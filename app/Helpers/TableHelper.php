@@ -26,6 +26,18 @@ use Illuminate\Support\Facades\DB;
 
 class TableHelper
 {
+    private static ?string $fullSearch = null;
+
+    public static function setFullSearch(?string $search): void
+    {
+        self::$fullSearch = $search;
+    }
+
+    public static function getFullSearch(): ?string
+    {
+        return self::$fullSearch;
+    }
+
     public static function getNumberRecordTable(): array
     {
         return [10, 25, 50, -1];
@@ -340,10 +352,12 @@ class TableHelper
             'task_id' => ['table' => 'tasks', 'field' => 'task'],
             'packages_id' => [
                 'custom' => function ($search) {
+                    $s = TableHelper::getFullSearch() ?? $search;
                     return DB::table('packages')
                         ->join('customers', 'customers.id', '=', 'packages.cliente_id')
-                        ->where('customers.ragione_sociale', 'like', "%{$search}%")
-                        ->select('packages.id');
+                        ->whereRaw("CONCAT(customers.ragione_sociale, ' - ', packages.nome) LIKE ?", ["%{$s}%"])
+                        ->pluck('packages.id')
+                        ->toArray();
                 }
             ],
         ];
@@ -368,11 +382,12 @@ class TableHelper
 
             if (isset($searchMap[$column]))
                 $col->searchable(
-                    query: function (Builder $query, string $search) use ($column, $searchMap) {
+                    true,
+                    function (Builder $query, string $search) use ($column, $searchMap) {
                         $config = $searchMap[$column];
                         if (isset($config['custom']))
-                            return $query->whereIn($column, $config['custom']($search));
-                        return $query->whereIn(
+                            return $query->orWhereIn($column, $config['custom']($search));
+                        return $query->orWhereIn(
                             $column,
                             DB::table($config['table'])
                                 ->select('id')

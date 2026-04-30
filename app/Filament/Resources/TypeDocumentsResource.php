@@ -49,6 +49,10 @@ class TypeDocumentsResource extends Resource
         $tableColumns = TableHelper::getColumns($columns);
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions())

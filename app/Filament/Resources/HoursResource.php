@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Filament\Resources;
@@ -14,6 +15,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class HoursResource extends Resource
@@ -49,6 +51,10 @@ class HoursResource extends Resource
         $tableColumns = TableHelper::getColumns($columns, 'hours');
 
         return $table
+            ->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->filters([])
             ->actions(TableHelper::getTableActions('hours'))

@@ -54,6 +54,10 @@ class PackVsHoursResource extends Resource
         $tableColumns = TableHelper::getColumns($columns,'pack_vs_hours');
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->modifyQueryUsing(fn ($query) => $query->whereNull('packages_id'))
             ->columns($tableColumns)
             ->filters([])

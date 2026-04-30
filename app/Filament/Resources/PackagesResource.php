@@ -49,6 +49,10 @@ class PackagesResource extends Resource
         $tableColumns = TableHelper::getColumns($columns,'package');
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->defaultSort('id', 'desc')
             ->filters([])

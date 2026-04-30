@@ -51,6 +51,10 @@ class AcquistiResource extends Resource
         $tableColumns = TableHelper::getColumns($columns,'acquisti');
 
         return $table
+->modifyQueryUsing(function (Builder $query, $livewire) {
+                TableHelper::setFullSearch($livewire->tableSearch ?? null);
+                return $query;
+            })
             ->columns($tableColumns)
             ->filters(TableHelper::getTableFilter())
             ->defaultSort('id', 'desc')
