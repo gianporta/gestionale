@@ -37,7 +37,8 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
-
+use Filament\Forms\Components\Placeholder;
+use Illuminate\Support\HtmlString;
 class FormHelper
 {
     public static function getHashTypes(): array
@@ -360,6 +361,11 @@ class FormHelper
                     'type' => 'select',
                     'options' => self::getClienteOptions(),
                     'default' => null,
+                ];
+            case 'task':
+                return [
+                    'type' => 'text',
+                    'reactive' => true,
                 ];
             case 'task_id':
                 return [
@@ -734,7 +740,40 @@ class FormHelper
                 $field->disabled();
             if (!empty($config['readonly']))
                 $field->readOnly();
-            if ($column === 'task_id') {
+            if ($column === 'task') {
+                $field->live(debounce: 400);
+
+                $formSchema['task_group'] = Grid::make(1)
+                    ->columnSpan(1)
+                    ->schema([
+                        $field,
+                        Placeholder::make('task_duplicati')
+                            ->label('')
+                            ->dehydrated(false)
+                            ->content(function (Get $get) {
+                                $q = trim($get('task') ?? '');
+                                if (strlen($q) < 3)
+                                    return '';
+
+                                $tasks = Task::query()
+                                    ->join('customers', 'customers.id', '=', 'tasks.cliente_id')
+                                    ->where('tasks.task', 'like', "%{$q}%")
+                                    ->select('tasks.task', 'tasks.descrizione', 'customers.ragione_sociale')
+                                    ->limit(5)
+                                    ->get();
+
+                                if ($tasks->isEmpty())
+                                    return new HtmlString('<span class="text-xs text-green-500">✓ Nessun task simile trovato</span>');
+
+                                $html = '<div class="text-xs text-amber-400">⚠ Task simili già esistenti:<ul class="mt-1 space-y-1">';
+                                foreach ($tasks as $t)
+                                    $html .= '<li>• <strong>' . e($t->ragione_sociale) . '</strong> — ' . e($t->task) . ($t->descrizione ? ' <span class="text-gray-400">(' . e($t->descrizione) . ')</span>' : '') . '</li>';
+                                $html .= '</ul></div>';
+
+                                return new HtmlString($html);
+                            }),
+                    ]);
+            }else if ($column === 'task_id') {
                 $formSchema['task_row'] = Grid::make(4)
                     ->schema([
                         $field->columnSpan(2),
