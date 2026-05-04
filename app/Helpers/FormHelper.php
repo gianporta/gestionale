@@ -36,6 +36,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Toggle;
 
 class FormHelper
 {
@@ -372,14 +373,18 @@ class FormHelper
                     },
                     'options' => fn(Get $get) => Task::query()
                         ->where(function ($q) use ($get) {
-                            $q->where('tasks.attivo', 1)
-                                ->whereNotExists(function ($q2) {
+                            $q->where('tasks.attivo', 1);
+
+                            if (!$get('mostra_tutti_task')) {
+                                $q->whereNotExists(function ($q2) {
                                     $q2->select(\DB::raw(1))
                                         ->from('hours')
                                         ->join('stato_tasks', 'stato_tasks.id', '=', 'hours.stato')
                                         ->whereColumn('hours.task_id', 'tasks.id')
                                         ->whereIn('stato_tasks.nome', ['Finito', 'Rilascio']);
                                 });
+                            }
+
                             if ($get('task_id'))
                                 $q->orWhere('tasks.id', $get('task_id'));
                         })
@@ -744,6 +749,11 @@ class FormHelper
                             ->dehydrated(false)
                             ->columnSpan(1),
                     ]);
+                $formSchema['mostra_tutti_task'] = Toggle::make('mostra_tutti_task')
+                    ->label('Mostra tutti i task (inclusi chiusi)')
+                    ->live()
+                    ->dehydrated(false)
+                    ->default(false);
             } else
                 $formSchema[$column] = $field;
         }
