@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Hours extends Model
 {
@@ -15,7 +16,8 @@ class Hours extends Model
         'stato',
         'user',
         'attivo',
-        'packages_id'
+        'packages_id',
+        'totale_ore',
     ];
 
     protected static function booted()
@@ -23,6 +25,11 @@ class Hours extends Model
         static::saved(function ($hours) {
             self::updateTaskOre($hours->task_id);
             self::updatePackageOre($hours->packages_id);
+
+            if ($hours->task_id) {
+                $totale = Task::where('id', $hours->task_id)->value('totale_ore_lavorate');
+                DB::table('hours')->where('id', $hours->id)->update(['totale_ore' => $totale]);
+            }
         });
 
         static::deleted(function ($hours) {

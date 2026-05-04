@@ -768,7 +768,7 @@ class FormHelper
         $listExclude['job_customer'] = array('costo');
         $listExclude['customer'] = array('banca', 'iban', 'intestatario_conto');
         $listExclude['acquisti'] = array();
-        $listExclude['hours'] = array('packages_id');
+        $listExclude['hours'] = array('packages_id', 'totale_ore');
         $listExclude['quote'] = array('condizioni_pagamento', 'modalita_pagamento', 'stato_documento', 'data_pagamento', 'anticipo', 'pagato');
         $listExclude['creditMemo'] = array();
         $listExclude['proforma'] = array('anticipo');
