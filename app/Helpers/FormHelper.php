@@ -748,12 +748,13 @@ class FormHelper
                             ->readOnly()
                             ->dehydrated(false)
                             ->columnSpan(1),
+                        Toggle::make('mostra_tutti_task')
+                            ->label('Mostra tutti i task (inclusi chiusi)')
+                            ->live()
+                            ->dehydrated(false)
+                            ->default(false)
+                            ->columnSpan(1),
                     ]);
-                $formSchema['mostra_tutti_task'] = Toggle::make('mostra_tutti_task')
-                    ->label('Mostra tutti i task (inclusi chiusi)')
-                    ->live()
-                    ->dehydrated(false)
-                    ->default(false);
             } else
                 $formSchema[$column] = $field;
         }
