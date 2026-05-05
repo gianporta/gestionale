@@ -49,6 +49,24 @@
         @endif
     </div>
 
+    @if ($record->cpanel_url || $record->cpanel_user || $record->cpanel_psw)
+    <div class="rounded-lg bg-gray-800 p-4">
+        <div class="text-gray-400 mb-2">CPanel</div>
+
+        @if ($record->cpanel_url)
+        <div><b>Url:</b> <a href="{{ $record->cpanel_url }}" target="_blank" class="text-primary-400">{{ $record->cpanel_url }}</a></div>
+        @endif
+
+        @if ($record->cpanel_user)
+        <div><b>User:</b> {{ $record->cpanel_user }}</div>
+        @endif
+
+        @if ($record->cpanel_psw)
+        <div><b>Psw:</b> {{ $record->cpanel_psw }}</div>
+        @endif
+    </div>
+    @endif
+
 
     <div class="rounded-lg bg-gray-800 p-4">
         <div class="text-gray-400 mb-2">Database</div>
