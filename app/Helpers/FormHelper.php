@@ -13,6 +13,7 @@ use App\Models\Customer;
 use App\Models\ExternalInvoice;
 use App\Models\Invoice;
 use App\Models\Job;
+use App\Models\OauthUser;
 use App\Models\ModalitaPagamento;
 use App\Models\Packages;
 use App\Models\Proforma;
@@ -467,6 +468,14 @@ class FormHelper
                     'type' => 'select',
                     'options' => TypeDocument::pluck('nome', 'id')->toArray(),
                     'default' => 1,
+                ];
+            case 'id_user_repo':
+                return [
+                    'type' => 'select',
+                    'options' => OauthUser::query()
+                        ->orderBy('username')
+                        ->pluck('username', 'id')
+                        ->toArray(),
                 ];
             case 'id_user':
             case 'user':
