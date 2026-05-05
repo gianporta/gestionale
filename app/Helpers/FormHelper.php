@@ -473,6 +473,8 @@ class FormHelper
                 return [
                     'type' => 'select',
                     'options' => OauthUser::query()
+                        ->whereNotNull('username')
+                        ->where('username', '!=', '')
                         ->orderBy('username')
                         ->pluck('username', 'id')
                         ->toArray(),
